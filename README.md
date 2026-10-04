@@ -1,5 +1,7 @@
 # SpaceDash by Maike - código fonte
 
+[![Licença: GPL v3](https://img.shields.io/badge/licen%C3%A7a-GPL%20v3-blue.svg)](LICENSE) **Licença: GNU GPL v3** — mods derivados devem permanecer abertos e gratuitos. Veja [COPYRIGHT.md](COPYRIGHT.md).
+
 Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), derivado do "Arthur's LCD Mod" 0.2.6, sem a interação por clique no LCD. Até 27/09/2026 eram dois mods (`LCD_INFO_MAIKE` e `LCD_Maike`); as telas do segundo foram incorporadas ao primeiro.
 
 | Pasta | Vai para | Conteúdo |
