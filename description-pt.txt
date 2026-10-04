@@ -31,4 +31,4 @@ Cliques, arraste, cursor, tooltips, diálogos e menus na tela; telas Cargo, Inte
 Compatível com servidores dedicados. Código fonte disponível.
 
 DIREITOS AUTORAIS
-Copyright © 2026 Maike Bressan. Trabalho derivado do "Arthur's LCD Mod" 0.2.6; os direitos sobre o conteúdo herdado pertencem ao autor original. Livre para usar em qualquer servidor e para estudar o código com crédito. Não republique como seu. Detalhes em COPYRIGHT.md no repositório.
+Copyright © 2026 Maike Bressan. Trabalho derivado do "Arthur's LCD Mod" 0.2.6; os direitos sobre o conteúdo herdado pertencem ao autor original. Licenciado sob GNU GPL v3: livre para usar, copiar e modificar, desde que mods derivados sejam abertos e gratuitos, sob a mesma licença. Detalhes em COPYRIGHT.md e LICENSE no repositório.

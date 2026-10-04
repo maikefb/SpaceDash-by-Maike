@@ -31,4 +31,4 @@ Clicks, drag, cursor, tooltips, dialogs and menus on the screen; the Cargo, Inte
 Dedicated server compatible. Source code available.
 
 COPYRIGHT
-Copyright © 2026 Maike Bressan. Derivative work of "Arthur's LCD Mod" 0.2.6; rights over inherited content belong to the original author. Free to use on any server and to study the code with credit. Do not republish as your own. Details in COPYRIGHT.md in the repository.
+Copyright © 2026 Maike Bressan. Derivative work of "Arthur's LCD Mod" 0.2.6; rights over inherited content belong to the original author. Licensed under GNU GPL v3: free to use, copy and modify, as long as derived mods stay open and free under the same license. Details in COPYRIGHT.md and LICENSE in the repository.

@@ -8,15 +8,13 @@ SpaceDash é um trabalho derivado do "Arthur's LCD Mod" 0.2.6, para Space Engine
 
 Space Engineers é marca registrada da Keen Software House. Este mod não é afiliado nem endossado pela Keen Software House.
 
-Permissões:
+Licença: GNU General Public License v3.0 (GPL-3.0), texto completo em [LICENSE](LICENSE).
 
-- Usar o mod em qualquer mundo ou servidor, inclusive em servidores dedicados.
-- Ler o código fonte, estudar e adaptar trechos em outros mods, com crédito a SpaceDash by Maike e ao Arthur's LCD Mod.
+Em resumo:
 
-Restrições:
-
-- Não republicar o mod, inteiro ou em parte, no Steam Workshop ou em outro canal como se fosse seu.
-- Não remover este aviso nem os créditos ao mod original.
+- Você pode usar o mod em qualquer mundo ou servidor, inclusive dedicados.
+- Você pode copiar, modificar e redistribuir o código, desde que o resultado seja distribuído sob a mesma licença, com o código fonte aberto e gratuito, mantendo este aviso e os créditos.
+- Não é permitido transformar o código, inteiro ou em parte, em mod pago ou de código fechado.
 
 ## English
 
@@ -26,12 +24,10 @@ SpaceDash is a derivative work of "Arthur's LCD Mod" 0.2.6 for Space Engineers. 
 
 Space Engineers is a trademark of Keen Software House. This mod is not affiliated with or endorsed by Keen Software House.
 
-Permissions:
+License: GNU General Public License v3.0 (GPL-3.0), full text in [LICENSE](LICENSE).
 
-- Use the mod in any world or server, including dedicated servers.
-- Read the source code, study it and adapt parts of it in other mods, crediting SpaceDash by Maike and Arthur's LCD Mod.
+In short:
 
-Restrictions:
-
-- Do not republish the mod, in whole or in part, on the Steam Workshop or elsewhere as your own.
-- Do not remove this notice or the credits to the original mod.
+- You may use the mod in any world or server, including dedicated servers.
+- You may copy, modify and redistribute the code, provided the result is distributed under the same license, with open and free source code, keeping this notice and the credits.
+- Turning the code, in whole or in part, into a paid or closed-source mod is not permitted.
