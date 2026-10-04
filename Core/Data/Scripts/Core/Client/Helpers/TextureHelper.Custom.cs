@@ -306,7 +306,7 @@ if not defined PATHVAR (
     echo tools_path.txt vazio ou ausente.
     exit /b 1
 )
-if not ""%PATHVAR:~-1%""=="""" set ""PATHVAR=%PATHVAR%""
+if not ""%PATHVAR:~-1%""==""\"" set ""PATHVAR=%PATHVAR%\""
 ""%PATHVAR%texconv.exe"" .\*.png -nologo -y -f BC7_UNORM -pmalpha
 if not ""%ERRORLEVEL%""==""0"" (
     echo texconv.exe falhou com codigo %ERRORLEVEL%.
