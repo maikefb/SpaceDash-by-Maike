@@ -29,11 +29,6 @@ namespace LcdMod.Client.Terminal.Controls.Filter.Listbox
             var sprites = new List<string>();
             TextureHelper.GetRegisteredSpriteNames(sprites);
 
-            var provider = b as IMyTextSurfaceProvider;
-            var index = GetThisSurfaceIndex(b);
-            if (provider != null && index >= 0 && index < provider.SurfaceCount)
-                provider.GetSurface(index).GetSprites(sprites);
-
             itemList.AddRange(sprites
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
