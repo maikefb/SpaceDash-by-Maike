@@ -101,4 +101,4 @@ Chaves de localização continuam `LcdMod_*`.
 
 ## Direitos autorais
 
-Veja [COPYRIGHT.md](COPYRIGHT.md): copyright de Maike Bressan sobre o que foi adicionado, créditos ao "Arthur's LCD Mod" 0.2.6 pelo conteúdo herdado, e licença GNU GPL v3 ([LICENSE](LICENSE)): mods derivados devem permanecer abertos e gratuitos sob a mesma licença.
+Veja [COPYRIGHT.md](COPYRIGHT.md): copyright de Maike Bressan, projeto em colaboração com Arthur, criador do Arthur's LCD Mod, e licença GNU GPL v3 ([LICENSE](LICENSE)): mods derivados devem permanecer abertos e gratuitos sob a mesma licença.

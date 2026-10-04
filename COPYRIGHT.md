@@ -4,30 +4,42 @@
 
 Copyright © 2026 Maike Bressan. Todos os direitos reservados.
 
-SpaceDash é um trabalho derivado do "Arthur's LCD Mod" 0.2.6, para Space Engineers. Os direitos sobre o código, as fontes, os sprites e as traduções herdados do mod original pertencem ao seu autor. As telas novas, as correções, o botão "Fabricar componentes faltantes", a tela Sobreviventes, o serviço de energia compartilhado, a sincronização de cores e as traduções adicionadas neste repositório são de autoria de Maike Bressan.
+SpaceDash é um projeto desenvolvido em colaboração com Arthur, criador do Arthur's LCD Mod, para o Space Engineers.
 
-Space Engineers é marca registrada da Keen Software House. Este mod não é afiliado nem endossado pela Keen Software House.
+Space Engineers é uma marca registrada da Keen Software House. Este projeto é independente e não possui afiliação, patrocínio ou endosso da Keen Software House.
 
-Licença: GNU General Public License v3.0 (GPL-3.0), texto completo em [LICENSE](LICENSE).
+### Licença
+
+O SpaceDash é distribuído sob a GNU General Public License v3.0 (GPL-3.0).
+O texto completo da licença está disponível em [LICENSE](https://github.com/maikefb/SpaceDash-by-Maike/blob/main/LICENSE).
 
 Em resumo:
 
-- Você pode usar o mod em qualquer mundo ou servidor, inclusive dedicados.
-- Você pode copiar, modificar e redistribuir o código, desde que o resultado seja distribuído sob a mesma licença, com o código fonte aberto e gratuito, mantendo este aviso e os créditos.
-- Não é permitido transformar o código, inteiro ou em parte, em mod pago ou de código fechado.
+- Você pode usar o SpaceDash em mundos privados, públicos e servidores dedicados.
+- Você pode copiar, modificar e redistribuir o código.
+- Caso distribua uma versão modificada ou derivada, ela deverá permanecer sob a GPL-3.0, preservando as liberdades previstas pela licença.
+- O código-fonte correspondente deverá ser disponibilizado aos usuários da versão distribuída, conforme os termos da GPL-3.0.
+- Os avisos de copyright, licença e atribuições existentes devem ser preservados.
+- Não é permitido redistribuir versões derivadas do código como software proprietário ou de código fechado.
 
 ## English
 
 Copyright © 2026 Maike Bressan. All rights reserved.
 
-SpaceDash is a derivative work of "Arthur's LCD Mod" 0.2.6 for Space Engineers. Rights over the code, fonts, sprites and translations inherited from the original mod belong to its author. The new screens, fixes, the "Craft missing components" button, the Survivors screen, the shared energy service, color sync and the translations added in this repository are authored by Maike Bressan.
+SpaceDash is a project developed in collaboration with Arthur, creator of Arthur's LCD Mod, for Space Engineers.
 
-Space Engineers is a trademark of Keen Software House. This mod is not affiliated with or endorsed by Keen Software House.
+Space Engineers is a registered trademark of Keen Software House. This project is independent and has no affiliation with, sponsorship from or endorsement by Keen Software House.
 
-License: GNU General Public License v3.0 (GPL-3.0), full text in [LICENSE](LICENSE).
+### License
+
+SpaceDash is distributed under the GNU General Public License v3.0 (GPL-3.0).
+The full license text is available in [LICENSE](https://github.com/maikefb/SpaceDash-by-Maike/blob/main/LICENSE).
 
 In short:
 
-- You may use the mod in any world or server, including dedicated servers.
-- You may copy, modify and redistribute the code, provided the result is distributed under the same license, with open and free source code, keeping this notice and the credits.
-- Turning the code, in whole or in part, into a paid or closed-source mod is not permitted.
+- You may use SpaceDash in private worlds, public worlds and dedicated servers.
+- You may copy, modify and redistribute the code.
+- If you distribute a modified or derived version, it must remain under the GPL-3.0, preserving the freedoms granted by the license.
+- The corresponding source code must be made available to the users of the distributed version, as required by the GPL-3.0.
+- Existing copyright, license and attribution notices must be preserved.
+- Redistributing derived versions of the code as proprietary or closed-source software is not permitted.
