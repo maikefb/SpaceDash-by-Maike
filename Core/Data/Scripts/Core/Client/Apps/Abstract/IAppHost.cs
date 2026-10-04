@@ -1,0 +1,38 @@
+using System.Collections.Generic;
+using System.Text;
+using LcdMod.Client.Animation;
+using LcdMod.Client.GridData;
+using LcdMod.Common.Config.Components;
+using LcdMod.Common.Config.Models;
+using VRage.Game.GUI.TextPanel;
+using VRage.Game.ModAPI;
+using VRageMath;
+
+using IMyTextSurface = Sandbox.ModAPI.Ingame.IMyTextSurface;
+
+namespace LcdMod.Client.Apps.Abstract
+{
+    public interface IAppHost
+    {
+        AnimationController Animations { get; }
+        IMyCubeBlock Block { get; }
+        IMyTextSurface Surface { get; }
+        RectangleF ViewBox { get; }
+        Color ForegroundColor { get; }
+        Color BackgroundColor { get; }
+        bool TitleVisible { get; }
+        string Title { get; }
+        IComponentContainer Config { get; }
+        int SurfaceIndex { get; }
+        float ConfiguredScale { get; }
+        GridLogic GridLogic { get; }
+        ScreenProviderConfig ProviderConfig { get; }
+        void AddBackground(List<MySprite> frame, Color? color = null);
+        void DrawTitle(List<MySprite> frame);
+        void DrawMessage(List<MySprite> sprites, string message, string icon, Color color, float scale = 1f);
+        void DrawLoading(List<MySprite> sprites, float scale = 1f);
+        void TrimText(ref StringBuilder sb, float availableWidth, float fontSize = 1f);
+        void RenderSprites();
+        bool TryGetReferenceWorldMatrix(int referenceModeValue, out MatrixD world, bool useBlockWorldForCockpitAuto = false);
+    }
+}

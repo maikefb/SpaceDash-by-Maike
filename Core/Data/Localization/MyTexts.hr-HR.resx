@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+
+    <data name="LcdMod_Radar" xml:space="preserve">
+    <value>[SD] Taktički radar</value>
+  </data>
+
+    <data name="LcdMod_Radar_DetectedEntities" xml:space="preserve">
+    <value>Detektirane jedinice:</value>
+  </data>
+
+
+    <data name="LcdMod_Farm" xml:space="preserve">
+    <value>[SD] Informacije o farmi</value>
+  </data>
+
+    <data name="LcdMod_Farm_Water" xml:space="preserve">
+    <value>Voda: {0}</value>
+  </data>
+
+    <data name="LcdMod_Farm_OutputAmount" xml:space="preserve">
+    <value>{0} x{1}</value>
+  </data>
+
+    <data name="LcdMod_Damaged" xml:space="preserve">
+    <value>Oštećeno</value>
+  </data>
+
+    <data name="LcdMod_Empty" xml:space="preserve">
+    <value>Prazno</value>
+  </data>
+
+    <data name="LcdMod_GasFilled" xml:space="preserve">
+    <value>[SD] Napunjenost plinom %</value>
+  </data>
+
+    <data name="LcdMod_PowerFilled" xml:space="preserve">
+    <value>[SD] Napunjenost energijom %</value>
+  </data>
+
+    <data name="LcdMod_Warning" xml:space="preserve">
+    <value>Upozorenje: {0}</value>
+  </data>
+
+    <data name="LcdMod_Critical" xml:space="preserve">
+    <value>Kritično: {0}</value>
+  </data>
+
+    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
+    <value>Gravitacijsko opterećenje</value>
+  </data>
+
+
+    <data name="LcdMod_DockingAlignment" xml:space="preserve">
+    <value>[SD] Poravnanje pristajanja</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_SelectReference" xml:space="preserve">
+    <value>Odaberite {0} ili {1}</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_NoTarget" xml:space="preserve">
+    <value>Nije otkriven cilj pristajanja</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_Default" xml:space="preserve">
+    <value>Zadano</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_LcdReference" xml:space="preserve">
+    <value>Lcd referenca</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_ControllerReference" xml:space="preserve">
+    <value>Referenca kontrolera</value>
+  </data>
+
+    <data name="LcdMod_NotAvailable" xml:space="preserve">
+    <value>N/D</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Selected" xml:space="preserve">
+    <value>Odabrano</value>
+  </data>
+
+
+    <data name="LcdMod_Temperature" xml:space="preserve">
+    <value>Temperatura: {0}</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Magnification" xml:space="preserve">
+    <value>Povećanje</value>
+  </data>
+
+    <data name="LcdMod_Radar_AntennaRangeWarning" xml:space="preserve">
+    <value>Izvan 3 km otkrivaju se samo radijski signali.</value>
+  </data>
+
+    <data name="LcdMod_Grid" xml:space="preserve">
+    <value>Mreža</value>
+  </data>
+
+    <data name="LcdMod_List" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+
+    <data name="LcdMod_Card" xml:space="preserve">
+    <value>Kartica</value>
+  </data>
+
+    <data name="LcdMod_Table" xml:space="preserve">
+    <value>Tablica</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Common_Value_Unavailable" xml:space="preserve">
+    <value>N/D</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_ZeroSeconds" xml:space="preserve">
+    <value>0 s</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_LessThanOneSecond" xml:space="preserve">
+    <value>&lt; 1 s</value>
+  </data>
+
+
+
+
+    <data name="LcdMod_Common_Label_WithColon" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
+
+    <data name="LcdMod_LocalGrid" xml:space="preserve">
+    <value>Lokalni brod/stanica</value>
+  </data>
+
+    <data name="LcdMod_MechanicalConnection" xml:space="preserve">
+    <value>Mehanička veza</value>
+  </data>
+
+    <data name="LcdMod_PhysicalConnection" xml:space="preserve">
+    <value>Fizička veza</value>
+  </data>
+
+    <data name="LcdMod_LinkType" xml:space="preserve">
+    <value>Vrsta veze</value>
+  </data>
+
+  
+    <data name="LcdMod_Projector_Ingots" xml:space="preserve">
+    <value>Ingoti</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+<data name="LcdMod_DigitalPictureFrames" xml:space="preserve">
+    <value>[SD] Okvir za sliku</value>
+  </data>
+
+  <data name="LcdMod_IndexConflict" xml:space="preserve">
+    <value>Sukob indeksa površine</value>
+  </data>
+
+  <data name="LcdMod_IndexConflictDetails" xml:space="preserve">
+    <value>Druga instanca skripte već koristi ovaj indeks površine.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_Header" xml:space="preserve">
+    <value>Vaša stanica naišla je na problem i mora se ponovno pokrenuti.
+Pričekat ćemo neko vrijeme, a zatim je ponovno pokrenuti za vas.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoIntro" xml:space="preserve">
+    <value>Za više informacija o ovom problemu,</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoUrl" xml:space="preserve">
+    <value>posjetite</value>
+  </data>
+
+
+  <data name="LcdMod_BSoD_SupportIntro" xml:space="preserve">
+    <value>Ako kontaktirate podršku, dajte im ove informacije:</value>
+  </data>
+
+  <data name="LcdMod_BSoD_ExceptionCode" xml:space="preserve">
+    <value>Kôd iznimke:</value>
+  </data>
+
+
+
+
+  <data name="LcdMod_InGameClockDashboard" xml:space="preserve">
+    <value>[SD] Sat u igri</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll" xml:space="preserve">
+    <value>Automatsko pomicanje</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll_Tooltip" xml:space="preserve">
+    <value>Postavlja odgodu između koraka pomicanja (0 isključuje automatsko pomicanje).</value>
+  </data>
+
+
+
+
+
+
+
+  <data name="LcdMod_DefenseDashboard" xml:space="preserve">
+    <value>[SD] Nadzorna ploča obrane</value>
+  </data>
+
+
+  <data name="LcdMod_Search_Script" xml:space="preserve">
+    <value>Pretraži aplikacije</value>
+  </data>
+
+  <data name="LcdMod_Search_Script_Tooltip" xml:space="preserve">
+    <value>Filtrira popis aplikacija.</value>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
+    <value>Settings copied.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
+    <value>Copy settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
+    <value>Failed to copy settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
+    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
+    <value>No copied settings are available for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
+    <value>No LCD Mod settings found for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
+    <value>Paste settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
+    <value>Failed to paste settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
+    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
+    <value>Compatible settings pasted.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
+    <value>Firing</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
+    <value>Fully charged</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
+    <value>Not Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
+    <value>Offline</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
+    <value>Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
+    <value>Recharge in {0}s</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
+    <value>Recharge unavailable</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
+    <value>Shield</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
+    <value>Craft missing components</value>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
+    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
+    <value>Sat: 24-satni format</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature" xml:space="preserve">
+    <value>Sat: temperatura</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature_Tooltip" xml:space="preserve">
+    <value>Vrijednosti temperature procjenjuju se na temelju normalizirane temperaturne ljestvice igre u rasponu od 270 K do 320 K, a zatim se pretvaraju u odabranu jedinicu.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Afternoon" xml:space="preserve">
+    <value>Poslijepodne</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dawn" xml:space="preserve">
+    <value>Zora</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dusk" xml:space="preserve">
+    <value>Sumrak</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Morning" xml:space="preserve">
+    <value>Jutro</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Night" xml:space="preserve">
+    <value>Noć</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_NoLocalDay" xml:space="preserve">
+    <value>Nema lokalnog dana</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Noon" xml:space="preserve">
+    <value>Podne</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_PolarDay" xml:space="preserve">
+    <value>Polarni dan</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Unknown" xml:space="preserve">
+    <value>Nepoznato</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DeepSpace" xml:space="preserve">
+    <value>Duboki svemir</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Celsius" xml:space="preserve">
+    <value>Celzij (°C)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fahrenheit" xml:space="preserve">
+    <value>Fahrenheit (°F)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fuzzy" xml:space="preserve">
+    <value>Približno</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Kelvin" xml:space="preserve">
+    <value>Kelvin (K)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_UnknownPlanet" xml:space="preserve">
+    <value>Nepoznati planet</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Clear" xml:space="preserve">
+    <value>Vedro</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Unknown" xml:space="preserve">
+    <value>Vrijeme</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
+    <value>Play time</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
+    <value>Server uptime</value>
+  </data>
+  <data name="LcdMod_Survivors" xml:space="preserve">
+    <value>[SD] Survivors</value>
+  </data>
+  <data name="LcdMod_Survivors_Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="LcdMod_Survivors_Alive" xml:space="preserve">
+    <value>Alive</value>
+  </data>
+  <data name="LcdMod_Survivors_Record" xml:space="preserve">
+    <value>Record</value>
+  </data>
+</root>

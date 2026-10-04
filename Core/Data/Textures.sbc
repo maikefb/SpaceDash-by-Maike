@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <LCDTextures>
+
+        
+        <LCDTextureDefinition> <!-- Custom Warning Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="Warning"/>
+            <SpritePath>Textures/Sprites/Warning.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Defense Dashboard: Shield status icon -->
+            <Id Type="LCDTextureDefinition" Subtype="ShieldIcon"/>
+            <SpritePath>Textures/Sprites/ShieldIcon.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+
+
+        <LCDTextureDefinition> <!-- Custom Beacon Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="BeaconBroadcast"/>
+            <SpritePath>Textures/Sprites/BeaconBroadcast.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Antenna Disabled Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="RadioAntennaDisabled"/>
+            <SpritePath>Textures/Sprites/SignalModeOff.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Jump Drive Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="JumpDrive"/>
+            <SpritePath>Textures/Sprites/JumpDrive.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Jump Drive Core Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="JumpDriveCore"/>
+            <SpritePath>Textures/Sprites/JumpDriveCore.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Battery Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="Battery"/>
+            <SpritePath>Textures/Sprites/Battery.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        
+
+        
+        <LCDTextureDefinition> <!-- Custom Farm Plot Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="FarmPlot"/>
+            <SpritePath>Textures/Sprites/FarmPlot.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Farm Plot Sprite Background Mask -->
+            <Id Type="LCDTextureDefinition" Subtype="FarmPlotMask"/>
+            <SpritePath>Textures/Sprites/FarmPlotMask.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+
+        <LCDTextureDefinition> <!-- Custom Missing Icon Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="MissingIcon"/>
+            <SpritePath>Textures/Sprites/MissingIcon.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+ 
+        
+        <LCDTextureDefinition> <!-- Custom Search Icon Sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="Search"/>
+            <SpritePath>Textures/Sprites/Magnifying.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition> <!-- Clock Dashboard: Sun sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherSun"/>
+            <SpritePath>Textures/Sprites/Weather/Sun.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Moon sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherMoon"/>
+            <SpritePath>Textures/Sprites/Weather/Moon.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Sunrise sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherSunRise"/>
+            <SpritePath>Textures/Sprites/Weather/SunRise.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Sunset sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherSunSet"/>
+            <SpritePath>Textures/Sprites/Weather/SunSet.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Dust storm sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherDustStorm"/>
+            <SpritePath>Textures/Sprites/Weather/DustStorm.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Fog sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherFog"/>
+            <SpritePath>Textures/Sprites/Weather/Fog.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Hailstorm sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherHailstorm"/>
+            <SpritePath>Textures/Sprites/Weather/Hailstorm.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Heat wave sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherHeatWave"/>
+            <SpritePath>Textures/Sprites/Weather/HeatWave.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Heavy wind sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherHeavyWind"/>
+            <SpritePath>Textures/Sprites/Weather/HeavyWind.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Rain sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherRain"/>
+            <SpritePath>Textures/Sprites/Weather/Rain.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Snow sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherSnow"/>
+            <SpritePath>Textures/Sprites/Weather/Snow.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Thunderstorm sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherThunderStorm"/>
+            <SpritePath>Textures/Sprites/Weather/ThunderStorm.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition> <!-- Clock Dashboard: Toxic rain sprite -->
+            <Id Type="LCDTextureDefinition" Subtype="WeatherToxicRain"/>
+            <SpritePath>Textures/Sprites/Weather/ToxicRain.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+    </LCDTextures>
+</Definitions>

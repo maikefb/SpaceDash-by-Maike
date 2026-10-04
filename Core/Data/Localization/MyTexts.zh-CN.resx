@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+
+  <data name="LcdMod_Radar" xml:space="preserve">
+    <value>[SD] 战术雷达</value>
+  </data>
+
+  <data name="LcdMod_Radar_DetectedEntities" xml:space="preserve">
+    <value>检测到的实体:</value>
+  </data>
+
+
+  <data name="LcdMod_Farm" xml:space="preserve">
+    <value>[SD] 农场信息</value>
+  </data>
+
+  <data name="LcdMod_Farm_Water" xml:space="preserve">
+    <value>水：{0}</value>
+  </data>
+
+  <data name="LcdMod_Farm_OutputAmount" xml:space="preserve">
+    <value>{0} x{1}</value>
+  </data>
+
+  <data name="LcdMod_Damaged" xml:space="preserve">
+    <value>受损</value>
+  </data>
+
+  <data name="LcdMod_Empty" xml:space="preserve">
+    <value>空</value>
+  </data>
+
+  <data name="LcdMod_GasFilled" xml:space="preserve">
+    <value>[SD] 气体填充 %</value>
+  </data>
+
+  <data name="LcdMod_PowerFilled" xml:space="preserve">
+    <value>[SD] 电量填充 %</value>
+  </data>
+
+  <data name="LcdMod_Warning" xml:space="preserve">
+    <value>警告: {0}</value>
+  </data>
+
+  <data name="LcdMod_Critical" xml:space="preserve">
+    <value>严重: {0}</value>
+  </data>
+
+  <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
+    <value>重力负载</value>
+  </data>
+
+
+  <data name="LcdMod_DockingAlignment" xml:space="preserve">
+    <value>[SD] 对接对齐</value>
+  </data>
+
+  <data name="LcdMod_DockingAlignment_SelectReference" xml:space="preserve">
+    <value>选择{0}或{1}</value>
+  </data>
+
+  <data name="LcdMod_DockingAlignment_NoTarget" xml:space="preserve">
+    <value>未检测到对接目标</value>
+  </data>
+
+  <data name="LcdMod_DockingAlignment_DisplayMode_Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
+
+  <data name="LcdMod_DockingAlignment_DisplayMode_LcdReference" xml:space="preserve">
+    <value>Lcd 参考</value>
+  </data>
+
+  <data name="LcdMod_DockingAlignment_DisplayMode_ControllerReference" xml:space="preserve">
+    <value>控制器参考</value>
+  </data>
+
+  <data name="LcdMod_NotAvailable" xml:space="preserve">
+    <value>无</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+  <data name="LcdMod_Selected" xml:space="preserve">
+    <value>已选中</value>
+  </data>
+
+
+  <data name="LcdMod_Temperature" xml:space="preserve">
+    <value>温度: {0}</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <data name="LcdMod_Magnification" xml:space="preserve">
+    <value>放大倍率</value>
+  </data>
+
+  <data name="LcdMod_Radar_AntennaRangeWarning" xml:space="preserve">
+    <value>超过 3 公里时仅会检测到无线电信号。</value>
+  </data>
+
+  <data name="LcdMod_Grid" xml:space="preserve">
+    <value>网格</value>
+  </data>
+
+  <data name="LcdMod_List" xml:space="preserve">
+    <value>列表</value>
+  </data>
+
+  <data name="LcdMod_Card" xml:space="preserve">
+    <value>卡片</value>
+  </data>
+
+  <data name="LcdMod_Table" xml:space="preserve">
+    <value>表格</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <data name="LcdMod_Common_Value_Unavailable" xml:space="preserve">
+    <value>不适用</value>
+  </data>
+
+  <data name="LcdMod_Common_Time_ZeroSeconds" xml:space="preserve">
+    <value>0秒</value>
+  </data>
+
+  <data name="LcdMod_Common_Time_LessThanOneSecond" xml:space="preserve">
+    <value>&lt;1秒</value>
+  </data>
+
+
+
+
+  <data name="LcdMod_Common_Label_WithColon" xml:space="preserve">
+    <value>{0}：</value>
+  </data>
+
+<data name="LcdMod_LocalGrid" xml:space="preserve">
+    <value>本地舰船/空间站</value>
+  </data>
+
+  <data name="LcdMod_MechanicalConnection" xml:space="preserve">
+    <value>机械连接</value>
+  </data>
+
+  <data name="LcdMod_PhysicalConnection" xml:space="preserve">
+    <value>物理连接</value>
+  </data>
+
+  <data name="LcdMod_LinkType" xml:space="preserve">
+    <value>连接类型</value>
+  </data>
+
+
+    <data name="LcdMod_Projector_Ingots" xml:space="preserve">
+    <value>錠</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+<data name="LcdMod_DigitalPictureFrames" xml:space="preserve">
+    <value>[SD] 相框</value>
+  </data>
+
+  <data name="LcdMod_IndexConflict" xml:space="preserve">
+    <value>表面索引冲突</value>
+  </data>
+
+  <data name="LcdMod_IndexConflictDetails" xml:space="preserve">
+    <value>另一个脚本实例已在使用此表面索引。</value>
+  </data>
+
+  <data name="LcdMod_BSoD_Header" xml:space="preserve">
+    <value>你的空间站遇到问题，需要重新启动。
+我们会等待一会儿，然后为你重新启动。</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoIntro" xml:space="preserve">
+    <value>有关此问题的更多信息，</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoUrl" xml:space="preserve">
+    <value>请访问</value>
+  </data>
+
+
+  <data name="LcdMod_BSoD_SupportIntro" xml:space="preserve">
+    <value>如果你联系支持人员，请向他们提供以下信息：</value>
+  </data>
+
+  <data name="LcdMod_BSoD_ExceptionCode" xml:space="preserve">
+    <value>异常代码：</value>
+  </data>
+
+
+
+
+  <data name="LcdMod_InGameClockDashboard" xml:space="preserve">
+    <value>[SD] 游戏内时钟</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll" xml:space="preserve">
+    <value>自动滚动</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll_Tooltip" xml:space="preserve">
+    <value>设置滚动步进之间的延迟（设为 0 可关闭自动滚动）。</value>
+  </data>
+
+
+
+
+
+
+
+  <data name="LcdMod_DefenseDashboard" xml:space="preserve">
+    <value>[SD] 防御仪表板</value>
+  </data>
+
+
+  <data name="LcdMod_Search_Script" xml:space="preserve">
+    <value>搜索应用</value>
+  </data>
+
+  <data name="LcdMod_Search_Script_Tooltip" xml:space="preserve">
+    <value>筛选应用列表。</value>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
+    <value>Settings copied.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
+    <value>Copy settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
+    <value>Failed to copy settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
+    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
+    <value>No copied settings are available for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
+    <value>No LCD Mod settings found for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
+    <value>Paste settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
+    <value>Failed to paste settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
+    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
+    <value>Compatible settings pasted.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
+    <value>Firing</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
+    <value>Fully charged</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
+    <value>Not Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
+    <value>Offline</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
+    <value>Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
+    <value>Recharge in {0}s</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
+    <value>Recharge unavailable</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
+    <value>Shield</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
+    <value>Craft missing components</value>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
+    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
+    <value>时钟：24 小时制</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature" xml:space="preserve">
+    <value>时钟：温度</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature_Tooltip" xml:space="preserve">
+    <value>温度值根据游戏的标准化温标估算，采用 270 K 至 320 K 的范围，然后转换为所选单位。</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Afternoon" xml:space="preserve">
+    <value>下午</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dawn" xml:space="preserve">
+    <value>黎明</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dusk" xml:space="preserve">
+    <value>黄昏</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Morning" xml:space="preserve">
+    <value>早晨</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Night" xml:space="preserve">
+    <value>夜晚</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_NoLocalDay" xml:space="preserve">
+    <value>无当地白昼</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Noon" xml:space="preserve">
+    <value>正午</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_PolarDay" xml:space="preserve">
+    <value>极昼</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DeepSpace" xml:space="preserve">
+    <value>深空</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Celsius" xml:space="preserve">
+    <value>摄氏度 (°C)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fahrenheit" xml:space="preserve">
+    <value>华氏度 (°F)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fuzzy" xml:space="preserve">
+    <value>模糊</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Kelvin" xml:space="preserve">
+    <value>开尔文 (K)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_UnknownPlanet" xml:space="preserve">
+    <value>未知行星</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Clear" xml:space="preserve">
+    <value>晴朗</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Unknown" xml:space="preserve">
+    <value>天气</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
+    <value>Play time</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
+    <value>Server uptime</value>
+  </data>
+  <data name="LcdMod_Survivors" xml:space="preserve">
+    <value>[SD] Survivors</value>
+  </data>
+  <data name="LcdMod_Survivors_Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="LcdMod_Survivors_Alive" xml:space="preserve">
+    <value>Alive</value>
+  </data>
+  <data name="LcdMod_Survivors_Record" xml:space="preserve">
+    <value>Record</value>
+  </data>
+</root>

@@ -1,0 +1,352 @@
+using System;
+using System.Collections.Generic;
+using LcdMod.Client.Animation;
+using LcdMod.Client.Extensions;
+using LcdMod.Client.Gui;
+using LcdMod.Client.Gui.ControlsTemplates;
+using LcdMod.Client.Gui.Styling;
+using LcdMod.Client.Gui.Styling.Styles;
+using LcdMod.Client.Helpers;
+using LcdMod.Client.GridData;
+using LcdMod.Common.Config.Components;
+using VRage.Game.GUI.TextPanel;
+using VRageMath;
+
+using LcdMod.Common.Config.Generation;
+using LcdMod.Common.Helpers;
+
+namespace LcdMod.Client.Apps.Abstract
+{
+    
+    
+    
+    public abstract partial class App : Control, IApp, ITextSurfaceProvider, ITextStyleProvider
+    {
+        readonly List<Control> _logicalChildren = new List<Control>();
+        AnimationController _animationController;
+        StyleTree _styles;
+        ResourceTree _resources;
+        Dictionary<string, Color> _theme;
+        Color _themeHeaderColor;
+        Color _themeForegroundColor;
+        Color _themeWarningColor;
+        Color _themeErrorColor;
+        bool _themeDark;
+        float _themeLayoutScale;
+        float _themeFontScale;
+        float _themeAutoScrollSecondsPerStep;
+        string _themeTextFont;
+        bool _hasTheme;
+        long _themeFrame = -1;
+        GridLogic _neededGridLogic;
+        GridCapability _gridCapabilities;
+
+        protected App(IAppHost host)
+        {
+            Host = host;
+            if (Host == null)
+                throw new ArgumentNullException(nameof(host));
+
+            _animationController = Host.Animations;
+            _styles = DefaultStyleBuilder.Build();
+        }
+
+        protected IAppHost Host { get; private set; }
+        protected IComponentContainer Config => Host.Config;
+        internal override AnimationController AnimationController => _animationController;
+        public override IReadOnlyList<Control> LogicalChildren => _logicalChildren;
+        public override StyleTree Styles => _styles;
+
+        protected void RebindAppHost(IAppHost host)
+        {
+            if (host == null)
+                throw new ArgumentNullException(nameof(host));
+
+            Host = host;
+            _animationController = Host.Animations;
+        }
+
+        protected void NeedGridData(GridCapability need)
+        {
+            var logic = Host != null ? Host.GridLogic : null;
+            if (!ReferenceEquals(_neededGridLogic, logic))
+                ReleaseGridDataNeeds();
+            if (logic == null)
+                return;
+
+            var additionalNeeds = need & ~_gridCapabilities;
+            if (additionalNeeds == GridCapability.None)
+                return;
+
+            logic.RequestCapability(additionalNeeds);
+            _neededGridLogic = logic;
+            _gridCapabilities |= additionalNeeds;
+        }
+
+        void ReleaseGridDataNeeds()
+        {
+            if (_neededGridLogic != null && _gridCapabilities != GridCapability.None)
+                _neededGridLogic.Release(_gridCapabilities);
+            _neededGridLogic = null;
+            _gridCapabilities = GridCapability.None;
+        }
+
+        public override bool IsDirty
+        {
+            get
+            {
+                if (_isDirty)
+                    return true;
+
+                for (int i = 0; i < _logicalChildren.Count; i++)
+                {
+                    if (IsVisibleTreeDirty(_logicalChildren[i]))
+                        return true;
+                }
+
+                return false;
+            }
+        }
+
+        protected static bool IsVisibleTreeDirty(Control control)
+        {
+            if (control == null || !control.Visible)
+                return false;
+
+            if (control._isDirty)
+                return true;
+
+            var children = control.LogicalChildren;
+            if (children == null)
+                return false;
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                if (IsVisibleTreeDirty(children[i]))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public override ResourceTree Resources
+        {
+            get
+            {
+                EnsureResources();
+                return _resources;
+            }
+        }
+
+        protected void ClearDirtyAfterRender()
+        {
+            _isDirty = false;
+        }
+
+        protected T AddLogicalChild<T>(T control)
+            where T : ControlTemplate
+        {
+            if (control == null)
+                return null;
+
+            var previousOwner = control.StyleParent as App;
+            if (previousOwner != null && !ReferenceEquals(previousOwner, this))
+                previousOwner.RemoveLogicalChild(control);
+
+            if (!_logicalChildren.Contains(control))
+                _logicalChildren.Add(control);
+
+            control.SetStyleParent(this);
+            MarkDirty();
+            return control;
+        }
+
+        protected bool RemoveLogicalChild(Control control)
+        {
+            if (control == null || !_logicalChildren.Remove(control))
+                return false;
+
+            var visualChildren = VisualChildren as IList<Control>;
+            if (visualChildren != null &&
+                !ReferenceEquals(visualChildren, _logicalChildren) &&
+                !visualChildren.IsReadOnly)
+            {
+                visualChildren.Remove(control);
+            }
+
+            control.CancelAnimationTree(_animationController);
+            if (ReferenceEquals(control.StyleParent, this))
+                control.SetStyleParent(null);
+
+            MarkDirty();
+            return true;
+        }
+
+        protected void ClearLogicalChildren()
+        {
+            for (int i = _logicalChildren.Count - 1; i >= 0; i--)
+                RemoveLogicalChild(_logicalChildren[i]);
+        }
+
+        public Sandbox.ModAPI.Ingame.IMyTextSurface TextSurface => Host.Surface;
+
+        public string TextFont
+        {
+            get
+            {
+                string value;
+                return ScopedResourceResolver.TryResolve(this, ThemeResources.TextFont, out value) &&
+                       !string.IsNullOrEmpty(value)
+                    ? value
+                    : "White";
+            }
+        }
+
+        string ITextStyleProvider.ResolvedTextFont => TextFont;
+
+        protected Vector2 MeasureText(string text, float scale)
+        {
+            return FormatingHelper.GetSizeInPixel(text, this, scale, TextSurface);
+        }
+
+        protected float MeasureLineHeight(float scale, string probe = "Ag")
+        {
+            return FormatingHelper.LineHeight(scale, this, TextSurface, probe);
+        }
+
+
+        public abstract void Update();
+
+        public virtual void LayoutChanged()
+        {
+        }
+
+        public abstract List<MySprite> GetSprites();
+        
+
+        public virtual bool HasVisibleItems()
+        {
+            return true;
+        }
+
+        public virtual void Close()
+        {
+            ReleaseGridDataNeeds();
+        }
+
+        protected Color GetHeaderColor()
+        {
+            return Readable(ColorComponent.ResolveHeaderColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock));
+        }
+
+        /// <summary>Cor padrão (não escolhida pelo usuário) ganha contraste mínimo de 3:1 com o fundo real da tela.</summary>
+        Color Readable(Color color)
+        {
+            return color.ReadableFor(ColorComponent, Host.Block as Sandbox.ModAPI.IMyTerminalBlock, Host.BackgroundColor);
+        }
+
+        protected Color GetForegroundColor()
+        {
+            return Host.ForegroundColor;
+        }
+
+        protected Color GetWarningColor()
+        {
+            return Readable(ColorComponent.ResolveWarningColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock));
+        }
+
+        protected Color GetErrorColor()
+        {
+            return Readable(ColorComponent.ResolveErrorColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock));
+        }
+
+        protected Color ResolveResource(ResourceKey<Color> key, Color fallback)
+        {
+            Color value;
+            return ScopedResourceResolver.TryResolve(this, key, out value) ? value : fallback;
+        }
+
+        void EnsureResources()
+        {
+            long frame = Sandbox.ModAPI.MyAPIGateway.Session != null
+                ? Sandbox.ModAPI.MyAPIGateway.Session.GameplayFrameCounter
+                : 0L;
+            if (_hasTheme && frame == _themeFrame)
+                return;
+            _themeFrame = frame;
+
+            var headerColor = GetHeaderColor();
+            var foregroundColor = GetForegroundColor();
+            var warningColor = GetWarningColor();
+            var errorColor = GetErrorColor();
+            bool dark = ShouldUseDarkTheme();
+            float layoutScale = GetLayoutScaleResourceValue();
+            float fontScale = GetFontScaleResourceValue();
+            string textFont = GetTextFontResourceValue();
+
+            if (!_hasTheme ||
+                !headerColor.Equals(_themeHeaderColor) ||
+                !foregroundColor.Equals(_themeForegroundColor) ||
+                !warningColor.Equals(_themeWarningColor) ||
+                !errorColor.Equals(_themeErrorColor) ||
+                dark != _themeDark ||
+                !layoutScale.Equals(_themeLayoutScale) ||
+                !fontScale.Equals(_themeFontScale) ||
+                !InteractionComponent.AutoScrollStep.Equals(_themeAutoScrollSecondsPerStep) ||
+                !string.Equals(textFont, _themeTextFont, StringComparison.Ordinal))
+            {
+                _theme = headerColor.ToTheme(dark);
+                _resources = ThemeResourceBuilder.FromThemeDictionary(_theme);
+                // A cor da letra escolhida no terminal vale para todo texto, inclusive nos cartões; só é
+                // ajustada quando não contrasta com o fundo onde é desenhada.
+                _resources.Set(ThemeResources.FontColor, foregroundColor);
+                _resources.Set(ThemeResources.OnSurfaceColor, foregroundColor.EnsureMinimalContrast(Host.BackgroundColor));
+                _resources.Set(ThemeResources.OnAccentContainerColor,
+                    foregroundColor.EnsureMinimalContrast(_theme[LcdMod.Common.Helpers.Constants.PRIMARY_CONTAINER]));
+                _resources.Set(ThemeResources.WarningColor, warningColor);
+                _resources.Set(ThemeResources.ErrorColor, errorColor);
+                _resources.Set(ThemeResources.LayoutScale, layoutScale);
+                _resources.Set(ThemeResources.FontScale, fontScale);
+                _resources.Set(ThemeResources.AutoScrollSecondsPerStep, InteractionComponent.AutoScrollStep);
+                _resources.Set(ThemeResources.TextFont, textFont);
+                _themeHeaderColor = headerColor;
+                _themeForegroundColor = foregroundColor;
+                _themeWarningColor = warningColor;
+                _themeErrorColor = errorColor;
+                _themeDark = dark;
+                _themeLayoutScale = layoutScale;
+                _themeFontScale = fontScale;
+                _themeAutoScrollSecondsPerStep = InteractionComponent.AutoScrollStep;
+                _themeTextFont = textFont;
+                _hasTheme = true;
+                MarkSubtreeDirty();
+            }
+        }
+
+        float GetLayoutScaleResourceValue()
+        {
+            float scale = GeneralComponent.GetScale();
+            return scale > 0f ? scale : 1f;
+        }
+
+        float GetFontScaleResourceValue()
+        {
+            float fontScale = Host.Surface.FontSize;
+            return fontScale > 0f ? fontScale : 1f;
+        }
+
+        string GetTextFontResourceValue()
+        {
+            string font = Host.Surface.Font;
+            return string.IsNullOrEmpty(font) ? "White": font;
+        }
+
+        bool ShouldUseDarkTheme()
+        {
+            var backgroundColor = Host.BackgroundColor;
+            return backgroundColor.ContrastRatio(Color.White) >=
+                   backgroundColor.ContrastRatio(Color.Black);
+        }
+
+    }
+}

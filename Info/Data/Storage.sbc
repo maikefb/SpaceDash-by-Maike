@@ -1,0 +1,14 @@
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <EntityComponents>
+        <EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+            <Id>
+                <TypeId>ModStorageComponent</TypeId>
+                <SubtypeId>SpaceDash</SubtypeId>
+            </Id>
+            <RegisteredStorageGuids>
+                <guid>a5b1a096-656a-400a-b512-8d37953649e7</guid>
+                <guid>ced8cae5-b5bc-49fa-93b4-e5a9f266a2e1</guid>
+            </RegisteredStorageGuids>
+        </EntityComponent>
+    </EntityComponents>
+</Definitions>

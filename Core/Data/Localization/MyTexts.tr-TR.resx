@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+
+    <data name="LcdMod_Radar" xml:space="preserve">
+    <value>[SD] Taktik Radar</value>
+  </data>
+
+    <data name="LcdMod_Radar_DetectedEntities" xml:space="preserve">
+    <value>Tespit edilen varlıklar:</value>
+  </data>
+
+
+    <data name="LcdMod_Farm" xml:space="preserve">
+    <value>[SD] Çiftlik bilgisi</value>
+  </data>
+
+    <data name="LcdMod_Farm_Water" xml:space="preserve">
+    <value>Su: {0}</value>
+  </data>
+
+    <data name="LcdMod_Farm_OutputAmount" xml:space="preserve">
+    <value>{0} x{1}</value>
+  </data>
+
+    <data name="LcdMod_Damaged" xml:space="preserve">
+    <value>Hasarlı</value>
+  </data>
+
+    <data name="LcdMod_Empty" xml:space="preserve">
+    <value>Boş</value>
+  </data>
+
+    <data name="LcdMod_GasFilled" xml:space="preserve">
+    <value>[SD] Gaz doluluk %</value>
+  </data>
+
+    <data name="LcdMod_PowerFilled" xml:space="preserve">
+    <value>[SD] Güç doluluk %</value>
+  </data>
+
+    <data name="LcdMod_Warning" xml:space="preserve">
+    <value>Uyarı: {0}</value>
+  </data>
+
+    <data name="LcdMod_Critical" xml:space="preserve">
+    <value>Kritik: {0}</value>
+  </data>
+
+    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
+    <value>Yerçekimi yükü</value>
+  </data>
+
+
+    <data name="LcdMod_DockingAlignment" xml:space="preserve">
+    <value>[SD] Kenetlenme hizalaması</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_SelectReference" xml:space="preserve">
+    <value>Bir {0} veya {1} seçin</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_NoTarget" xml:space="preserve">
+    <value>Kenetlenme hedefi algılanmadı</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_Default" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_LcdReference" xml:space="preserve">
+    <value>Lcd referansı</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_ControllerReference" xml:space="preserve">
+    <value>Kontrolcü referansı</value>
+  </data>
+
+    <data name="LcdMod_NotAvailable" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Selected" xml:space="preserve">
+    <value>Seçildi</value>
+  </data>
+
+
+    <data name="LcdMod_Temperature" xml:space="preserve">
+    <value>Sıcaklık: {0}</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Magnification" xml:space="preserve">
+    <value>Büyütme</value>
+  </data>
+
+    <data name="LcdMod_Radar_AntennaRangeWarning" xml:space="preserve">
+    <value>3 km'nin ötesinde yalnızca radyo sinyalleri algılanır.</value>
+  </data>
+
+    <data name="LcdMod_Grid" xml:space="preserve">
+    <value>Izgara</value>
+  </data>
+
+    <data name="LcdMod_List" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+
+    <data name="LcdMod_Card" xml:space="preserve">
+    <value>Kart</value>
+  </data>
+
+    <data name="LcdMod_Table" xml:space="preserve">
+    <value>Tablo</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Common_Value_Unavailable" xml:space="preserve">
+    <value>yok</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_ZeroSeconds" xml:space="preserve">
+    <value>0 sn</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_LessThanOneSecond" xml:space="preserve">
+    <value>&lt; 1 sn</value>
+  </data>
+
+
+
+
+    <data name="LcdMod_Common_Label_WithColon" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
+
+    <data name="LcdMod_LocalGrid" xml:space="preserve">
+    <value>Yerel gemi/istasyon</value>
+  </data>
+
+    <data name="LcdMod_MechanicalConnection" xml:space="preserve">
+    <value>Mekanik bağlantı</value>
+  </data>
+
+    <data name="LcdMod_PhysicalConnection" xml:space="preserve">
+    <value>Fiziksel bağlantı</value>
+  </data>
+
+    <data name="LcdMod_LinkType" xml:space="preserve">
+    <value>Bağlantı türü</value>
+  </data>
+
+  
+    <data name="LcdMod_Projector_Ingots" xml:space="preserve">
+    <value>Külçeler</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+<data name="LcdMod_DigitalPictureFrames" xml:space="preserve">
+    <value>[SD] Resim çerçevesi</value>
+  </data>
+
+  <data name="LcdMod_IndexConflict" xml:space="preserve">
+    <value>Yüzey dizini çakışması</value>
+  </data>
+
+  <data name="LcdMod_IndexConflictDetails" xml:space="preserve">
+    <value>Başka bir betik örneği zaten bu yüzey dizinini kullanıyor.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_Header" xml:space="preserve">
+    <value>İstasyonunuz bir sorunla karşılaştı ve yeniden başlatılması gerekiyor.
+Bir süre bekleyeceğiz ve ardından sizin için yeniden başlatacağız.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoIntro" xml:space="preserve">
+    <value>Bu sorun hakkında daha fazla bilgi için</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoUrl" xml:space="preserve">
+    <value>ziyaret edin</value>
+  </data>
+
+
+  <data name="LcdMod_BSoD_SupportIntro" xml:space="preserve">
+    <value>Destekle iletişime geçerseniz, onlara şu bilgileri verin:</value>
+  </data>
+
+  <data name="LcdMod_BSoD_ExceptionCode" xml:space="preserve">
+    <value>Özel durum kodu:</value>
+  </data>
+
+
+
+
+  <data name="LcdMod_InGameClockDashboard" xml:space="preserve">
+    <value>[SD] Oyun içi saat</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll" xml:space="preserve">
+    <value>Otomatik kaydırma</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll_Tooltip" xml:space="preserve">
+    <value>Kaydırma adımları arasındaki gecikmeyi ayarlar (0 otomatik kaydırmayı kapatır).</value>
+  </data>
+
+
+
+
+
+
+
+  <data name="LcdMod_DefenseDashboard" xml:space="preserve">
+    <value>[SD] Savunma Paneli</value>
+  </data>
+
+
+  <data name="LcdMod_Search_Script" xml:space="preserve">
+    <value>Uygulama ara</value>
+  </data>
+
+  <data name="LcdMod_Search_Script_Tooltip" xml:space="preserve">
+    <value>Uygulama listesini filtreler.</value>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
+    <value>Settings copied.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
+    <value>Copy settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
+    <value>Failed to copy settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
+    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
+    <value>No copied settings are available for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
+    <value>No LCD Mod settings found for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
+    <value>Paste settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
+    <value>Failed to paste settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
+    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
+    <value>Compatible settings pasted.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
+    <value>Firing</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
+    <value>Fully charged</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
+    <value>Not Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
+    <value>Offline</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
+    <value>Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
+    <value>Recharge in {0}s</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
+    <value>Recharge unavailable</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
+    <value>Shield</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
+    <value>Craft missing components</value>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
+    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
+    <value>Saat: 24 saat biçimi</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature" xml:space="preserve">
+    <value>Saat: sıcaklık</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature_Tooltip" xml:space="preserve">
+    <value>Sıcaklık değerleri, oyunun normalleştirilmiş sıcaklık ölçeği kullanılarak 270 K ile 320 K aralığında tahmin edilir ve ardından seçilen birime dönüştürülür.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Afternoon" xml:space="preserve">
+    <value>Öğleden sonra</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dawn" xml:space="preserve">
+    <value>Şafak</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dusk" xml:space="preserve">
+    <value>Alacakaranlık</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Morning" xml:space="preserve">
+    <value>Sabah</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Night" xml:space="preserve">
+    <value>Gece</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_NoLocalDay" xml:space="preserve">
+    <value>Yerel gün yok</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Noon" xml:space="preserve">
+    <value>Öğle</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_PolarDay" xml:space="preserve">
+    <value>Kutup gündüzü</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Unknown" xml:space="preserve">
+    <value>Bilinmiyor</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DeepSpace" xml:space="preserve">
+    <value>Derin uzay</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Celsius" xml:space="preserve">
+    <value>Santigrat (°C)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fahrenheit" xml:space="preserve">
+    <value>Fahrenhayt (°F)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fuzzy" xml:space="preserve">
+    <value>Yaklaşık</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Kelvin" xml:space="preserve">
+    <value>Kelvin (K)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_UnknownPlanet" xml:space="preserve">
+    <value>Bilinmeyen gezegen</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Clear" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Unknown" xml:space="preserve">
+    <value>Hava durumu</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
+    <value>Play time</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
+    <value>Server uptime</value>
+  </data>
+  <data name="LcdMod_Survivors" xml:space="preserve">
+    <value>[SD] Survivors</value>
+  </data>
+  <data name="LcdMod_Survivors_Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="LcdMod_Survivors_Alive" xml:space="preserve">
+    <value>Alive</value>
+  </data>
+  <data name="LcdMod_Survivors_Record" xml:space="preserve">
+    <value>Record</value>
+  </data>
+</root>

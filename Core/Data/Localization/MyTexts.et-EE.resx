@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+
+    <data name="LcdMod_Radar" xml:space="preserve">
+    <value>[SD] Taktikaline radar</value>
+  </data>
+
+    <data name="LcdMod_Radar_DetectedEntities" xml:space="preserve">
+    <value>Tuvastatud objektid:</value>
+  </data>
+
+
+    <data name="LcdMod_Farm" xml:space="preserve">
+    <value>[SD] Talu info</value>
+  </data>
+
+    <data name="LcdMod_Farm_Water" xml:space="preserve">
+    <value>Vesi: {0}</value>
+  </data>
+
+    <data name="LcdMod_Farm_OutputAmount" xml:space="preserve">
+    <value>{0} x{1}</value>
+  </data>
+
+    <data name="LcdMod_Damaged" xml:space="preserve">
+    <value>Kahjustatud</value>
+  </data>
+
+    <data name="LcdMod_Empty" xml:space="preserve">
+    <value>Tühi</value>
+  </data>
+
+    <data name="LcdMod_GasFilled" xml:space="preserve">
+    <value>[SD] Gaasi täituvus %</value>
+  </data>
+
+    <data name="LcdMod_PowerFilled" xml:space="preserve">
+    <value>[SD] Energia täituvus %</value>
+  </data>
+
+    <data name="LcdMod_Warning" xml:space="preserve">
+    <value>Hoiatus: {0}</value>
+  </data>
+
+    <data name="LcdMod_Critical" xml:space="preserve">
+    <value>Kriitiline: {0}</value>
+  </data>
+
+    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
+    <value>Gravitatsioonikoormus</value>
+  </data>
+
+
+    <data name="LcdMod_DockingAlignment" xml:space="preserve">
+    <value>[SD] Dokkimise joondus</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_SelectReference" xml:space="preserve">
+    <value>Vali {0} või {1}</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_NoTarget" xml:space="preserve">
+    <value>Dokkimissihtmärki ei tuvastatud</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_Default" xml:space="preserve">
+    <value>Vaikimisi</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_LcdReference" xml:space="preserve">
+    <value>Lcd viide</value>
+  </data>
+
+    <data name="LcdMod_DockingAlignment_DisplayMode_ControllerReference" xml:space="preserve">
+    <value>Kontrolleri viide</value>
+  </data>
+
+    <data name="LcdMod_NotAvailable" xml:space="preserve">
+    <value>Pole saadaval</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Selected" xml:space="preserve">
+    <value>Valitud</value>
+  </data>
+
+
+    <data name="LcdMod_Temperature" xml:space="preserve">
+    <value>Temperatuur: {0}</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Magnification" xml:space="preserve">
+    <value>Suurendus</value>
+  </data>
+
+    <data name="LcdMod_Radar_AntennaRangeWarning" xml:space="preserve">
+    <value>Üle 3 km tuvastatakse ainult raadiosignaale.</value>
+  </data>
+
+    <data name="LcdMod_Grid" xml:space="preserve">
+    <value>Ruudustik</value>
+  </data>
+
+    <data name="LcdMod_List" xml:space="preserve">
+    <value>Loend</value>
+  </data>
+
+    <data name="LcdMod_Card" xml:space="preserve">
+    <value>Kaart</value>
+  </data>
+
+    <data name="LcdMod_Table" xml:space="preserve">
+    <value>Tabel</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <data name="LcdMod_Common_Value_Unavailable" xml:space="preserve">
+    <value>pole saadaval</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_ZeroSeconds" xml:space="preserve">
+    <value>0 s</value>
+  </data>
+
+    <data name="LcdMod_Common_Time_LessThanOneSecond" xml:space="preserve">
+    <value>&lt; 1 s</value>
+  </data>
+
+
+
+
+    <data name="LcdMod_Common_Label_WithColon" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
+
+    <data name="LcdMod_LocalGrid" xml:space="preserve">
+    <value>Kohalik laev/jaam</value>
+  </data>
+
+    <data name="LcdMod_MechanicalConnection" xml:space="preserve">
+    <value>Mehaaniline ühendus</value>
+  </data>
+
+    <data name="LcdMod_PhysicalConnection" xml:space="preserve">
+    <value>Füüsiline ühendus</value>
+  </data>
+
+    <data name="LcdMod_LinkType" xml:space="preserve">
+    <value>Ühenduse tüüp</value>
+  </data>
+
+  
+    <data name="LcdMod_Projector_Ingots" xml:space="preserve">
+    <value>Kangid</value>
+  </data>
+
+
+
+
+
+
+
+
+
+
+
+
+<data name="LcdMod_DigitalPictureFrames" xml:space="preserve">
+    <value>[SD] Pildiraam</value>
+  </data>
+
+  <data name="LcdMod_IndexConflict" xml:space="preserve">
+    <value>Pinna indeksi konflikt</value>
+  </data>
+
+  <data name="LcdMod_IndexConflictDetails" xml:space="preserve">
+    <value>Teine skripti eksemplar kasutab juba seda pinna indeksit.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_Header" xml:space="preserve">
+    <value>Teie jaamas tekkis probleem ja see tuleb taaskäivitada.
+Ootame veidi ja seejärel taaskäivitame selle teie eest.</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoIntro" xml:space="preserve">
+    <value>Lisateabe saamiseks selle probleemi kohta</value>
+  </data>
+
+  <data name="LcdMod_BSoD_InfoUrl" xml:space="preserve">
+    <value>külastage</value>
+  </data>
+
+
+  <data name="LcdMod_BSoD_SupportIntro" xml:space="preserve">
+    <value>Kui võtate ühendust toega, andke neile see teave:</value>
+  </data>
+
+  <data name="LcdMod_BSoD_ExceptionCode" xml:space="preserve">
+    <value>Erandi kood:</value>
+  </data>
+
+
+
+
+  <data name="LcdMod_InGameClockDashboard" xml:space="preserve">
+    <value>[SD] Mängusisene kell</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll" xml:space="preserve">
+    <value>Automaatne kerimine</value>
+  </data>
+
+  <data name="LcdMod_AutoScroll_Tooltip" xml:space="preserve">
+    <value>Määrab kerimissammude vahelise viivituse (0 lülitab automaatse kerimise välja).</value>
+  </data>
+
+
+
+
+
+
+
+  <data name="LcdMod_DefenseDashboard" xml:space="preserve">
+    <value>[SD] Kaitse juhtpaneel</value>
+  </data>
+
+
+  <data name="LcdMod_Search_Script" xml:space="preserve">
+    <value>Otsi rakendusi</value>
+  </data>
+
+  <data name="LcdMod_Search_Script_Tooltip" xml:space="preserve">
+    <value>Filtreerib rakenduste loendit.</value>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
+    <value>Settings copied.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
+    <value>Copy settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
+    <value>Failed to copy settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
+    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
+    <value>No copied settings are available for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
+    <value>No LCD Mod settings found for this surface.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
+    <value>Paste settings</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
+    <value>Failed to paste settings: {0}</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
+    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+
+  <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
+    <value>Compatible settings pasted.</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
+    <value>Firing</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
+    <value>Fully charged</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
+    <value>Not Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
+    <value>Offline</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
+    <value>Ready</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
+    <value>Recharge in {0}s</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
+    <value>Recharge unavailable</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
+    <value>Shield</value>
+    <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
+    <value>Craft missing components</value>
+  </data>
+  <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
+    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
+    <value>Kell: 24-tunnine ajavorming</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature" xml:space="preserve">
+    <value>Kell: temperatuur</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_Temperature_Tooltip" xml:space="preserve">
+    <value>Temperatuuriväärtused hinnatakse mängu normaliseeritud temperatuuriskaala põhjal vahemikus 270 K kuni 320 K ja teisendatakse seejärel valitud ühikusse.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Afternoon" xml:space="preserve">
+    <value>Pärastlõuna</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dawn" xml:space="preserve">
+    <value>Koit</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Dusk" xml:space="preserve">
+    <value>Hämarik</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Morning" xml:space="preserve">
+    <value>Hommik</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Night" xml:space="preserve">
+    <value>Öö</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_NoLocalDay" xml:space="preserve">
+    <value>Kohalik päev puudub</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Noon" xml:space="preserve">
+    <value>Keskpäev</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_PolarDay" xml:space="preserve">
+    <value>Polaarpäev</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DayMoment_Unknown" xml:space="preserve">
+    <value>Tundmatu</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_DeepSpace" xml:space="preserve">
+    <value>Süvakosmos</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Celsius" xml:space="preserve">
+    <value>Celsius (°C)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fahrenheit" xml:space="preserve">
+    <value>Fahrenheit (°F)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Fuzzy" xml:space="preserve">
+    <value>Ligikaudne</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Temperature_Kelvin" xml:space="preserve">
+    <value>Kelvin (K)</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_UnknownPlanet" xml:space="preserve">
+    <value>Tundmatu planeet</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Clear" xml:space="preserve">
+    <value>Selge</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Weather_Unknown" xml:space="preserve">
+    <value>Ilm</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
+    <value>Play time</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
+    <value>Server uptime</value>
+  </data>
+  <data name="LcdMod_Survivors" xml:space="preserve">
+    <value>[SD] Survivors</value>
+  </data>
+  <data name="LcdMod_Survivors_Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="LcdMod_Survivors_Alive" xml:space="preserve">
+    <value>Alive</value>
+  </data>
+  <data name="LcdMod_Survivors_Record" xml:space="preserve">
+    <value>Record</value>
+  </data>
+</root>

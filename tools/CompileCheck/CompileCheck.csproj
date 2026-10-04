@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Verificação de compilação fora do jogo: dotnet build tools/CompileCheck -p:Mod=Info  (ou Lcd). Não gera o mod. -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>6</LangVersion>
+    <OutputType>Library</OutputType>
+    <Mod Condition="'$(Mod)' == ''">Info</Mod>
+    <AssemblyName>LcdCheck.$(Mod)</AssemblyName>
+    <RootNamespace>LcdMod</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BaseIntermediateOutputPath>obj\$(Mod)\</BaseIntermediateOutputPath>
+    <OutputPath>bin\$(Mod)\</OutputPath>
+    <SEBin Condition="'$(SEBin)' == ''">C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Bin64</SEBin>
+    <NoWarn>$(NoWarn);CS1591;CS0618;CS0649;CS0169;CS0414;CS0108;CS0114;CS1998</NoWarn>
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Core\Data\Scripts\**\*.cs" />
+    <Compile Include="..\..\$(Mod)\Data\Scripts\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(SEBin)\Sandbox.Common.dll;$(SEBin)\Sandbox.Game.dll;$(SEBin)\Sandbox.Graphics.dll;$(SEBin)\SpaceEngineers.Game.dll;$(SEBin)\SpaceEngineers.ObjectBuilders.dll;$(SEBin)\VRage.dll;$(SEBin)\VRage.Game.dll;$(SEBin)\VRage.Library.dll;$(SEBin)\VRage.Math.dll;$(SEBin)\VRage.Render.dll;$(SEBin)\VRage.Input.dll;$(SEBin)\VRage.Audio.dll;$(SEBin)\VRage.Scripting.dll;$(SEBin)\VRage.Network.dll;$(SEBin)\System.Collections.Immutable.dll;$(SEBin)\ProtoBuf.Net.dll;$(SEBin)\ProtoBuf.Net.Core.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

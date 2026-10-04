@@ -1,0 +1,618 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using LcdMod.Common.Helpers;
+using VRage.Game;
+using VRageMath;
+
+namespace LcdMod.Client.Extensions
+{
+    public static class ColorExtensions
+    {
+        public static Color MulSaturation(this Color color, double multiplier)
+        {
+            Vector3 hsv = color.ColorToHSV();
+            hsv.Y = (float)MathHelper.Clamp(hsv.Y * multiplier, 0.0, 1.0);
+            return hsv.HSVtoColor();
+        }
+
+        public static Color MulValue(this Color color, double multiplier)
+        {
+            Vector3 hsv = color.ColorToHSV();
+            hsv.Z = (float)MathHelper.Clamp(hsv.Z * multiplier, 0.0, 1.0);
+
+            return hsv.HSVtoColor();
+        }
+
+        /// <summary>Cor padrão (sem cores personalizadas) ganha contraste mínimo de 3:1 com o fundo; escolha explícita do usuário fica intacta.</summary>
+        public static Color ReadableFor(this Color color, LcdMod.Common.Config.Components.ColorConfigComponent colors, Color background)
+        {
+            return colors != null && (colors.CustomizedColors || colors.SyncColors) ? color : color.EnsureMinimalContrast(background);
+        }
+
+        public static Color ReadableFor(this Color color, LcdMod.Common.Config.Components.ColorConfigComponent colors,
+            Sandbox.ModAPI.IMyTerminalBlock block, Color background)
+        {
+            return LcdMod.Common.Config.Components.ColorConfigComponentExtensions.HasExplicitColors(colors, block)
+                ? color
+                : color.EnsureMinimalContrast(background);
+        }
+
+        public static Color EnsureMinimalContrast(
+            this Color color,
+            Color background,
+            double minContrast = 3.0)
+        {
+            if (color.ContrastRatio(background) >= minContrast)
+                return color;
+
+            var backgroundIsDark = Color.Black.ContrastRatio(background) < Color.White.ContrastRatio(background);
+            Color best = color;
+            double bestContrast = color.ContrastRatio(background);
+            for (int i = 1; i <= 12; i++)
+            {
+                var candidate = backgroundIsDark
+                    ? color.MulValue(1.0 + i * 0.18)
+                    : color.MulValue(Math.Max(0.05, 1.0 - i * 0.075));
+                var contrast = candidate.ContrastRatio(background);
+                if (contrast > bestContrast)
+                {
+                    best = candidate;
+                    bestContrast = contrast;
+                }
+
+                if (contrast >= minContrast)
+                    return candidate;
+            }
+
+            var fallback = backgroundIsDark ? Color.White : Color.Black;
+            return fallback.ContrastRatio(background) > bestContrast ? fallback : best;
+        }
+
+        /// <summary>
+        /// Generates a theme from this color. "Inspired" in Google's Material Design https://m3.material.io/
+        /// </summary>
+        public static Dictionary<string, Color> ToTheme(this Color seed) => ToTheme(seed, false);
+
+        /// <summary>
+        /// Generates a Material-like light or dark theme from this color.
+        /// </summary>
+        public static Dictionary<string, Color> ToTheme(this Color seed, bool dark)
+        {
+            Oklch seedOklch = seed.ToOklch();
+
+            // If the seed is near grayscale, choose a stable default accent hue.
+            double hue = seedOklch.C < 0.0001
+                ? Math.PI * 1.5
+                : seedOklch.H;
+
+            byte alpha = seed.A;
+
+            // Material-style palette families using OKLCH chroma. Keep chroma tied
+            // to the seed so deliberately muted faction/header colors stay muted.
+            double seedChroma = ClampDouble(seedOklch.C, 0.0, 0.32);
+            TonalPalette primary = new TonalPalette(
+                hue,
+                seedChroma,
+                alpha);
+
+            TonalPalette secondary = new TonalPalette(hue, ScaledSeedChroma(seedChroma, 0.45, 0.12), alpha);
+            TonalPalette tertiary = new TonalPalette(
+                WrapRadians(hue + Math.PI / 3.0),
+                ScaledSeedChroma(seedChroma, 0.65, 0.16),
+                alpha);
+            TonalPalette neutral = new TonalPalette(hue, ScaledSeedChroma(seedChroma, 0.08, 0.015), alpha);
+            TonalPalette neutralVariant = new TonalPalette(hue, ScaledSeedChroma(seedChroma, 0.18, 0.035), alpha);
+            TonalPalette error = new TonalPalette(25.0 * Math.PI / 180.0, 0.22, alpha);
+
+            Dictionary<string, Color> theme = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase);
+
+            if (dark)
+            {
+                AddDarkThemeRoles(theme, primary, secondary, tertiary, neutral, neutralVariant, error);
+            }
+            else
+            {
+                AddLightThemeRoles(theme, primary, secondary, tertiary, neutral, neutralVariant, error);
+            }
+
+            return theme;
+        }
+
+        static double ScaledSeedChroma(double seedChroma, double multiplier, double maxChroma)
+        {
+            return ClampDouble(seedChroma * multiplier, 0.0, maxChroma);
+        }
+
+        public static Color DeriveAccentColor(
+            this Color @base,
+            float lightness = 1f,
+            double minContrast = 3.0)
+        {
+            lightness = MathHelper.Clamp(lightness, 0f, 1f);
+
+            Oklch oklch = @base.ToOklch();
+
+            double baseL = MathHelper.Clamp(oklch.L, 0, 1);
+
+            // Keep your original steering behavior:
+            // 0.0 -> darkest
+            // 0.5 -> original/base lightness
+            // 1.0 -> brightest
+            double preferredL = lightness < 0.5f
+                ? MathHelper.Lerp(0, baseL, lightness * 2)
+                : MathHelper.Lerp(baseL, 1, (lightness - 0.5f) * 2);
+
+            preferredL = MathHelper.Clamp(preferredL, 0, 1);
+
+            Color preferred = FromOklchInGamut(preferredL, oklch.C, oklch.H);
+
+            if (ContrastRatio(preferred, @base) >= minContrast)
+                return preferred;
+
+            // Respect the user's requested direction.
+            // If lightness is exactly neutral, choose the side opposite the base.
+            bool preferLighter =
+                lightness > 0.5f || baseL < lightness;
+
+            Color result;
+            if (TryFindContrastingAccent(
+                    @base,
+                    oklch,
+                    preferredL,
+                    preferLighter,
+                    minContrast,
+                    out result))
+            {
+                return result;
+            }
+
+            // Fallback: if the requested direction cannot produce enough contrast,
+            // try the opposite direction.
+            if (TryFindContrastingAccent(
+                    @base,
+                    oklch,
+                    preferredL,
+                    !preferLighter,
+                    minContrast,
+                    out result))
+            {
+                return result;
+            }
+
+            // Last resort: return the preferred color even if contrast is insufficient.
+            return preferred;
+        }
+
+        static bool TryFindContrastingAccent(
+            Color background,
+            Oklch oklch,
+            double preferredL,
+            bool lighter,
+            double minContrast,
+            out Color result)
+        {
+            double extremeL = lighter ? 1.0 : 0.0;
+
+            Color extreme = FromOklchInGamut(extremeL, oklch.C, oklch.H);
+
+            if (ContrastRatio(extreme, background) < minContrast)
+            {
+                result = extreme;
+                return false;
+            }
+
+            double low;
+            double high;
+
+            if (lighter)
+            {
+                low = preferredL;
+                high = 1.0;
+            }
+            else
+            {
+                low = 0.0;
+                high = preferredL;
+            }
+
+            result = extreme;
+
+            for (int i = 0; i < 24; i++)
+            {
+                double mid = (low + high) / 2.0;
+
+                Color candidate = FromOklchInGamut(mid, oklch.C, oklch.H);
+
+                bool passes = ContrastRatio(candidate, background) >= minContrast;
+
+                if (passes)
+                {
+                    result = candidate;
+
+                    // Move closer to the user's preferred value.
+                    if (lighter)
+                        high = mid;
+                    else
+                        low = mid;
+                }
+                else
+                {
+                    // Move farther away from the base/preferred color.
+                    if (lighter)
+                        low = mid;
+                    else
+                        high = mid;
+                }
+            }
+
+            return true;
+        }
+
+        static void AddLightThemeRoles(
+            Dictionary<string, Color> theme,
+            TonalPalette primary,
+            TonalPalette secondary,
+            TonalPalette tertiary,
+            TonalPalette neutral,
+            TonalPalette neutralVariant,
+            TonalPalette error)
+        {
+            theme[Constants.PRIMARY] = primary.Tone(40);
+            theme[Constants.PRIMARY_CONTAINER] = primary.Tone(90);
+            theme[Constants.ON_PRIMARY_CONTAINER] = primary.Tone(10);
+
+            theme[Constants.SECONDARY_CONTAINER] = secondary.Tone(90);
+            theme[Constants.ON_SECONDARY_CONTAINER] = secondary.Tone(10);
+
+            theme[Constants.TERTIARY] = tertiary.Tone(40);
+
+            theme[Constants.ERROR] = error.Tone(40);
+
+            theme[Constants.BACKGROUND] = neutral.Tone(98);
+            theme[Constants.ON_BACKGROUND] = neutral.Tone(10);
+
+            theme[Constants.SURFACE] = neutral.Tone(98);
+            theme[Constants.ON_SURFACE] = neutral.Tone(10);
+            theme[Constants.ON_SURFACE_VARIANT] = neutralVariant.Tone(30);
+
+            theme[Constants.SURFACE_CONTAINER_LOW] = neutral.Tone(96);
+            theme[Constants.SURFACE_CONTAINER] = neutral.Tone(94);
+            theme[Constants.SURFACE_CONTAINER_HIGHEST] = neutral.Tone(90);
+
+            theme[Constants.OUTLINE] = neutralVariant.Tone(50);
+            theme[Constants.OUTLINE_VARIANT] = neutralVariant.Tone(80);
+
+            theme[Constants.SUCCESS] = new Color(46, 125, 50);
+
+            theme[Constants.DISABLED_FOREGROUND] = Overlay(theme[Constants.SURFACE], theme[Constants.ON_SURFACE], 0.38);
+        }
+
+        static void AddDarkThemeRoles(
+            Dictionary<string, Color> theme,
+            TonalPalette primary,
+            TonalPalette secondary,
+            TonalPalette tertiary,
+            TonalPalette neutral,
+            TonalPalette neutralVariant,
+            TonalPalette error)
+        {
+            theme[Constants.PRIMARY] = primary.Tone(80);
+            theme[Constants.PRIMARY_CONTAINER] = primary.Tone(30);
+            theme[Constants.ON_PRIMARY_CONTAINER] = primary.Tone(90);
+
+            theme[Constants.SECONDARY_CONTAINER] = secondary.Tone(30);
+            theme[Constants.ON_SECONDARY_CONTAINER] = secondary.Tone(90);
+
+            theme[Constants.TERTIARY] = tertiary.Tone(80);
+
+            theme[Constants.ERROR] = error.Tone(80);
+
+            theme[Constants.BACKGROUND] = neutral.Tone(6);
+            theme[Constants.ON_BACKGROUND] = neutral.Tone(90);
+
+            theme[Constants.SURFACE] = neutral.Tone(6);
+            theme[Constants.ON_SURFACE] = neutral.Tone(90);
+            theme[Constants.ON_SURFACE_VARIANT] = neutralVariant.Tone(80);
+
+            theme[Constants.SURFACE_CONTAINER_LOW] = neutral.Tone(10);
+            theme[Constants.SURFACE_CONTAINER] = neutral.Tone(12);
+            theme[Constants.SURFACE_CONTAINER_HIGHEST] = neutral.Tone(22);
+
+            theme[Constants.OUTLINE] = neutralVariant.Tone(60);
+            theme[Constants.OUTLINE_VARIANT] = neutralVariant.Tone(30);
+
+            theme[Constants.SUCCESS] = new Color(129, 199, 132);
+
+            theme[Constants.DISABLED_FOREGROUND] = Overlay(theme[Constants.SURFACE], theme[Constants.ON_SURFACE], 0.38);
+        }
+
+        static Color Overlay(Color background, Color foreground, double alpha)
+        {
+            alpha = MathHelper.Clamp(alpha, 0.0, 1.0);
+
+            byte r = BlendByte(background.R, foreground.R, alpha);
+            byte g = BlendByte(background.G, foreground.G, alpha);
+            byte b = BlendByte(background.B, foreground.B, alpha);
+
+            // Keep the resulting color in your Color(r,g,b,a) shape.
+            // State colors are pre-blended/opaque, so alpha follows the background role.
+            return new Color(r, g, b, background.A);
+        }
+
+        static byte BlendByte(byte background, byte foreground, double alpha)
+        {
+            double value = foreground * alpha + background * (1.0 - alpha);
+            return ToByte(value / 255.0);
+        }
+
+        public static double ContrastRatio(this Color a, Color b)
+        {
+            double l1 = RelativeLuminance(a);
+            double l2 = RelativeLuminance(b);
+
+            double lighter = Math.Max(l1, l2);
+            double darker = Math.Min(l1, l2);
+
+            return (lighter + 0.05) / (darker + 0.05);
+        }
+
+        static double RelativeLuminance(Color color)
+        {
+            double r = SrgbToLinear(color.R / 255.0);
+            double g = SrgbToLinear(color.G / 255.0);
+            double b = SrgbToLinear(color.B / 255.0);
+
+            return 0.2126 * r +
+                   0.7152 * g +
+                   0.0722 * b;
+        }
+
+        static double SrgbToLinear(double value)
+        {
+            value = MathHelper.Clamp(value, 0.0, 1.0);
+
+            return value <= 0.04045
+                ? value / 12.92
+                : Math.Pow((value + 0.055) / 1.055, 2.4);
+        }
+
+        static double LinearToSrgb(double value)
+        {
+            value = Math.Max(0.0, value);
+
+            return value <= 0.0031308
+                ? 12.92 * value
+                : 1.055 * Math.Pow(value, 1.0 / 2.4) - 0.055;
+        }
+
+        sealed class TonalPalette
+        {
+            readonly double _hue;
+            readonly double _chroma;
+            readonly byte _alpha;
+            readonly Dictionary<int, Color> _cache = new Dictionary<int, Color>();
+
+            public TonalPalette(double hue, double chroma, byte alpha)
+            {
+                _hue = WrapRadians(hue);
+                _chroma = Math.Max(0.0, chroma);
+                _alpha = alpha;
+            }
+
+            public Color Tone(int tone)
+            {
+                tone = ClampInt(tone, 0, 100);
+
+                Color cached;
+                if (_cache.TryGetValue(tone, out cached))
+                    return cached;
+
+                Color color = FromOklchInGamut(tone / 100.0, _chroma, _hue);
+                color = WithAlpha(color, _alpha);
+
+                _cache[tone] = color;
+                return color;
+            }
+        }
+
+        struct Oklch
+        {
+            public readonly double L;
+            public readonly double C;
+            public readonly double H;
+
+            public Oklch(double l, double c, double h)
+            {
+                L = l;
+                C = c;
+                H = h;
+            }
+        }
+
+        struct Oklab
+        {
+            public readonly double L;
+            public readonly double A;
+            public readonly double B;
+
+            public Oklab(double l, double a, double b)
+            {
+                L = l;
+                A = a;
+                B = b;
+            }
+        }
+
+        struct RgbDouble
+        {
+            public readonly double R;
+            public readonly double G;
+            public readonly double B;
+
+            public RgbDouble(double r, double g, double b)
+            {
+                R = r;
+                G = g;
+                B = b;
+            }
+
+            public bool IsInGamut =>
+                R >= 0.0 && R <= 1.0 &&
+                G >= 0.0 && G <= 1.0 &&
+                B >= 0.0 && B <= 1.0;
+
+            public Color ToColor()
+            {
+                return new Color(
+                    (float)R,
+                    (float)G,
+                    (float)B);
+            }
+
+            public Color ToColorClamped()
+            {
+                return new Color(
+                    (float)MathHelper.Clamp(R, 0.0, 1.0),
+                    (float)MathHelper.Clamp(G, 0.0, 1.0),
+                    (float)MathHelper.Clamp(B, 0.0, 1.0));
+            }
+        }
+
+        static Oklch ToOklch(this Color color)
+        {
+            Oklab lab = ToOklab(color);
+
+            double c = Math.Sqrt(lab.A * lab.A + lab.B * lab.B);
+            double h = Math.Atan2(lab.B, lab.A);
+
+            return new Oklch(lab.L, c, h);
+        }
+
+        static Oklab ToOklab(Color color)
+        {
+            double r = SrgbToLinear(color.R / 255.0);
+            double g = SrgbToLinear(color.G / 255.0);
+            double b = SrgbToLinear(color.B / 255.0);
+
+            double l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+            double m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+            double s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+
+            double lRoot = Cbrt(l);
+            double mRoot = Cbrt(m);
+            double sRoot = Cbrt(s);
+
+            return new Oklab(
+                0.2104542553 * lRoot + 0.7936177850 * mRoot - 0.0040720468 * sRoot,
+                1.9779984951 * lRoot - 2.4285922050 * mRoot + 0.4505937099 * sRoot,
+                0.0259040371 * lRoot + 0.7827717662 * mRoot - 0.8086757660 * sRoot
+            );
+        }
+
+        static Color FromOklchInGamut(double lightness, double chroma, double hue)
+        {
+            chroma = Math.Max(0.0, chroma);
+
+            for (int i = 0; i < 24; i++)
+            {
+                RgbDouble candidate = OklchToRgb(new Oklch(lightness, chroma, hue));
+
+                if (candidate.IsInGamut)
+                    return candidate.ToColor();
+
+                chroma *= 0.9;
+            }
+
+            return OklchToRgb(new Oklch(lightness, 0.0, hue)).ToColorClamped();
+        }
+
+        static RgbDouble OklchToRgb(Oklch lch)
+        {
+            double a = lch.C * Math.Cos(lch.H);
+            double b = lch.C * Math.Sin(lch.H);
+
+            return OklabToRgb(new Oklab(lch.L, a, b));
+        }
+
+        static RgbDouble OklabToRgb(Oklab lab)
+        {
+            double lRoot = lab.L + 0.3963377774 * lab.A + 0.2158037573 * lab.B;
+            double mRoot = lab.L - 0.1055613458 * lab.A - 0.0638541728 * lab.B;
+            double sRoot = lab.L - 0.0894841775 * lab.A - 1.2914855480 * lab.B;
+
+            double l = lRoot * lRoot * lRoot;
+            double m = mRoot * mRoot * mRoot;
+            double s = sRoot * sRoot * sRoot;
+
+            double rLinear = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+            double gLinear = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+            double bLinear = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+            return new RgbDouble(
+                LinearToSrgb(rLinear),
+                LinearToSrgb(gLinear),
+                LinearToSrgb(bLinear));
+        }
+
+        static Color WithAlpha(Color color, byte alpha)
+        {
+            return new Color(color.R, color.G, color.B, alpha);
+        }
+
+        static int ClampInt(int value, int min, int max)
+        {
+            if (value < min)
+                return min;
+
+            if (value > max)
+                return max;
+
+            return value;
+        }
+
+        static double ClampDouble(double value, double min, double max)
+        {
+            if (value < min)
+                return min;
+
+            if (value > max)
+                return max;
+
+            return value;
+        }
+
+        static double WrapRadians(double radians)
+        {
+            double twoPi = Math.PI * 2.0;
+
+            radians = radians % twoPi;
+
+            if (radians < 0.0)
+                radians += twoPi;
+
+            return radians;
+        }
+
+        static byte ToByte(double normalized)
+        {
+            int value = (int)Math.Round(MathHelper.Clamp(normalized, 0.0, 1.0) * 255.0);
+
+            if (value < 0)
+                return 0;
+
+            if (value > 255)
+                return 255;
+
+            return (byte)value;
+        }
+
+        static double Cbrt(double value)
+        {
+            if (value < 0.0)
+                return -Math.Pow(-value, 1.0 / 3.0);
+
+            return Math.Pow(value, 1.0 / 3.0);
+        }
+    }
+}

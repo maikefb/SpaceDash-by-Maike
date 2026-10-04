@@ -1,0 +1,263 @@
+using System;
+using System.Collections.Generic;
+using Generated;
+using LcdMod.Client;
+using LcdMod.Client.Config;
+using LcdMod.Client.GridData;
+using LcdMod.Common.Config.Models;
+using LcdMod.Common.Helpers;
+using LcdMod.Common.Networking;
+using LcdMod.Server;
+using Sandbox.ModAPI;
+using VRage;
+using VRage.Game;
+using VRage.Game.Components;
+using VRage.Game.ModAPI;
+using VRage.ModAPI;
+using static LcdMod.Common.Helpers.Constants;
+
+namespace LcdMod
+{
+    [MySessionComponentDescriptor(MyUpdateOrder.BeforeSimulation | MyUpdateOrder.Simulation | MyUpdateOrder.AfterSimulation)]
+    public partial class LcdModSessionComponent : MySessionComponentBase, ISingleton<LcdModSessionComponent>
+    {
+        static LcdModSessionComponent _instance;
+        internal readonly Dictionary<long, MyTuple<IMyCubeGrid, GridLogic>> _grids = new Dictionary<long, MyTuple<IMyCubeGrid, GridLogic>>();
+        internal int _updateTick;
+        internal MyLanguagesEnum? _loadedLanguage;
+        public static LcdModClientComponent Client;
+        public static LcdModServerComponent Server;
+
+        public static NetworkManager NetworkManager = new NetworkManager(new NetworkParameters(
+            PORT,
+            96 * 1024,
+            6 * 1024 * 1024,
+            64));
+
+        public static event Action OnLanguageChanged;
+        public static event Action OnAfterSimulationUpdate;
+        public static SessionDebugSnapshot DebugSnapshot = SessionDebugSnapshot.Empty;
+
+        public static IMyTerminalBlock LastSelectedBlock;
+
+        public static Dictionary<long, GridLogic> Components = new Dictionary<long, GridLogic>();
+
+        internal static void RaiseLanguageChanged()
+        {
+            OnLanguageChanged?.Invoke();
+        }
+
+        internal static void RaiseAfterSimulationUpdate()
+        {
+            OnAfterSimulationUpdate?.Invoke();
+        }
+
+        internal static void ClearClientEvents()
+        {
+            OnLanguageChanged = null;
+            OnAfterSimulationUpdate = null;
+        }
+
+        public override void Simulate() => Client?.Simulate();
+
+        public static GridLogic GetOrCreateGridLogic(IMyCubeGrid grid)
+        {
+            if (grid == null || grid.Closed || grid.MarkedForClose || Components == null)
+                return null;
+
+            var gridId = grid.EntityId;
+            GridLogic logic;
+            if (Components.TryGetValue(gridId, out logic))
+            {
+                if (logic != null && logic.TargetGrid == gridId && logic.IsAlive)
+                {
+                    EnsureGridLogicTracked(grid, logic);
+                    return logic;
+                }
+
+                if (logic != null)
+                    logic.Unload();
+            }
+
+            logic = new GridLogic(grid);
+            Components[gridId] = logic;
+            EnsureGridLogicTracked(grid, logic);
+            return logic;
+        }
+
+        static void EnsureGridLogicTracked(IMyCubeGrid grid, GridLogic logic)
+        {
+            var session = _instance;
+            if (session == null)
+                return;
+
+            MyTuple<IMyCubeGrid, GridLogic> tracked;
+            if (session._grids.TryGetValue(grid.EntityId, out tracked) && tracked.Item1 != null)
+                tracked.Item1.OnMarkForClose -= session.GridMarkedForClose;
+
+            session._grids[grid.EntityId] = new MyTuple<IMyCubeGrid, GridLogic>(grid, logic);
+            grid.OnMarkForClose -= session.GridMarkedForClose;
+            grid.OnMarkForClose += session.GridMarkedForClose;
+        }
+
+        public override void SaveData()
+        {
+            if (MyAPIGateway.Session.IsServer)
+            {
+                if (Client != null)
+                    ConfigManager.FlushPendingSyncs(true);
+                Server?.SaveData();
+                return;
+            }
+
+            ConfigManager.FlushPendingSyncs(true);
+            ConfigManager.SaveAll();
+        }
+
+        public override void LoadData()
+        {
+            LogHelper.LogInfo("Init - Version "+ VersionName);
+
+            _instance = this;
+            RegisterSingleton();
+            if (Components == null)
+                Components = new Dictionary<long, GridLogic>();
+
+            if (MyAPIGateway.Session.IsServer)
+            {
+                Server = new LcdModServerComponent(this);
+                Server.LoadData();
+            }
+
+            if (!IsDedicatedServer)
+            {
+                Client = new LcdModClientComponent(this);
+                Client.LoadData();
+            }
+        }
+
+        protected override void UnloadData()
+        {
+            try
+            {
+                if (Components != null)
+                {
+                    foreach (var logic in Components.Values)
+                    {
+                        try
+                        {
+                            logic?.Unload();
+                        }
+                        catch (Exception e)
+                        {
+                            ErrorHandlerHelper.LogError(e, this);
+                        }
+                    }
+                }
+
+                Client?.UnloadData();
+                Server?.UnloadData();
+            }
+            catch (Exception e)
+            {
+                ErrorHandlerHelper.LogError(e, this);
+            }
+            finally
+            {
+                Client = null;
+                Server = null;
+                LastSelectedBlock = null;
+                LogHelper.ClearOnce();
+                NetworkManager.Unregister();
+                UnregisterSingleton();
+                _instance = null;
+            }
+        }
+
+        void GridMarkedForClose(IMyEntity ent)
+        {
+            try
+            {
+                MyTuple<IMyCubeGrid, GridLogic> tracked;
+                if (_grids.TryGetValue(ent.EntityId, out tracked) && ReferenceEquals(tracked.Item1, ent))
+                {
+                    if (tracked.Item1 != null)
+                        tracked.Item1.OnMarkForClose -= GridMarkedForClose;
+                    _grids.Remove(ent.EntityId);
+
+                    GridLogic registered;
+                    if (Components != null && Components.TryGetValue(ent.EntityId, out registered) &&
+                        ReferenceEquals(registered, tracked.Item2))
+                        Components.Remove(ent.EntityId);
+
+                    if (tracked.Item2 != null)
+                        tracked.Item2.Unload();
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorHandlerHelper.LogError(e, this);
+            }
+        }
+
+        public override void UpdateBeforeSimulation()
+        {
+            Client?.UpdateBeforeSimulation();
+        }
+
+        public override void UpdateAfterSimulation()
+        {
+            Client?.UpdateAfterSimulation();
+            Server?.Update();
+            if (MyAPIGateway.Session.GameplayFrameCounter % 300 == 0)
+                NetworkManager.ExpireFragmentAssemblies();
+        }
+
+        public override void BeforeStart()
+        {
+            try
+            {
+                NetworkManager.Init();
+
+                Server?.BeforeStart();
+                Client?.BeforeStart();
+            }
+            catch (Exception e)
+            {
+                ErrorHandlerHelper.LogError(e, this);
+            }
+        }
+
+        static bool IsDedicatedServer =>
+            MyAPIGateway.Utilities.IsDedicated && MyAPIGateway.Session.IsServer;
+
+        internal static void ApplySyncedConfig(IMyFunctionalBlock block, ScreenProviderConfig settings, ScreenProviderConfig source)
+        {
+            settings.CopyFrom(source);
+
+            foreach (var app in ConfigManager.GetAppsForBlock(block))
+                app.UseProviderConfig(settings);
+
+            ConfigManager.Save(block, settings);
+
+            foreach (var app in ConfigManager.GetAppsForBlock(block))
+                app.RequestRedraw();
+        }
+    }
+
+    public struct SessionDebugSnapshot
+    {
+        public static readonly SessionDebugSnapshot Empty = new SessionDebugSnapshot(0, 0, 0);
+
+        public readonly int UpdateTick;
+        public readonly int TrackedGrids;
+        public readonly int TrackedGridLogic;
+
+        public SessionDebugSnapshot(int updateTick, int trackedGrids, int trackedGridLogic)
+        {
+            UpdateTick = updateTick;
+            TrackedGrids = trackedGrids;
+            TrackedGridLogic = trackedGridLogic;
+        }
+    }
+}
