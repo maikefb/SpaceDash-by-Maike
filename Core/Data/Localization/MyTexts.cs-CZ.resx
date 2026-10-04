@@ -310,68 +310,68 @@ Chvíli počkáme a potom ji za vás restartujeme.</value>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
-    <value>Settings copied.</value>
+    <value>Nastavení zkopírováno.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
-    <value>Copy settings</value>
+    <value>Kopírovat nastavení</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
-    <value>Failed to copy settings: {0}</value>
+    <value>Nepodařilo se zkopírovat nastavení: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
-    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <value>Zkopíruje nastavení LCD Mod a vlastnosti zobrazení této obrazovky do dočasné schránky pouze na tomto klientovi.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
-    <value>No copied settings are available for this surface.</value>
+    <value>Pro tuto obrazovku nejsou k dispozici žádná zkopírovaná nastavení.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
-    <value>No LCD Mod settings found for this surface.</value>
+    <value>Pro tuto obrazovku nebylo nalezeno žádné nastavení LCD Mod.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
-    <value>Paste settings</value>
+    <value>Vložit nastavení</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
-    <value>Failed to paste settings: {0}</value>
+    <value>Nepodařilo se vložit nastavení: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
-    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <value>Vloží kompatibilní nastavení LCD Mod a vlastnosti zobrazení beze změny typu aplikace cílové obrazovky.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
-    <value>Compatible settings pasted.</value>
+    <value>Kompatibilní nastavení vloženo.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Vypnuto</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
-    <value>Firing</value>
+    <value>Střílí</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
-    <value>Fully charged</value>
+    <value>Plně nabito</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
-    <value>Not Ready</value>
+    <value>Nepřipraveno</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
@@ -379,26 +379,26 @@ Chvíli počkáme a potom ji za vás restartujeme.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
-    <value>Ready</value>
+    <value>Připraveno</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
-    <value>Recharge in {0}s</value>
+    <value>Dobití za {0} s</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
-    <value>Recharge unavailable</value>
+    <value>Dobití není k dispozici</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
-    <value>Shield</value>
+    <value>Štít</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
-    <value>Craft missing components</value>
+    <value>Vyrobit chybějící komponenty</value>
   </data>
   <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
-    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+    <value>Zařadí do fronty montážních linek této konstrukce komponenty, které pro projekci stále chybí.</value>
   </data>
   <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
     <value>Hodiny: 24hodinový formát</value>
@@ -440,10 +440,10 @@ Chvíli počkáme a potom ji za vás restartujeme.</value>
     <value>Hluboký vesmír</value>
   </data>
   <data name="LcdMod_ClockDashboard_Temperature_Celsius" xml:space="preserve">
-    <value>Celsius (°C)</value>
+    <value>Celsia (°C)</value>
   </data>
   <data name="LcdMod_ClockDashboard_Temperature_Fahrenheit" xml:space="preserve">
-    <value>Fahrenheit (°F)</value>
+    <value>Fahrenheita (°F)</value>
   </data>
   <data name="LcdMod_ClockDashboard_Temperature_Fuzzy" xml:space="preserve">
     <value>Přibližná</value>
@@ -461,21 +461,282 @@ Chvíli počkáme a potom ji za vás restartujeme.</value>
     <value>Počasí</value>
   </data>
   <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
-    <value>Play time</value>
+    <value>Herní čas</value>
   </data>
   <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
-    <value>Server uptime</value>
+    <value>Server běží</value>
   </data>
   <data name="LcdMod_Survivors" xml:space="preserve">
-    <value>[SD] Survivors</value>
+    <value>[SD] Přeživší</value>
   </data>
   <data name="LcdMod_Survivors_Player" xml:space="preserve">
-    <value>Player</value>
+    <value>Hráč</value>
   </data>
   <data name="LcdMod_Survivors_Alive" xml:space="preserve">
-    <value>Alive</value>
+    <value>Naživu</value>
   </data>
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
-    <value>Record</value>
+    <value>Rekord</value>
+  </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Anténa</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Inventář</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Projektor</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Tah</value>
+  </data>
+  <data name="LcdMod_EnergyBatteries" xml:space="preserve">
+    <value>[SD] Energie: baterie</value>
+  </data>
+  <data name="LcdMod_EnergyChart" xml:space="preserve">
+    <value>[SD] Graf energie</value>
+  </data>
+  <data name="LcdMod_EnergyGeneral" xml:space="preserve">
+    <value>[SD] Panel energie</value>
+  </data>
+  <data name="LcdMod_EnergyHydrogen" xml:space="preserve">
+    <value>[SD] Energie: vodíkové motory</value>
+  </data>
+  <data name="LcdMod_EnergyReactors" xml:space="preserve">
+    <value>[SD] Energie: reaktory</value>
+  </data>
+  <data name="LcdMod_EnergySolar" xml:space="preserve">
+    <value>[SD] Energie: solární panely</value>
+  </data>
+  <data name="LcdMod_EnergyWind" xml:space="preserve">
+    <value>[SD] Energie: větrné turbíny</value>
+  </data>
+  <data name="LcdMod_Brightness" xml:space="preserve">
+    <value>Jas</value>
+  </data>
+  <data name="LcdMod_Brightness_Tooltip" xml:space="preserve">
+    <value>Jas celé obrazovky.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour_Tooltip" xml:space="preserve">
+    <value>Zobrazit čas ve 24hodinovém formátu místo AM/PM.</value>
+  </data>
+  <data name="LcdMod_CustomColors" xml:space="preserve">
+    <value>Vlastní barvy</value>
+  </data>
+  <data name="LcdMod_CustomColors_Tooltip" xml:space="preserve">
+    <value>Použít vlastní barvy záhlaví, varování a chyby místo barvy frakce.</value>
+  </data>
+  <data name="LcdMod_DisplayMode" xml:space="preserve">
+    <value>Režim zobrazení</value>
+  </data>
+  <data name="LcdMod_DisplayMode_Tooltip" xml:space="preserve">
+    <value>Jak je obsah na této obrazovce rozložen.</value>
+  </data>
+  <data name="LcdMod_ElectricalConnection" xml:space="preserve">
+    <value>Elektrické připojení</value>
+  </data>
+  <data name="LcdMod_ErrorColor" xml:space="preserve">
+    <value>Barva chyby</value>
+  </data>
+  <data name="LcdMod_ErrorColor_Tooltip" xml:space="preserve">
+    <value>Chyby, prázdné buňky a nepřátelské kontakty.</value>
+  </data>
+  <data name="LcdMod_HeaderColor" xml:space="preserve">
+    <value>Barva záhlaví</value>
+  </data>
+  <data name="LcdMod_HeaderColor_Tooltip" xml:space="preserve">
+    <value>Titulní lišta, záhlaví sloupců a zvýraznění.</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval" xml:space="preserve">
+    <value>Interval změny obrázku</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+    <value>Sekundy mezi obrázky prezentace. 0 ponechá první obrázek.</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode" xml:space="preserve">
+    <value>Zobrazení položek</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode_Tooltip" xml:space="preserve">
+    <value>Rozložení položek: karta, seznam, tabulka nebo mřížka.</value>
+  </data>
+  <data name="LcdMod_LinkTypeDescription" xml:space="preserve">
+    <value>{0}: pouze bloky této konstrukce.
+{1}: konstrukce spojené mechanicky, např. rotory, panty a písty.
+{2}: mechanická spojení a konstrukce spojené konektory.
+{3}: konstrukce ve stejné elektrické síti: mechanické spoje a připojené konektory.</value>
+  </data>
+  <data name="LcdMod_Magnification_Tooltip" xml:space="preserve">
+    <value>Přiblížení radaru. Zobrazený dosah je skutečná vzdálenost k okraji.</value>
+  </data>
+  <data name="LcdMod_None" xml:space="preserve">
+    <value>(žádný)</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Empty" xml:space="preserve">
+    <value>Vyberte obrázky v terminálu</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Folder" xml:space="preserve">
+    <value>Vložte své obrázky DDS do:</value>
+  </data>
+  <data name="LcdMod_PictureMode_Center" xml:space="preserve">
+    <value>Na střed</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fill" xml:space="preserve">
+    <value>Vyplnit</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fit" xml:space="preserve">
+    <value>Přizpůsobit</value>
+  </data>
+  <data name="LcdMod_PictureMode_Stretch" xml:space="preserve">
+    <value>Roztáhnout</value>
+  </data>
+  <data name="LcdMod_PictureMode_Tile" xml:space="preserve">
+    <value>Dlaždice</value>
+  </data>
+  <data name="LcdMod_Reference" xml:space="preserve">
+    <value>Reference</value>
+  </data>
+  <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+    <value>Referenční blok</value>
+  </data>
+  <data name="LcdMod_Reference_Auto" xml:space="preserve">
+    <value>Automaticky</value>
+  </data>
+  <data name="LcdMod_Reference_Controller" xml:space="preserve">
+    <value>Ovladač</value>
+  </data>
+  <data name="LcdMod_Reference_Screen" xml:space="preserve">
+    <value>Obrazovka</value>
+  </data>
+  <data name="LcdMod_Reference_Tooltip" xml:space="preserve">
+    <value>Jakou orientaci obrazovka sleduje: automaticky, samotnou obrazovku nebo hlavní kokpit konstrukce (nebo hlavní dálkové ovládání).</value>
+  </data>
+  <data name="LcdMod_Scale_Tooltip" xml:space="preserve">
+    <value>Velikost obsahu kresleného modem. Velikost písma stále platí pro text.</value>
+  </data>
+  <data name="LcdMod_ShowTitle" xml:space="preserve">
+    <value>Zobrazit název</value>
+  </data>
+  <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+    <value>Vykreslí titulní lištu. Na velmi širokých obrazovkách se automaticky vypne.</value>
+  </data>
+  <data name="LcdMod_SortBy" xml:space="preserve">
+    <value>Řadit podle</value>
+  </data>
+  <data name="LcdMod_SortBy_Tooltip" xml:space="preserve">
+    <value>Pořadí seznamu položek.</value>
+  </data>
+  <data name="LcdMod_SpriteCandidates" xml:space="preserve">
+    <value>Dostupné obrázky</value>
+  </data>
+  <data name="LcdMod_SpriteSelected" xml:space="preserve">
+    <value>Vybrané obrázky</value>
+  </data>
+  <data name="LcdMod_Survivors_Dead" xml:space="preserve">
+    <value>Mrtvý</value>
+  </data>
+  <data name="LcdMod_SyncColors" xml:space="preserve">
+    <value>Synchronizovat barvy</value>
+  </data>
+  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
+    <value>Sdílí barvy záhlaví, varování, chyby, písma a pozadí s každým LCD vaší frakce, který má tento přepínač zapnutý. Vlastník bloku musí být ve frakci.</value>
+  </data>
+  <data name="LcdMod_WarningColor" xml:space="preserve">
+    <value>Barva varování</value>
+  </data>
+  <data name="LcdMod_WarningColor_Tooltip" xml:space="preserve">
+    <value>Varování a prázdné stavy.</value>
+  </data>
+  <data name="LcdMod_Energy_Balance" xml:space="preserve">
+    <value>Bilance</value>
+  </data>
+  <data name="LcdMod_Energy_Charge" xml:space="preserve">
+    <value>Nabití</value>
+  </data>
+  <data name="LcdMod_Energy_Consumption" xml:space="preserve">
+    <value>Celková spotřeba</value>
+  </data>
+  <data name="LcdMod_Energy_Discharging" xml:space="preserve">
+    <value>Vybíjení</value>
+  </data>
+  <data name="LcdMod_Energy_Efficiency" xml:space="preserve">
+    <value>Účinnost</value>
+  </data>
+  <data name="LcdMod_Energy_EmptyIn" xml:space="preserve">
+    <value>Prázdná za</value>
+  </data>
+  <data name="LcdMod_Energy_FullIn" xml:space="preserve">
+    <value>Plná za</value>
+  </data>
+  <data name="LcdMod_Energy_Idle" xml:space="preserve">
+    <value>Nečinný</value>
+  </data>
+  <data name="LcdMod_Energy_Inoperative" xml:space="preserve">
+    <value>Nefunkční</value>
+  </data>
+  <data name="LcdMod_Energy_Input" xml:space="preserve">
+    <value>Vstup</value>
+  </data>
+  <data name="LcdMod_Energy_Load" xml:space="preserve">
+    <value>Zatížení</value>
+  </data>
+  <data name="LcdMod_Energy_MaxFormat" xml:space="preserve">
+    <value>max. {0}</value>
+  </data>
+  <data name="LcdMod_Energy_MaxOutput" xml:space="preserve">
+    <value>Aktuální maximum</value>
+  </data>
+  <data name="LcdMod_Energy_Mixed" xml:space="preserve">
+    <value>Smíšený</value>
+  </data>
+  <data name="LcdMod_Energy_Mode" xml:space="preserve">
+    <value>Režim</value>
+  </data>
+  <data name="LcdMod_Energy_NoUnits" xml:space="preserve">
+    <value>Žádné jednotky</value>
+  </data>
+  <data name="LcdMod_Energy_Nominal" xml:space="preserve">
+    <value>Nominální</value>
+  </data>
+  <data name="LcdMod_Energy_Of" xml:space="preserve">
+    <value>{0} z {1}</value>
+  </data>
+  <data name="LcdMod_Energy_OfCapacityFormat" xml:space="preserve">
+    <value>{0} kapacity</value>
+  </data>
+  <data name="LcdMod_Energy_Offline" xml:space="preserve">
+    <value>Vypnuto</value>
+  </data>
+  <data name="LcdMod_Energy_Online" xml:space="preserve">
+    <value>V provozu</value>
+  </data>
+  <data name="LcdMod_Energy_Other" xml:space="preserve">
+    <value>Ostatní</value>
+  </data>
+  <data name="LcdMod_Energy_Output" xml:space="preserve">
+    <value>Výstup</value>
+  </data>
+  <data name="LcdMod_Energy_Produced" xml:space="preserve">
+    <value>Vyrobeno</value>
+  </data>
+  <data name="LcdMod_Energy_Production" xml:space="preserve">
+    <value>Celková výroba</value>
+  </data>
+  <data name="LcdMod_Energy_Stored" xml:space="preserve">
+    <value>Uloženo</value>
+  </data>
+  <data name="LcdMod_Energy_StoredEnergy" xml:space="preserve">
+    <value>Uložená energie</value>
+  </data>
+  <data name="LcdMod_Energy_Units" xml:space="preserve">
+    <value>Jednotky</value>
+  </data>
+  <data name="LcdMod_Energy_Used" xml:space="preserve">
+    <value>Využito</value>
+  </data>
+  <data name="LcdMod_Energy_Warning" xml:space="preserve">
+    <value>Pozor</value>
+  </data>
+  <data name="LcdMod_Energy_Working" xml:space="preserve">
+    <value>{0}/{1}</value>
   </data>
 </root>

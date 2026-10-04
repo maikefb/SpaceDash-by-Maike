@@ -382,7 +382,7 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
-    <value>Offline</value>
+    <value>Desligado</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
@@ -727,5 +727,17 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   </data>
   <data name="LcdMod_Energy_Discharging" xml:space="preserve">
     <value>Descarregando</value>
+  </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Antena</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Inventário</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Projetor</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Propulsão</value>
   </data>
 </root>

@@ -311,95 +311,95 @@ Nous allons patienter un moment, puis la redémarrer pour vous.</value>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
-    <value>Settings copied.</value>
+    <value>Paramètres copiés.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
-    <value>Copy settings</value>
+    <value>Copier les paramètres</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
-    <value>Failed to copy settings: {0}</value>
+    <value>Échec de la copie des paramètres : {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
-    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <value>Copie les paramètres du LCD Mod et les propriétés d'affichage de cet écran dans un presse-papiers temporaire, sur ce client uniquement.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
-    <value>No copied settings are available for this surface.</value>
+    <value>Aucun paramètre copié disponible pour cet écran.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
-    <value>No LCD Mod settings found for this surface.</value>
+    <value>Aucun paramètre du LCD Mod trouvé pour cet écran.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
-    <value>Paste settings</value>
+    <value>Coller les paramètres</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
-    <value>Failed to paste settings: {0}</value>
+    <value>Échec du collage des paramètres : {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
-    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <value>Colle les paramètres compatibles du LCD Mod et les propriétés d'affichage sans changer le type d'application de l'écran cible.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
-    <value>Compatible settings pasted.</value>
+    <value>Paramètres compatibles collés.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Désactivé</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
-    <value>Firing</value>
+    <value>En tir</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
-    <value>Fully charged</value>
+    <value>Charge complète</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
-    <value>Not Ready</value>
+    <value>Pas prêt</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
-    <value>Offline</value>
+    <value>Hors ligne</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
-    <value>Ready</value>
+    <value>Prêt</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
-    <value>Recharge in {0}s</value>
+    <value>Recharge dans {0}s</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
-    <value>Recharge unavailable</value>
+    <value>Recharge indisponible</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
-    <value>Shield</value>
+    <value>Bouclier</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
-    <value>Craft missing components</value>
+    <value>Fabriquer les composants manquants</value>
   </data>
   <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
-    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+    <value>Met en file dans les assembleurs de cette grille les composants encore manquants pour la projection.</value>
   </data>
   <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
     <value>Horloge : format 24 heures</value>
@@ -462,21 +462,282 @@ Nous allons patienter un moment, puis la redémarrer pour vous.</value>
     <value>Météo</value>
   </data>
   <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
-    <value>Play time</value>
+    <value>Temps de jeu</value>
   </data>
   <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
-    <value>Server uptime</value>
+    <value>Serveur actif depuis</value>
   </data>
   <data name="LcdMod_Survivors" xml:space="preserve">
-    <value>[SD] Survivors</value>
+    <value>[SD] Survivants</value>
   </data>
   <data name="LcdMod_Survivors_Player" xml:space="preserve">
-    <value>Player</value>
+    <value>Joueur</value>
   </data>
   <data name="LcdMod_Survivors_Alive" xml:space="preserve">
-    <value>Alive</value>
+    <value>Vivant</value>
   </data>
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
     <value>Record</value>
+  </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Antenne</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Inventaire</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Projecteur</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Poussée</value>
+  </data>
+  <data name="LcdMod_EnergyBatteries" xml:space="preserve">
+    <value>[SD] Énergie : batteries</value>
+  </data>
+  <data name="LcdMod_EnergyChart" xml:space="preserve">
+    <value>[SD] Graphique d'énergie</value>
+  </data>
+  <data name="LcdMod_EnergyGeneral" xml:space="preserve">
+    <value>[SD] Panneau d'énergie</value>
+  </data>
+  <data name="LcdMod_EnergyHydrogen" xml:space="preserve">
+    <value>[SD] Énergie : moteurs à hydrogène</value>
+  </data>
+  <data name="LcdMod_EnergyReactors" xml:space="preserve">
+    <value>[SD] Énergie : réacteurs</value>
+  </data>
+  <data name="LcdMod_EnergySolar" xml:space="preserve">
+    <value>[SD] Énergie : panneaux solaires</value>
+  </data>
+  <data name="LcdMod_EnergyWind" xml:space="preserve">
+    <value>[SD] Énergie : éoliennes</value>
+  </data>
+  <data name="LcdMod_Brightness" xml:space="preserve">
+    <value>Luminosité</value>
+  </data>
+  <data name="LcdMod_Brightness_Tooltip" xml:space="preserve">
+    <value>Luminosité de tout l'écran.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour_Tooltip" xml:space="preserve">
+    <value>Afficher l'heure au format 24 h au lieu de AM/PM.</value>
+  </data>
+  <data name="LcdMod_CustomColors" xml:space="preserve">
+    <value>Couleurs personnalisées</value>
+  </data>
+  <data name="LcdMod_CustomColors_Tooltip" xml:space="preserve">
+    <value>Utiliser vos propres couleurs d'en-tête, d'avertissement et d'erreur au lieu de la couleur de faction.</value>
+  </data>
+  <data name="LcdMod_DisplayMode" xml:space="preserve">
+    <value>Mode d'affichage</value>
+  </data>
+  <data name="LcdMod_DisplayMode_Tooltip" xml:space="preserve">
+    <value>Disposition du contenu sur cet écran.</value>
+  </data>
+  <data name="LcdMod_ElectricalConnection" xml:space="preserve">
+    <value>Connexion électrique</value>
+  </data>
+  <data name="LcdMod_ErrorColor" xml:space="preserve">
+    <value>Couleur d'erreur</value>
+  </data>
+  <data name="LcdMod_ErrorColor_Tooltip" xml:space="preserve">
+    <value>Erreurs, cellules vides et contacts hostiles.</value>
+  </data>
+  <data name="LcdMod_HeaderColor" xml:space="preserve">
+    <value>Couleur d'en-tête</value>
+  </data>
+  <data name="LcdMod_HeaderColor_Tooltip" xml:space="preserve">
+    <value>Barre de titre, en-têtes de colonnes et surlignages.</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval" xml:space="preserve">
+    <value>Intervalle de changement d'image</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+    <value>Secondes entre les images du diaporama. 0 conserve la première image.</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode" xml:space="preserve">
+    <value>Affichage des objets</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode_Tooltip" xml:space="preserve">
+    <value>Disposition des objets : carte, liste, tableau ou grille.</value>
+  </data>
+  <data name="LcdMod_LinkTypeDescription" xml:space="preserve">
+    <value>{0} : uniquement les blocs de cette grille.
+{1} : grilles reliées mécaniquement, par rotors, charnières et pistons.
+{2} : connexions mécaniques et grilles reliées par connecteurs.
+{3} : grilles sur le même réseau électrique : liaisons mécaniques et connecteurs verrouillés.</value>
+  </data>
+  <data name="LcdMod_Magnification_Tooltip" xml:space="preserve">
+    <value>Zoom du radar. La portée affichée est la distance réelle jusqu'au bord.</value>
+  </data>
+  <data name="LcdMod_None" xml:space="preserve">
+    <value>(aucun)</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Empty" xml:space="preserve">
+    <value>Sélectionnez des images dans le terminal</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Folder" xml:space="preserve">
+    <value>Placez vos images DDS dans :</value>
+  </data>
+  <data name="LcdMod_PictureMode_Center" xml:space="preserve">
+    <value>Centrer</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fill" xml:space="preserve">
+    <value>Remplir</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fit" xml:space="preserve">
+    <value>Ajuster</value>
+  </data>
+  <data name="LcdMod_PictureMode_Stretch" xml:space="preserve">
+    <value>Étirer</value>
+  </data>
+  <data name="LcdMod_PictureMode_Tile" xml:space="preserve">
+    <value>Mosaïque</value>
+  </data>
+  <data name="LcdMod_Reference" xml:space="preserve">
+    <value>Référence</value>
+  </data>
+  <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+    <value>Bloc de référence</value>
+  </data>
+  <data name="LcdMod_Reference_Auto" xml:space="preserve">
+    <value>Automatique</value>
+  </data>
+  <data name="LcdMod_Reference_Controller" xml:space="preserve">
+    <value>Contrôleur</value>
+  </data>
+  <data name="LcdMod_Reference_Screen" xml:space="preserve">
+    <value>Écran</value>
+  </data>
+  <data name="LcdMod_Reference_Tooltip" xml:space="preserve">
+    <value>Orientation suivie par l'écran : automatique, l'écran lui-même ou le cockpit principal de la grille (ou la télécommande principale).</value>
+  </data>
+  <data name="LcdMod_Scale_Tooltip" xml:space="preserve">
+    <value>Taille du contenu dessiné par le mod. La taille de police s'applique toujours au texte.</value>
+  </data>
+  <data name="LcdMod_ShowTitle" xml:space="preserve">
+    <value>Afficher le titre</value>
+  </data>
+  <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+    <value>Dessine la barre de titre. Désactivé automatiquement sur les écrans très larges.</value>
+  </data>
+  <data name="LcdMod_SortBy" xml:space="preserve">
+    <value>Trier par</value>
+  </data>
+  <data name="LcdMod_SortBy_Tooltip" xml:space="preserve">
+    <value>Ordre de la liste d'objets.</value>
+  </data>
+  <data name="LcdMod_SpriteCandidates" xml:space="preserve">
+    <value>Images disponibles</value>
+  </data>
+  <data name="LcdMod_SpriteSelected" xml:space="preserve">
+    <value>Images sélectionnées</value>
+  </data>
+  <data name="LcdMod_Survivors_Dead" xml:space="preserve">
+    <value>Mort</value>
+  </data>
+  <data name="LcdMod_SyncColors" xml:space="preserve">
+    <value>Synchroniser les couleurs</value>
+  </data>
+  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
+    <value>Partage les couleurs d'en-tête, d'avertissement, d'erreur, de police et de fond avec chaque LCD de votre faction ayant cet interrupteur activé. Le propriétaire du bloc doit appartenir à une faction.</value>
+  </data>
+  <data name="LcdMod_WarningColor" xml:space="preserve">
+    <value>Couleur d'avertissement</value>
+  </data>
+  <data name="LcdMod_WarningColor_Tooltip" xml:space="preserve">
+    <value>Avertissements et états vides.</value>
+  </data>
+  <data name="LcdMod_Energy_Balance" xml:space="preserve">
+    <value>Bilan</value>
+  </data>
+  <data name="LcdMod_Energy_Charge" xml:space="preserve">
+    <value>Charge</value>
+  </data>
+  <data name="LcdMod_Energy_Consumption" xml:space="preserve">
+    <value>Consommation totale</value>
+  </data>
+  <data name="LcdMod_Energy_Discharging" xml:space="preserve">
+    <value>Décharge</value>
+  </data>
+  <data name="LcdMod_Energy_Efficiency" xml:space="preserve">
+    <value>Rendement</value>
+  </data>
+  <data name="LcdMod_Energy_EmptyIn" xml:space="preserve">
+    <value>Vide dans</value>
+  </data>
+  <data name="LcdMod_Energy_FullIn" xml:space="preserve">
+    <value>Pleine dans</value>
+  </data>
+  <data name="LcdMod_Energy_Idle" xml:space="preserve">
+    <value>Inactif</value>
+  </data>
+  <data name="LcdMod_Energy_Inoperative" xml:space="preserve">
+    <value>Hors service</value>
+  </data>
+  <data name="LcdMod_Energy_Input" xml:space="preserve">
+    <value>Entrée</value>
+  </data>
+  <data name="LcdMod_Energy_Load" xml:space="preserve">
+    <value>Utilisation</value>
+  </data>
+  <data name="LcdMod_Energy_MaxFormat" xml:space="preserve">
+    <value>max {0}</value>
+  </data>
+  <data name="LcdMod_Energy_MaxOutput" xml:space="preserve">
+    <value>Maximum actuel</value>
+  </data>
+  <data name="LcdMod_Energy_Mixed" xml:space="preserve">
+    <value>Mixte</value>
+  </data>
+  <data name="LcdMod_Energy_Mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="LcdMod_Energy_NoUnits" xml:space="preserve">
+    <value>Aucune unité</value>
+  </data>
+  <data name="LcdMod_Energy_Nominal" xml:space="preserve">
+    <value>Nominal</value>
+  </data>
+  <data name="LcdMod_Energy_Of" xml:space="preserve">
+    <value>{0} sur {1}</value>
+  </data>
+  <data name="LcdMod_Energy_OfCapacityFormat" xml:space="preserve">
+    <value>{0} de la capacité</value>
+  </data>
+  <data name="LcdMod_Energy_Offline" xml:space="preserve">
+    <value>Éteint</value>
+  </data>
+  <data name="LcdMod_Energy_Online" xml:space="preserve">
+    <value>En marche</value>
+  </data>
+  <data name="LcdMod_Energy_Other" xml:space="preserve">
+    <value>Autres</value>
+  </data>
+  <data name="LcdMod_Energy_Output" xml:space="preserve">
+    <value>Sortie</value>
+  </data>
+  <data name="LcdMod_Energy_Produced" xml:space="preserve">
+    <value>Produite</value>
+  </data>
+  <data name="LcdMod_Energy_Production" xml:space="preserve">
+    <value>Production totale</value>
+  </data>
+  <data name="LcdMod_Energy_Stored" xml:space="preserve">
+    <value>Stockée</value>
+  </data>
+  <data name="LcdMod_Energy_StoredEnergy" xml:space="preserve">
+    <value>Énergie stockée</value>
+  </data>
+  <data name="LcdMod_Energy_Units" xml:space="preserve">
+    <value>Unités</value>
+  </data>
+  <data name="LcdMod_Energy_Used" xml:space="preserve">
+    <value>Utilisée</value>
+  </data>
+  <data name="LcdMod_Energy_Warning" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="LcdMod_Energy_Working" xml:space="preserve">
+    <value>{0}/{1}</value>
   </data>
 </root>

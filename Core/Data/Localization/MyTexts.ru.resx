@@ -310,95 +310,95 @@
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
-    <value>Settings copied.</value>
+    <value>Настройки скопированы.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
-    <value>Copy settings</value>
+    <value>Копировать настройки</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
-    <value>Failed to copy settings: {0}</value>
+    <value>Не удалось скопировать настройки: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
-    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <value>Копирует настройки LCD Mod и свойства отображения этого экрана во временный буфер обмена только на этом клиенте.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
-    <value>No copied settings are available for this surface.</value>
+    <value>Нет скопированных настроек для этого экрана.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
-    <value>No LCD Mod settings found for this surface.</value>
+    <value>Настройки LCD Mod для этого экрана не найдены.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
-    <value>Paste settings</value>
+    <value>Вставить настройки</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
-    <value>Failed to paste settings: {0}</value>
+    <value>Не удалось вставить настройки: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
-    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <value>Вставляет совместимые настройки LCD Mod и свойства отображения, не меняя тип приложения целевого экрана.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
-    <value>Compatible settings pasted.</value>
+    <value>Совместимые настройки вставлены.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Отключено</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
-    <value>Firing</value>
+    <value>Ведёт огонь</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
-    <value>Fully charged</value>
+    <value>Полностью заряжен</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
-    <value>Not Ready</value>
+    <value>Не готов</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
-    <value>Offline</value>
+    <value>Не в сети</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
-    <value>Ready</value>
+    <value>Готов</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
-    <value>Recharge in {0}s</value>
+    <value>Перезарядка через {0} с</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
-    <value>Recharge unavailable</value>
+    <value>Перезарядка недоступна</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
-    <value>Shield</value>
+    <value>Щит</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
-    <value>Craft missing components</value>
+    <value>Изготовить недостающие компоненты</value>
   </data>
   <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
-    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+    <value>Ставит в очередь сборщиков этой структуры компоненты, которых ещё не хватает для проекции.</value>
   </data>
   <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
     <value>Часы: 24-часовой формат</value>
@@ -461,21 +461,282 @@
     <value>Погода</value>
   </data>
   <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
-    <value>Play time</value>
+    <value>Время игры</value>
   </data>
   <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
-    <value>Server uptime</value>
+    <value>Сервер работает</value>
   </data>
   <data name="LcdMod_Survivors" xml:space="preserve">
-    <value>[SD] Survivors</value>
+    <value>[SD] Выжившие</value>
   </data>
   <data name="LcdMod_Survivors_Player" xml:space="preserve">
-    <value>Player</value>
+    <value>Игрок</value>
   </data>
   <data name="LcdMod_Survivors_Alive" xml:space="preserve">
-    <value>Alive</value>
+    <value>Жив</value>
   </data>
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
-    <value>Record</value>
+    <value>Рекорд</value>
+  </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Антенна</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Инвентарь</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Проектор</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Тяга</value>
+  </data>
+  <data name="LcdMod_EnergyBatteries" xml:space="preserve">
+    <value>[SD] Энергия: батареи</value>
+  </data>
+  <data name="LcdMod_EnergyChart" xml:space="preserve">
+    <value>[SD] График энергии</value>
+  </data>
+  <data name="LcdMod_EnergyGeneral" xml:space="preserve">
+    <value>[SD] Панель энергии</value>
+  </data>
+  <data name="LcdMod_EnergyHydrogen" xml:space="preserve">
+    <value>[SD] Энергия: водородные двигатели</value>
+  </data>
+  <data name="LcdMod_EnergyReactors" xml:space="preserve">
+    <value>[SD] Энергия: реакторы</value>
+  </data>
+  <data name="LcdMod_EnergySolar" xml:space="preserve">
+    <value>[SD] Энергия: солнечные панели</value>
+  </data>
+  <data name="LcdMod_EnergyWind" xml:space="preserve">
+    <value>[SD] Энергия: ветрогенераторы</value>
+  </data>
+  <data name="LcdMod_Brightness" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="LcdMod_Brightness_Tooltip" xml:space="preserve">
+    <value>Яркость всего экрана.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour_Tooltip" xml:space="preserve">
+    <value>Показывать время в 24-часовом формате вместо AM/PM.</value>
+  </data>
+  <data name="LcdMod_CustomColors" xml:space="preserve">
+    <value>Свои цвета</value>
+  </data>
+  <data name="LcdMod_CustomColors_Tooltip" xml:space="preserve">
+    <value>Использовать свои цвета заголовка, предупреждения и ошибки вместо цвета фракции.</value>
+  </data>
+  <data name="LcdMod_DisplayMode" xml:space="preserve">
+    <value>Режим отображения</value>
+  </data>
+  <data name="LcdMod_DisplayMode_Tooltip" xml:space="preserve">
+    <value>Как содержимое размещается на этом экране.</value>
+  </data>
+  <data name="LcdMod_ElectricalConnection" xml:space="preserve">
+    <value>Электрическое соединение</value>
+  </data>
+  <data name="LcdMod_ErrorColor" xml:space="preserve">
+    <value>Цвет ошибки</value>
+  </data>
+  <data name="LcdMod_ErrorColor_Tooltip" xml:space="preserve">
+    <value>Ошибки, пустые ячейки и враждебные контакты.</value>
+  </data>
+  <data name="LcdMod_HeaderColor" xml:space="preserve">
+    <value>Цвет заголовка</value>
+  </data>
+  <data name="LcdMod_HeaderColor_Tooltip" xml:space="preserve">
+    <value>Строка заголовка, заголовки столбцов и выделения.</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval" xml:space="preserve">
+    <value>Интервал смены изображения</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+    <value>Секунды между изображениями слайд-шоу. 0 оставляет первое изображение.</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode" xml:space="preserve">
+    <value>Отображение предметов</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode_Tooltip" xml:space="preserve">
+    <value>Расположение предметов: карточка, список, таблица или сетка.</value>
+  </data>
+  <data name="LcdMod_LinkTypeDescription" xml:space="preserve">
+    <value>{0}: только блоки этой структуры.
+{1}: структуры, соединённые механически, например роторами, шарнирами и поршнями.
+{2}: механические соединения и структуры, соединённые коннекторами.
+{3}: структуры в одной электросети: механические соединения и состыкованные коннекторы.</value>
+  </data>
+  <data name="LcdMod_Magnification_Tooltip" xml:space="preserve">
+    <value>Масштаб радара. Показанная дальность — реальное расстояние до края.</value>
+  </data>
+  <data name="LcdMod_None" xml:space="preserve">
+    <value>(нет)</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Empty" xml:space="preserve">
+    <value>Выберите изображения в терминале</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Folder" xml:space="preserve">
+    <value>Поместите изображения DDS в:</value>
+  </data>
+  <data name="LcdMod_PictureMode_Center" xml:space="preserve">
+    <value>По центру</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fill" xml:space="preserve">
+    <value>Заполнить</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fit" xml:space="preserve">
+    <value>Вписать</value>
+  </data>
+  <data name="LcdMod_PictureMode_Stretch" xml:space="preserve">
+    <value>Растянуть</value>
+  </data>
+  <data name="LcdMod_PictureMode_Tile" xml:space="preserve">
+    <value>Замостить</value>
+  </data>
+  <data name="LcdMod_Reference" xml:space="preserve">
+    <value>Ориентир</value>
+  </data>
+  <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+    <value>Опорный блок</value>
+  </data>
+  <data name="LcdMod_Reference_Auto" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="LcdMod_Reference_Controller" xml:space="preserve">
+    <value>Контроллер</value>
+  </data>
+  <data name="LcdMod_Reference_Screen" xml:space="preserve">
+    <value>Экран</value>
+  </data>
+  <data name="LcdMod_Reference_Tooltip" xml:space="preserve">
+    <value>Какой ориентации следует экран: автоматически, сам экран или главная кабина структуры (либо главный пульт дистанционного управления).</value>
+  </data>
+  <data name="LcdMod_Scale_Tooltip" xml:space="preserve">
+    <value>Размер содержимого, рисуемого модом. Размер шрифта по-прежнему применяется к тексту.</value>
+  </data>
+  <data name="LcdMod_ShowTitle" xml:space="preserve">
+    <value>Показывать заголовок</value>
+  </data>
+  <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+    <value>Рисует строку заголовка. На очень широких экранах отключается автоматически.</value>
+  </data>
+  <data name="LcdMod_SortBy" xml:space="preserve">
+    <value>Сортировать по</value>
+  </data>
+  <data name="LcdMod_SortBy_Tooltip" xml:space="preserve">
+    <value>Порядок списка предметов.</value>
+  </data>
+  <data name="LcdMod_SpriteCandidates" xml:space="preserve">
+    <value>Доступные изображения</value>
+  </data>
+  <data name="LcdMod_SpriteSelected" xml:space="preserve">
+    <value>Выбранные изображения</value>
+  </data>
+  <data name="LcdMod_Survivors_Dead" xml:space="preserve">
+    <value>Мёртв</value>
+  </data>
+  <data name="LcdMod_SyncColors" xml:space="preserve">
+    <value>Синхронизировать цвета</value>
+  </data>
+  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
+    <value>Делит цвета заголовка, предупреждения, ошибки, шрифта и фона с каждым LCD вашей фракции, где включён этот переключатель. Владелец блока должен состоять во фракции.</value>
+  </data>
+  <data name="LcdMod_WarningColor" xml:space="preserve">
+    <value>Цвет предупреждения</value>
+  </data>
+  <data name="LcdMod_WarningColor_Tooltip" xml:space="preserve">
+    <value>Предупреждения и пустые состояния.</value>
+  </data>
+  <data name="LcdMod_Energy_Balance" xml:space="preserve">
+    <value>Баланс</value>
+  </data>
+  <data name="LcdMod_Energy_Charge" xml:space="preserve">
+    <value>Заряд</value>
+  </data>
+  <data name="LcdMod_Energy_Consumption" xml:space="preserve">
+    <value>Общее потребление</value>
+  </data>
+  <data name="LcdMod_Energy_Discharging" xml:space="preserve">
+    <value>Разрядка</value>
+  </data>
+  <data name="LcdMod_Energy_Efficiency" xml:space="preserve">
+    <value>КПД</value>
+  </data>
+  <data name="LcdMod_Energy_EmptyIn" xml:space="preserve">
+    <value>Разрядится через</value>
+  </data>
+  <data name="LcdMod_Energy_FullIn" xml:space="preserve">
+    <value>Зарядится через</value>
+  </data>
+  <data name="LcdMod_Energy_Idle" xml:space="preserve">
+    <value>Простой</value>
+  </data>
+  <data name="LcdMod_Energy_Inoperative" xml:space="preserve">
+    <value>Неработоспособен</value>
+  </data>
+  <data name="LcdMod_Energy_Input" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="LcdMod_Energy_Load" xml:space="preserve">
+    <value>Нагрузка</value>
+  </data>
+  <data name="LcdMod_Energy_MaxFormat" xml:space="preserve">
+    <value>макс. {0}</value>
+  </data>
+  <data name="LcdMod_Energy_MaxOutput" xml:space="preserve">
+    <value>Текущий максимум</value>
+  </data>
+  <data name="LcdMod_Energy_Mixed" xml:space="preserve">
+    <value>Смешанный</value>
+  </data>
+  <data name="LcdMod_Energy_Mode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="LcdMod_Energy_NoUnits" xml:space="preserve">
+    <value>Нет устройств</value>
+  </data>
+  <data name="LcdMod_Energy_Nominal" xml:space="preserve">
+    <value>Номинал</value>
+  </data>
+  <data name="LcdMod_Energy_Of" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="LcdMod_Energy_OfCapacityFormat" xml:space="preserve">
+    <value>{0} ёмкости</value>
+  </data>
+  <data name="LcdMod_Energy_Offline" xml:space="preserve">
+    <value>Выключен</value>
+  </data>
+  <data name="LcdMod_Energy_Online" xml:space="preserve">
+    <value>Работает</value>
+  </data>
+  <data name="LcdMod_Energy_Other" xml:space="preserve">
+    <value>Прочее</value>
+  </data>
+  <data name="LcdMod_Energy_Output" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="LcdMod_Energy_Produced" xml:space="preserve">
+    <value>Произведено</value>
+  </data>
+  <data name="LcdMod_Energy_Production" xml:space="preserve">
+    <value>Общее производство</value>
+  </data>
+  <data name="LcdMod_Energy_Stored" xml:space="preserve">
+    <value>Запасено</value>
+  </data>
+  <data name="LcdMod_Energy_StoredEnergy" xml:space="preserve">
+    <value>Запасённая энергия</value>
+  </data>
+  <data name="LcdMod_Energy_Units" xml:space="preserve">
+    <value>Устройства</value>
+  </data>
+  <data name="LcdMod_Energy_Used" xml:space="preserve">
+    <value>Использовано</value>
+  </data>
+  <data name="LcdMod_Energy_Warning" xml:space="preserve">
+    <value>Внимание</value>
+  </data>
+  <data name="LcdMod_Energy_Working" xml:space="preserve">
+    <value>{0}/{1}</value>
   </data>
 </root>

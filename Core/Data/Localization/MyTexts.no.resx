@@ -310,95 +310,95 @@ Vi venter en stund og starter den deretter på nytt for deg.</value>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copied" xml:space="preserve">
-    <value>Settings copied.</value>
+    <value>Innstillinger kopiert.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Copy" xml:space="preserve">
-    <value>Copy settings</value>
+    <value>Kopier innstillinger</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyFailedFormat" xml:space="preserve">
-    <value>Failed to copy settings: {0}</value>
+    <value>Kunne ikke kopiere innstillinger: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_CopyTooltip" xml:space="preserve">
-    <value>Copy the selected LCD Mod settings and text-surface display properties into a temporary client-side clipboard.</value>
+    <value>Kopierer LCD Mod-innstillingene og skjermens visningsegenskaper til en midlertidig utklippstavle, bare på denne klienten.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoCopiedSettings" xml:space="preserve">
-    <value>No copied settings are available for this surface.</value>
+    <value>Ingen kopierte innstillinger tilgjengelig for denne skjermen.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_NoSettings" xml:space="preserve">
-    <value>No LCD Mod settings found for this surface.</value>
+    <value>Ingen LCD Mod-innstillinger funnet for denne skjermen.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Paste" xml:space="preserve">
-    <value>Paste settings</value>
+    <value>Lim inn innstillinger</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteFailedFormat" xml:space="preserve">
-    <value>Failed to paste settings: {0}</value>
+    <value>Kunne ikke lime inn innstillinger: {0}</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_PasteTooltip" xml:space="preserve">
-    <value>Paste compatible LCD Mod settings and text-surface display properties without changing the destination app type.</value>
+    <value>Limer inn kompatible LCD Mod-innstillinger og visningsegenskaper uten å endre målskjermens app-type.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
 
   <data name="LcdMod_SettingsClipboard_Pasted" xml:space="preserve">
-    <value>Compatible settings pasted.</value>
+    <value>Kompatible innstillinger limt inn.</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Deaktivert</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Firing" xml:space="preserve">
-    <value>Firing</value>
+    <value>Skyter</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_FullyCharged" xml:space="preserve">
-    <value>Fully charged</value>
+    <value>Fulladet</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_NotReady" xml:space="preserve">
-    <value>Not Ready</value>
+    <value>Ikke klar</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Offline" xml:space="preserve">
-    <value>Offline</value>
+    <value>Frakoblet</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
-    <value>Ready</value>
+    <value>Klar</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
-    <value>Recharge in {0}s</value>
+    <value>Lader om {0}s</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeUnavailable" xml:space="preserve">
-    <value>Recharge unavailable</value>
+    <value>Lading ikke tilgjengelig</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_DefenseDashboard_ShieldFallback" xml:space="preserve">
-    <value>Shield</value>
+    <value>Skjold</value>
     <comment>TODO_TRANSLATION</comment>
   </data>
   <data name="LcdMod_Projector_CraftMissing" xml:space="preserve">
-    <value>Craft missing components</value>
+    <value>Lag manglende komponenter</value>
   </data>
   <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
-    <value>Queues the components still missing for the projection in the assemblers of this grid.</value>
+    <value>Setter komponentene som fortsatt mangler for projeksjonen i kø hos gridets assemblers.</value>
   </data>
   <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
     <value>Klokke: 24-timersformat</value>
@@ -461,21 +461,282 @@ Vi venter en stund og starter den deretter på nytt for deg.</value>
     <value>Vær</value>
   </data>
   <data name="LcdMod_ClockDashboard_PlayTime" xml:space="preserve">
-    <value>Play time</value>
+    <value>Spilletid</value>
   </data>
   <data name="LcdMod_ClockDashboard_ServerUptime" xml:space="preserve">
-    <value>Server uptime</value>
+    <value>Server oppetid</value>
   </data>
   <data name="LcdMod_Survivors" xml:space="preserve">
-    <value>[SD] Survivors</value>
+    <value>[SD] Overlevende</value>
   </data>
   <data name="LcdMod_Survivors_Player" xml:space="preserve">
-    <value>Player</value>
+    <value>Spiller</value>
   </data>
   <data name="LcdMod_Survivors_Alive" xml:space="preserve">
-    <value>Alive</value>
+    <value>I live</value>
   </data>
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
-    <value>Record</value>
+    <value>Rekord</value>
+  </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Antenne</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Lager</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Projektor</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Skyvekraft</value>
+  </data>
+  <data name="LcdMod_EnergyBatteries" xml:space="preserve">
+    <value>[SD] Energi: batterier</value>
+  </data>
+  <data name="LcdMod_EnergyChart" xml:space="preserve">
+    <value>[SD] Energidiagram</value>
+  </data>
+  <data name="LcdMod_EnergyGeneral" xml:space="preserve">
+    <value>[SD] Energipanel</value>
+  </data>
+  <data name="LcdMod_EnergyHydrogen" xml:space="preserve">
+    <value>[SD] Energi: hydrogenmotorer</value>
+  </data>
+  <data name="LcdMod_EnergyReactors" xml:space="preserve">
+    <value>[SD] Energi: reaktorer</value>
+  </data>
+  <data name="LcdMod_EnergySolar" xml:space="preserve">
+    <value>[SD] Energi: solcellepaneler</value>
+  </data>
+  <data name="LcdMod_EnergyWind" xml:space="preserve">
+    <value>[SD] Energi: vindturbiner</value>
+  </data>
+  <data name="LcdMod_Brightness" xml:space="preserve">
+    <value>Lysstyrke</value>
+  </data>
+  <data name="LcdMod_Brightness_Tooltip" xml:space="preserve">
+    <value>Lysstyrke for hele skjermen.</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Control_24Hour_Tooltip" xml:space="preserve">
+    <value>Vis tiden i 24-timers format i stedet for AM/PM.</value>
+  </data>
+  <data name="LcdMod_CustomColors" xml:space="preserve">
+    <value>Egne farger</value>
+  </data>
+  <data name="LcdMod_CustomColors_Tooltip" xml:space="preserve">
+    <value>Bruk dine egne farger for overskrift, advarsel og feil i stedet for fraksjonsfargen.</value>
+  </data>
+  <data name="LcdMod_DisplayMode" xml:space="preserve">
+    <value>Visningsmodus</value>
+  </data>
+  <data name="LcdMod_DisplayMode_Tooltip" xml:space="preserve">
+    <value>Hvordan innholdet er plassert på denne skjermen.</value>
+  </data>
+  <data name="LcdMod_ElectricalConnection" xml:space="preserve">
+    <value>Elektrisk tilkobling</value>
+  </data>
+  <data name="LcdMod_ErrorColor" xml:space="preserve">
+    <value>Feilfarge</value>
+  </data>
+  <data name="LcdMod_ErrorColor_Tooltip" xml:space="preserve">
+    <value>Feil, tomme celler og fiendtlige kontakter.</value>
+  </data>
+  <data name="LcdMod_HeaderColor" xml:space="preserve">
+    <value>Overskriftsfarge</value>
+  </data>
+  <data name="LcdMod_HeaderColor_Tooltip" xml:space="preserve">
+    <value>Tittellinje, kolonneoverskrifter og uthevinger.</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval" xml:space="preserve">
+    <value>Intervall for bildebytte</value>
+  </data>
+  <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+    <value>Sekunder mellom bildene i lysbildefremvisningen. 0 beholder det første bildet.</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode" xml:space="preserve">
+    <value>Visning av gjenstander</value>
+  </data>
+  <data name="LcdMod_ItemDisplayMode_Tooltip" xml:space="preserve">
+    <value>Oppsett av gjenstandene: kort, liste, tabell eller rutenett.</value>
+  </data>
+  <data name="LcdMod_LinkTypeDescription" xml:space="preserve">
+    <value>{0}: bare blokker på dette gridet.
+{1}: grid koblet mekanisk, f.eks. via rotorer, hengsler og stempler.
+{2}: mekaniske koblinger og grid koblet via connectorer.
+{3}: grid på samme strømnett: mekaniske ledd og tilkoblede connectorer.</value>
+  </data>
+  <data name="LcdMod_Magnification_Tooltip" xml:space="preserve">
+    <value>Radarens zoom. Rekkevidden som vises er den reelle avstanden til kanten.</value>
+  </data>
+  <data name="LcdMod_None" xml:space="preserve">
+    <value>(ingen)</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Empty" xml:space="preserve">
+    <value>Velg bilder i terminalen</value>
+  </data>
+  <data name="LcdMod_PictureFrames_Folder" xml:space="preserve">
+    <value>Legg DDS-bildene dine i:</value>
+  </data>
+  <data name="LcdMod_PictureMode_Center" xml:space="preserve">
+    <value>Sentrer</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fill" xml:space="preserve">
+    <value>Fyll</value>
+  </data>
+  <data name="LcdMod_PictureMode_Fit" xml:space="preserve">
+    <value>Tilpass</value>
+  </data>
+  <data name="LcdMod_PictureMode_Stretch" xml:space="preserve">
+    <value>Strekk</value>
+  </data>
+  <data name="LcdMod_PictureMode_Tile" xml:space="preserve">
+    <value>Fliser</value>
+  </data>
+  <data name="LcdMod_Reference" xml:space="preserve">
+    <value>Referanse</value>
+  </data>
+  <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+    <value>Referanseblokk</value>
+  </data>
+  <data name="LcdMod_Reference_Auto" xml:space="preserve">
+    <value>Automatisk</value>
+  </data>
+  <data name="LcdMod_Reference_Controller" xml:space="preserve">
+    <value>Kontroller</value>
+  </data>
+  <data name="LcdMod_Reference_Screen" xml:space="preserve">
+    <value>Skjerm</value>
+  </data>
+  <data name="LcdMod_Reference_Tooltip" xml:space="preserve">
+    <value>Hvilken orientering skjermen følger: automatisk, skjermen selv eller gridets hovedcockpit (eller hovedfjernkontroll).</value>
+  </data>
+  <data name="LcdMod_Scale_Tooltip" xml:space="preserve">
+    <value>Størrelse på innholdet modden tegner. Skriftstørrelsen gjelder fortsatt for tekst.</value>
+  </data>
+  <data name="LcdMod_ShowTitle" xml:space="preserve">
+    <value>Vis tittel</value>
+  </data>
+  <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+    <value>Tegner tittellinjen. Slås automatisk av på svært brede skjermer.</value>
+  </data>
+  <data name="LcdMod_SortBy" xml:space="preserve">
+    <value>Sorter etter</value>
+  </data>
+  <data name="LcdMod_SortBy_Tooltip" xml:space="preserve">
+    <value>Rekkefølge på gjenstandslisten.</value>
+  </data>
+  <data name="LcdMod_SpriteCandidates" xml:space="preserve">
+    <value>Tilgjengelige bilder</value>
+  </data>
+  <data name="LcdMod_SpriteSelected" xml:space="preserve">
+    <value>Valgte bilder</value>
+  </data>
+  <data name="LcdMod_Survivors_Dead" xml:space="preserve">
+    <value>Død</value>
+  </data>
+  <data name="LcdMod_SyncColors" xml:space="preserve">
+    <value>Synkroniser farger</value>
+  </data>
+  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
+    <value>Deler overskrifts-, advarsels-, feil-, skrift- og bakgrunnsfarge med alle LCD-er i fraksjonen din som har denne bryteren på. Blokkeieren må være i en fraksjon.</value>
+  </data>
+  <data name="LcdMod_WarningColor" xml:space="preserve">
+    <value>Advarselsfarge</value>
+  </data>
+  <data name="LcdMod_WarningColor_Tooltip" xml:space="preserve">
+    <value>Advarsler og tomme tilstander.</value>
+  </data>
+  <data name="LcdMod_Energy_Balance" xml:space="preserve">
+    <value>Balanse</value>
+  </data>
+  <data name="LcdMod_Energy_Charge" xml:space="preserve">
+    <value>Lading</value>
+  </data>
+  <data name="LcdMod_Energy_Consumption" xml:space="preserve">
+    <value>Totalt forbruk</value>
+  </data>
+  <data name="LcdMod_Energy_Discharging" xml:space="preserve">
+    <value>Utlading</value>
+  </data>
+  <data name="LcdMod_Energy_Efficiency" xml:space="preserve">
+    <value>Virkningsgrad</value>
+  </data>
+  <data name="LcdMod_Energy_EmptyIn" xml:space="preserve">
+    <value>Tomt om</value>
+  </data>
+  <data name="LcdMod_Energy_FullIn" xml:space="preserve">
+    <value>Fullt om</value>
+  </data>
+  <data name="LcdMod_Energy_Idle" xml:space="preserve">
+    <value>Inaktiv</value>
+  </data>
+  <data name="LcdMod_Energy_Inoperative" xml:space="preserve">
+    <value>Ute av drift</value>
+  </data>
+  <data name="LcdMod_Energy_Input" xml:space="preserve">
+    <value>Inngang</value>
+  </data>
+  <data name="LcdMod_Energy_Load" xml:space="preserve">
+    <value>Belastning</value>
+  </data>
+  <data name="LcdMod_Energy_MaxFormat" xml:space="preserve">
+    <value>maks {0}</value>
+  </data>
+  <data name="LcdMod_Energy_MaxOutput" xml:space="preserve">
+    <value>Nåværende maksimum</value>
+  </data>
+  <data name="LcdMod_Energy_Mixed" xml:space="preserve">
+    <value>Blandet</value>
+  </data>
+  <data name="LcdMod_Energy_Mode" xml:space="preserve">
+    <value>Modus</value>
+  </data>
+  <data name="LcdMod_Energy_NoUnits" xml:space="preserve">
+    <value>Ingen enheter</value>
+  </data>
+  <data name="LcdMod_Energy_Nominal" xml:space="preserve">
+    <value>Nominell</value>
+  </data>
+  <data name="LcdMod_Energy_Of" xml:space="preserve">
+    <value>{0} av {1}</value>
+  </data>
+  <data name="LcdMod_Energy_OfCapacityFormat" xml:space="preserve">
+    <value>{0} av kapasiteten</value>
+  </data>
+  <data name="LcdMod_Energy_Offline" xml:space="preserve">
+    <value>Av</value>
+  </data>
+  <data name="LcdMod_Energy_Online" xml:space="preserve">
+    <value>I drift</value>
+  </data>
+  <data name="LcdMod_Energy_Other" xml:space="preserve">
+    <value>Annet</value>
+  </data>
+  <data name="LcdMod_Energy_Output" xml:space="preserve">
+    <value>Utgang</value>
+  </data>
+  <data name="LcdMod_Energy_Produced" xml:space="preserve">
+    <value>Produsert</value>
+  </data>
+  <data name="LcdMod_Energy_Production" xml:space="preserve">
+    <value>Total produksjon</value>
+  </data>
+  <data name="LcdMod_Energy_Stored" xml:space="preserve">
+    <value>Lagret</value>
+  </data>
+  <data name="LcdMod_Energy_StoredEnergy" xml:space="preserve">
+    <value>Lagret energi</value>
+  </data>
+  <data name="LcdMod_Energy_Units" xml:space="preserve">
+    <value>Enheter</value>
+  </data>
+  <data name="LcdMod_Energy_Used" xml:space="preserve">
+    <value>Brukt</value>
+  </data>
+  <data name="LcdMod_Energy_Warning" xml:space="preserve">
+    <value>Merk</value>
+  </data>
+  <data name="LcdMod_Energy_Working" xml:space="preserve">
+    <value>{0}/{1}</value>
   </data>
 </root>

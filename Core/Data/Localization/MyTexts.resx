@@ -708,4 +708,16 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_Energy_Discharging" xml:space="preserve">
     <value>Discharging</value>
   </data>
+  <data name="LcdMod_Antenna" xml:space="preserve">
+    <value>[SD] Antenna</value>
+  </data>
+  <data name="LcdMod_Inventory" xml:space="preserve">
+    <value>[SD] Inventory</value>
+  </data>
+  <data name="LcdMod_Projector" xml:space="preserve">
+    <value>[SD] Projector</value>
+  </data>
+  <data name="LcdMod_Thrust" xml:space="preserve">
+    <value>[SD] Thrust</value>
+  </data>
 </root>
