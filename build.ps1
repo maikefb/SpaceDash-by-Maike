@@ -5,7 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
-$modsDir = Split-Path $root -Parent
+$modsDir = $root; while ((Split-Path $modsDir -Leaf) -ne "Mods") { $modsDir = Split-Path $modsDir -Parent }
 $targets = @{ Info = "SpaceDash" }
 $marker = ".maike-lcd-build"
 
