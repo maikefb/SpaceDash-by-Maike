@@ -1,0 +1,31 @@
+SpaceDash by Maike
+
+Mod de LCD derivado do "Arthur's LCD Mod" 0.2.6, sem a interação por clique na tela. Todas as telas aparecem na lista de scripts do LCD com o prefixo [SD].
+
+TELAS
+- Gás Preenchido %: nível dos tanques (modo de exibição, tipo de vínculo, passo da rolagem)
+- Painel de Defesa
+- Energia %: carga das baterias
+- Gráfico de energia: histórico de produção, consumo e armazenamento, com previsão "Vazia em"/"Cheia em"
+- Painel de energia e cartões por tipo: baterias, painéis solares, turbinas eólicas, motores a hidrogênio, reatores
+- Fazenda
+- Antena: contatos detectados, com filtro de blocos
+- Inventário: gráficos de itens, com ordenação, filtros e linha de diagnóstico no menu K
+- Projetor: componentes faltantes da projeção, com o botão "Fabricar componentes faltantes" (também como ação de barra)
+- Relógio do jogo: hora, temperatura, tempo de jogo da sessão e tempo de servidor ligado
+- Propulsão
+- Alinhamento de acoplagem
+- Radar: magnificação e bloco de referência
+- Sobreviventes: ranking por tempo vivo, com recorde pessoal e marcadores ouro/prata/bronze
+- Moldura digital: imagens DDS escolhidas no terminal, sincronizadas entre servidor e clientes
+
+COMUM A TODAS AS TELAS
+Brilho, escala, título visível, cores, copiar e colar configurações. O switch "Sincronizar cores" compartilha a paleta entre todos os LCDs da facção.
+
+VÍNCULO
+Além dos vínculos originais, a opção "Conexão elétrica" considera os grids na mesma rede elétrica (juntas mecânicas e conectores acoplados). As telas de energia leem um serviço compartilhado por grid: uma amostra a cada 50 frames, 50 amostras de histórico.
+
+O QUE NÃO VEIO DO MOD ORIGINAL
+Cliques, arraste, cursor, tooltips, diálogos e menus na tela; telas Cargo, Integridade, Markdown, Media Player, Mercado NPC, Mapa planetário, Mapa estelar, Jogos, Botões e Render Proxy.
+
+Compatível com servidores dedicados. Código fonte disponível.

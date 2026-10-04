@@ -1,0 +1,31 @@
+SpaceDash by Maike
+
+LCD mod derived from "Arthur's LCD Mod" 0.2.6, without the click interaction on the screen. All screens show up in the LCD script list with the [SD] prefix.
+
+SCREENS
+- Gas Fill %: tank levels (display mode, link type, scroll step)
+- Defense Dashboard
+- Power %: battery charge
+- Energy Chart: production, consumption and storage history, with "Empty in"/"Full in" forecast
+- Energy Dashboard and per-type cards: batteries, solar panels, wind turbines, hydrogen engines, reactors
+- Farm
+- Antenna: detected contacts, with block filter
+- Inventory: item charts, with sorting, filters and a diagnostic line in the K menu
+- Projector: missing projection components, with the "Craft missing components" button (also available as a toolbar action)
+- In-Game Clock: time, temperature, session play time and server uptime
+- Thrust
+- Docking Alignment
+- Radar: magnification and reference block
+- Survivors: ranking by time alive, with personal record and gold/silver/bronze markers
+- Digital Picture Frame: DDS images picked in the terminal, synced between server and clients
+
+COMMON TO ALL SCREENS
+Brightness, scale, visible title, colors, copy and paste settings. The "Sync colors" switch shares the palette across all LCDs of the faction.
+
+LINK
+Besides the original link types, the "Electrical connection" option covers grids on the same power network (mechanical joints and docked connectors). Energy screens read a shared per-grid service: one sample every 50 frames, 50 samples of history.
+
+NOT CARRIED OVER FROM THE ORIGINAL MOD
+Clicks, drag, cursor, tooltips, dialogs and menus on the screen; the Cargo, Integrity, Markdown, Media Player, NPC Market, Planet Map, Star Map, Games, Buttons and Render Proxy screens.
+
+Dedicated server compatible. Source code available.
