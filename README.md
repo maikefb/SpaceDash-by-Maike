@@ -96,3 +96,7 @@ Chaves de localização continuam `LcdMod_*`.
 - O framework de GUI ainda carrega a infraestrutura de interação sem chamador (tooltips, barra do ScrollPanel, arraste do ListBoxItem, ComboBox).
 - Os remaps de ícones `.png` da HUD geram avisos "extension not supported" no log, como no mod original.
 - Teste em servidor dedicado com dois clientes ainda não foi feito.
+
+## Direitos autorais
+
+Veja [COPYRIGHT.md](COPYRIGHT.md): copyright de Maike Bressan sobre o que foi adicionado, créditos ao "Arthur's LCD Mod" 0.2.6 pelo conteúdo herdado, uso livre em servidores e proibição de republicar como próprio.

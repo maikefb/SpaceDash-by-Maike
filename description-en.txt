@@ -29,3 +29,6 @@ NOT CARRIED OVER FROM THE ORIGINAL MOD
 Clicks, drag, cursor, tooltips, dialogs and menus on the screen; the Cargo, Integrity, Markdown, Media Player, NPC Market, Planet Map, Star Map, Games, Buttons and Render Proxy screens.
 
 Dedicated server compatible. Source code available.
+
+COPYRIGHT
+Copyright © 2026 Maike Bressan. Derivative work of "Arthur's LCD Mod" 0.2.6; rights over inherited content belong to the original author. Free to use on any server and to study the code with credit. Do not republish as your own. Details in COPYRIGHT.md in the repository.
