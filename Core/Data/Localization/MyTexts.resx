@@ -747,4 +747,19 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_RenderProxy_UnsupportedScreen" xml:space="preserve">
     <value>Unsupported screen</value>
   </data>
+  <data name="LcdMod_ConveyorMap" xml:space="preserve">
+    <value>[SD] Conveyor Map</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Footer" xml:space="preserve">
+    <value>{0} NETWORKS | {1} BLOCKS | {2} OPEN ENDS | {3} BOTTLENECKS | {4} ALERTS</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Legend" xml:space="preserve">
+    <value>COLOR = PHYSICAL NETWORK | FLOW NOT EVALUATED</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_TooLarge" xml:space="preserve">
+    <value>Network too large ({0} nodes, max {1})</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_NoConveyors" xml:space="preserve">
+    <value>No conveyors on this grid</value>
+  </data>
 </root>

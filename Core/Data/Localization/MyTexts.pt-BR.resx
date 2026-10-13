@@ -767,4 +767,19 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_RenderProxy_UnsupportedScreen" xml:space="preserve">
     <value>Tela não suportada</value>
   </data>
+  <data name="LcdMod_ConveyorMap" xml:space="preserve">
+    <value>[SD] Mapa de Esteiras</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Footer" xml:space="preserve">
+    <value>{0} REDES | {1} BLOCOS | {2} PONTAS VAZIAS | {3} GARGALOS | {4} ALERTAS</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Legend" xml:space="preserve">
+    <value>COR = REDE FÍSICA | FLUXO NÃO AVALIADO</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_TooLarge" xml:space="preserve">
+    <value>Rede grande demais ({0} nós, máx {1})</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_NoConveyors" xml:space="preserve">
+    <value>Nenhuma esteira nesta grid</value>
+  </data>
 </root>

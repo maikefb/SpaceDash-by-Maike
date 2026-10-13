@@ -29,6 +29,7 @@ Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), deriva
 | SpaceDash | Radar | `LcdInfo_Radar` | magnificação, referência |
 | SpaceDash | Sobreviventes | `LcdInfo_Survivors` | passo da rolagem |
 | SpaceDash | Moldura digital | `LcdInfo_DigitalPictureFrames` | imagens, intervalo de troca, modo de exibição |
+| SpaceDash | Mapa de Esteiras | `LcdInfo_ConveyorMap` | só os comuns |
 | SpaceDash | Proxy de renderização | `LcdInfo_RenderProxy` | bloco de referência, deslocamento X/Y, ajuste automático, botão Auto |
 
 Comuns a todas: brilho, escala, título visível, cores, copiar e colar configurações.

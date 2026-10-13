@@ -23,6 +23,7 @@ namespace Generated
         EnergySolar = 35,
         EnergyWind = 36,
         EnergyHydrogen = 37,
-        EnergyReactors = 38
+        EnergyReactors = 38,
+        ConveyorMap = 39
     }
 }

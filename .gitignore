@@ -1,3 +1,5 @@
 tools/CompileCheck/bin/
 tools/CompileCheck/obj/
+tools/LayoutCheck/bin/
+tools/LayoutCheck/obj/
 .maike-lcd-build
