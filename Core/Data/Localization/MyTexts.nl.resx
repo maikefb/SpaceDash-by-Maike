@@ -634,12 +634,6 @@ We wachten even en starten het daarna voor je opnieuw op.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Dood</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Kleuren synchroniseren</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Deelt kop-, waarschuwings-, fout-, letter- en achtergrondkleur met elk LCD van je factie waarop deze schakelaar aanstaat. De blokeigenaar moet in een factie zitten.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Waarschuwingskleur</value>
   </data>

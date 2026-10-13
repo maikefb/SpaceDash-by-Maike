@@ -11,7 +11,6 @@ using LcdMod.Common.Helpers;
 using Sandbox.Game.GameSystems.TextSurfaceScripts;
 using Sandbox.Game.Localization;
 using Sandbox.Game.EntityComponents;
-using LcdMod.Client.FactionColors;
 using VRageMath;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
@@ -156,9 +155,6 @@ namespace LcdMod.Client.Terminal
             // Os controles vanilla sobrevivem ao mundo; sem restaurar, o seletor de script some no proximo mundo.
             foreach (var entry in ScriptControls)
                 entry.Key.Visible = entry.Value.OriginalVisible ?? (block => true);
-            foreach (var entry in NativeColorSetters)
-                entry.Key.Setter = entry.Value;
-            NativeColorSetters.Clear();
 
             Controls.Clear();
             SurfaceControls.Clear();
@@ -193,35 +189,7 @@ namespace LcdMod.Client.Terminal
             {
                 CaptureSurfaceControl(c);
                 CaptureScriptControl(c as IMyTerminalControlListbox);
-                CaptureNativeColorControl(c as IMyTerminalControlColor);
             }
-        }
-
-        static readonly Dictionary<IMyTerminalControlColor, Action<IMyTerminalBlock, Color>> NativeColorSetters =
-            new Dictionary<IMyTerminalControlColor, Action<IMyTerminalBlock, Color>>();
-
-        /// <summary>
-        /// Os controles vanilla de cor da letra e do fundo não passam pelo mod; o setter é envolvido para que a
-        /// mudança feita no terminal publique a paleta da facção quando "Sincronizar cores" está ligado.
-        /// </summary>
-        static void CaptureNativeColorControl(IMyTerminalControlColor control)
-        {
-            string id = control == null ? null : ((IMyTerminalControl)control).Id;
-            if (control == null || (id != "ScriptForegroundColor" && id != "ScriptBackgroundColor") || NativeColorSetters.ContainsKey(control))
-                return;
-
-            var original = control.Setter;
-            if (original == null)
-                return;
-
-            NativeColorSetters[control] = original;
-            control.Setter = (block, value) =>
-            {
-                original(block, value);
-                // TODO: Claude 03/10/2026 | remover log de diagnóstico do sync de cores após confirmar em jogo
-                LogHelper.LogInfo("[Sync] setter vanilla " + id + " em " + (block == null ? "null" : block.CustomName) + " = " + value);
-                FactionColorsSync.OnNativeColorsEdited(block);
-            };
         }
 
         void CaptureScriptControl(IMyTerminalControlListbox control)

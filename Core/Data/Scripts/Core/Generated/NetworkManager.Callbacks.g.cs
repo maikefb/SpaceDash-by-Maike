@@ -1,4 +1,4 @@
-// Mantido como fonte estática. Pacote 1: sincronização da configuração das telas. Pacote 2: lista de sobreviventes. Pacote 3: paleta de cores da facção. Pacotes 4 e 5: pedido e entrega de imagem da Moldura digital.
+// Mantido como fonte estática. Pacote 1: sincronização da configuração das telas. Pacote 2: lista de sobreviventes. Pacote 3: reservado (removido), não reutilizar. Pacotes 4 e 5: pedido e entrega de imagem da Moldura digital.
 // No servidor o pacote só é aceito (e retransmitido pelo NetworkManager) se o remetente tiver acesso ao bloco.
 namespace Generated
 {
@@ -37,17 +37,6 @@ namespace Generated
 
                     if (args.IsFromServer && survivors != null)
                         global::LcdMod.Client.Modules.Survivors.SurvivorsClient.Apply(survivors.Entries);
-                    return;
-                }
-                case 3:
-                {
-                    isKnown = true;
-                    var colors = args.UnWrap<global::LcdMod.Common.FactionColors.NetworkPackageFactionColors>();
-                    bool isServer = global::Sandbox.ModAPI.MyAPIGateway.Session.IsServer;
-                    if (!args.IsFromServer && isServer && global::LcdMod.Server.LcdModServerComponent.Instance != null)
-                        args.SetResolved(global::LcdMod.Server.LcdModServerComponent.Instance.HandleFactionColors(colors, args.SenderId));
-                    if (!global::Sandbox.ModAPI.MyAPIGateway.Utilities.IsDedicated && (!isServer || args.IsResolved))
-                        global::LcdMod.Client.FactionColors.FactionColorsSync.Receive(colors);
                     return;
                 }
                 case 4:

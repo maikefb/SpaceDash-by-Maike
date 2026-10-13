@@ -4,7 +4,6 @@ using Generated;
 using LcdMod.Common.Config;
 using LcdMod.Common.Config.Components;
 using LcdMod.Common.Config.Models;
-using LcdMod.Common.FactionColors;
 using LcdMod.Common.Helpers;
 using LcdMod.Common.Networking;
 using Sandbox.Game.Entities;
@@ -46,7 +45,6 @@ namespace LcdMod.Server
         public void UnloadData()
         {
             ClearTextureRequests();
-            FactionColorsStore.ClearCache();
             MyAPIGateway.Entities.OnEntityAdd -= EntityAdded;
             UnloadModData();
 
@@ -98,7 +96,6 @@ namespace LcdMod.Server
         public void Update()
         {
             CleanupTextureCooldowns();
-            FlushPendingPalettes();
             if (_dirtyGridDueFrame.Count == 0)
                 return;
 
@@ -169,115 +166,6 @@ namespace LcdMod.Server
                     continue;
                 RemapHelper.PinBlock(target);
                 pinned++;
-            }
-        }
-
-        /// <summary>Só membro da facção pode gravar a paleta dela. A variável do mundo é a persistência.</summary>
-        internal bool HandleFactionColors(NetworkPackageFactionColors packet, ulong senderSteamId)
-        {
-            if (packet == null || packet.FactionId == 0L)
-                return false;
-
-            var identityId = MyAPIGateway.Players.TryGetIdentityId(senderSteamId);
-            var faction = MyAPIGateway.Session.Factions.TryGetFactionById(packet.FactionId);
-            if (identityId == 0L || faction == null || !faction.IsMember(identityId))
-            {
-                // TODO: Claude 03/10/2026 | remover log de diagnóstico do sync de cores após confirmar em jogo
-                LogHelper.LogInfo("[Sync] servidor recusou: identidade=" + identityId + " facção=" + (faction == null ? "nula" : faction.Tag) + " membro=" + (faction != null && faction.IsMember(identityId)));
-                return false;
-            }
-
-            FactionColorsStore.Set(packet.FactionId, packet.ToPalette());
-            _pendingPaletteFactions.Add(packet.FactionId);
-            LogHelper.LogInfo("[Sync] servidor aceitou paleta da facção " + faction.Tag);
-            return true;
-        }
-
-        const long PALETTE_APPLY_INTERVAL_FRAMES = 60;
-        readonly HashSet<long> _pendingPaletteFactions = new HashSet<long>();
-        readonly List<long> _paletteFactionsDue = new List<long>();
-        long _nextPaletteApplyFrame;
-
-        /// <summary>Aplica as paletas pendentes no máximo uma vez por segundo, por mais pacotes que cheguem.</summary>
-        void FlushPendingPalettes()
-        {
-            if (_pendingPaletteFactions.Count == 0)
-                return;
-
-            long frame = MyAPIGateway.Session.GameplayFrameCounter;
-            if (frame < _nextPaletteApplyFrame)
-                return;
-
-            _nextPaletteApplyFrame = frame + PALETTE_APPLY_INTERVAL_FRAMES;
-            _paletteFactionsDue.Clear();
-            _paletteFactionsDue.AddRange(_pendingPaletteFactions);
-            _pendingPaletteFactions.Clear();
-            LogHelper.LogInfo("[Sync] aplicando paletas de " + _paletteFactionsDue.Count + " facção(ões) em " + _trackedGrids.Count + " grids");
-            ApplyPalettesToSurfaces(_paletteFactionsDue);
-            _paletteFactionsDue.Clear();
-        }
-
-        /// <summary>
-        /// Escreve fonte e fundo nativos em toda superfície da facção com "Sincronizar cores" ligado. Feito só no
-        /// servidor, porque essas propriedades já são replicadas pelo jogo; os clientes não as escrevem.
-        /// </summary>
-        void ApplyPalettesToSurfaces(List<long> factionIds)
-        {
-            foreach (var grid in _trackedGrids.Values)
-            {
-                var cubeGrid = grid as MyCubeGrid;
-                if (cubeGrid == null || cubeGrid.MarkedForClose || cubeGrid.Physics == null)
-                    continue;
-
-                foreach (var fatBlock in cubeGrid.GetFatBlocks())
-                {
-                    var block = fatBlock as IMyTerminalBlock;
-                    var provider = fatBlock as IMyTextSurfaceProvider;
-                    if (block == null || provider == null || provider.SurfaceCount <= 0)
-                        continue;
-                    if (block.Storage == null)
-                    {
-                        if (factionIds.Contains(FactionColorsStore.FactionIdOf(block)))
-                            LogHelper.LogInfo("[Sync] " + block.CustomName + ": sem storage");
-                        continue;
-                    }
-                    long factionId = FactionColorsStore.FactionIdOf(block);
-                    FactionPalette palette;
-                    if (factionId == 0L || !factionIds.Contains(factionId) || !FactionColorsStore.TryGet(factionId, out palette))
-                        continue;
-
-                    var config = ScreenProviderConfigStorage.TryLoad(block);
-                    if (config == null || config.Surfaces == null)
-                    {
-                        LogHelper.LogInfo("[Sync] " + block.CustomName + ": sem config no storage");
-                        continue;
-                    }
-
-                    foreach (var surfaceConfig in config.Surfaces)
-                    {
-                        var colors = surfaceConfig == null ? null : surfaceConfig.TryGet<ColorConfigComponent>(LcdMod.Common.Helpers.Constants.COLORS);
-                        if (colors == null || !colors.SyncColors)
-                        {
-                            LogHelper.LogInfo("[Sync] " + block.CustomName + "[" + (surfaceConfig == null ? -1 : surfaceConfig.SurfaceIndex) + "]: " + (colors == null ? "sem componente de cores" : "sync desligado"));
-                            continue;
-                        }
-                        if (surfaceConfig.SurfaceIndex < 0 || surfaceConfig.SurfaceIndex >= provider.SurfaceCount)
-                        {
-                            LogHelper.LogInfo("[Sync] " + block.CustomName + ": índice " + surfaceConfig.SurfaceIndex + " fora de " + provider.SurfaceCount);
-                            continue;
-                        }
-
-                        var surface = provider.GetSurface(surfaceConfig.SurfaceIndex);
-                        if (surface == null)
-                            continue;
-                        bool changed = surface.ScriptForegroundColor != palette.Foreground || surface.ScriptBackgroundColor != palette.Background;
-                        if (surface.ScriptForegroundColor != palette.Foreground)
-                            surface.ScriptForegroundColor = palette.Foreground;
-                        if (surface.ScriptBackgroundColor != palette.Background)
-                            surface.ScriptBackgroundColor = palette.Background;
-                        LogHelper.LogInfo("[Sync] " + block.CustomName + "[" + surfaceConfig.SurfaceIndex + "]: " + (changed ? "fonte/fundo aplicados" : "já estava na paleta"));
-                    }
-                }
             }
         }
 

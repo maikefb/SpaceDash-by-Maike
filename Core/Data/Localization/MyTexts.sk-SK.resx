@@ -634,12 +634,6 @@ Chvíľu počkáme a potom ju za vás reštartujeme.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Mŕtvy</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synchronizovať farby</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Zdieľa farby záhlavia, varovania, chyby, písma a pozadia s každým LCD vašej frakcie, ktorý má tento prepínač zapnutý. Vlastník bloku musí byť vo frakcii.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Farba varovania</value>
   </data>

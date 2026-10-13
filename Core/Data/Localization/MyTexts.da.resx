@@ -635,12 +635,6 @@ Vi venter et øjeblik og genstarter den derefter for dig.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Død</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synkronisér farver</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Deler overskrifts-, advarsels-, fejl-, skrift- og baggrundsfarve med alle LCD'er i din fraktion, der har denne kontakt slået til. Blokkens ejer skal være i en fraktion.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Advarselsfarve</value>
   </data>

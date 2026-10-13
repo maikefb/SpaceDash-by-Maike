@@ -635,12 +635,6 @@ Wir warten einen Moment und starten sie dann für dich neu.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Tot</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Farben synchronisieren</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Teilt Kopfzeilen-, Warn-, Fehler-, Schrift- und Hintergrundfarbe mit jedem LCD deiner Fraktion, bei dem dieser Schalter aktiv ist. Der Blockbesitzer muss in einer Fraktion sein.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Warnfarbe</value>
   </data>

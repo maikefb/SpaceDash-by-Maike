@@ -634,12 +634,6 @@ Várunk egy kicsit, majd újraindítjuk helyetted.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Halott</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Színek szinkronizálása</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Megosztja a fejléc-, figyelmeztetés-, hiba-, betű- és háttérszínt a frakciód minden olyan LCD-jével, amelyen ez a kapcsoló be van kapcsolva. A blokk tulajdonosának frakcióban kell lennie.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Figyelmeztetés színe</value>
   </data>

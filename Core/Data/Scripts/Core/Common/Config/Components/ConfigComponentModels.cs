@@ -288,7 +288,7 @@ namespace LcdMod.Common.Config.Components
         [ProtoMember(4)]
         
         public bool CustomizedColors { get; set; }
-        [ProtoMember(5)] public bool SyncColors { get; set; } = true;
+        // ProtoMember 5 era SyncColors (removido); não reutilizar.
 
         public override ConfigComponent Clone()
         {
@@ -297,8 +297,7 @@ namespace LcdMod.Common.Config.Components
                 HeaderColor = ConfigComponentClone.Copy(HeaderColor),
                 ErrorColor = ConfigComponentClone.Copy(ErrorColor),
                 WarningColor = ConfigComponentClone.Copy(WarningColor),
-                CustomizedColors = CustomizedColors,
-                SyncColors = SyncColors
+                CustomizedColors = CustomizedColors
             };
         }
     }

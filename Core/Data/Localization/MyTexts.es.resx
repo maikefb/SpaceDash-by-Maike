@@ -635,12 +635,6 @@ Esperaremos un momento y después la reiniciaremos por ti.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Muerto</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sincronizar colores</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Comparte los colores de encabezado, aviso, error, fuente y fondo con cada LCD de tu facción que tenga este interruptor activado. El dueño del bloque debe pertenecer a una facción.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Color de aviso</value>
   </data>

@@ -634,12 +634,6 @@ Mēs brīdi pagaidīsim un pēc tam to restartēsim jūsu vietā.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Miris</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sinhronizēt krāsas</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Kopīgo galvenes, brīdinājuma, kļūdas, fonta un fona krāsas ar katru jūsu frakcijas LCD, kuram šis slēdzis ir ieslēgts. Bloka īpašniekam jābūt frakcijā.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Brīdinājuma krāsa</value>
   </data>

@@ -27,15 +27,7 @@ namespace LcdMod.Client.Extensions
         /// <summary>Cor padrão (sem cores personalizadas) ganha contraste mínimo de 3:1 com o fundo; escolha explícita do usuário fica intacta.</summary>
         public static Color ReadableFor(this Color color, LcdMod.Common.Config.Components.ColorConfigComponent colors, Color background)
         {
-            return colors != null && (colors.CustomizedColors || colors.SyncColors) ? color : color.EnsureMinimalContrast(background);
-        }
-
-        public static Color ReadableFor(this Color color, LcdMod.Common.Config.Components.ColorConfigComponent colors,
-            Sandbox.ModAPI.IMyTerminalBlock block, Color background)
-        {
-            return LcdMod.Common.Config.Components.ColorConfigComponentExtensions.HasExplicitColors(colors, block)
-                ? color
-                : color.EnsureMinimalContrast(background);
+            return colors != null && colors.CustomizedColors ? color : color.EnsureMinimalContrast(background);
         }
 
         public static Color EnsureMinimalContrast(

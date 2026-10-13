@@ -20,7 +20,7 @@ SCREENS
 - Digital Picture Frame: DDS images picked in the terminal, synced between server and clients
 
 COMMON TO ALL SCREENS
-Brightness, scale, visible title, colors, copy and paste settings. The "Sync colors" switch shares the palette across all LCDs of the faction.
+Brightness, scale, visible title, colors, copy and paste settings.
 
 LINK
 Besides the original link types, the "Electrical connection" option covers grids on the same power network (mechanical joints and docked connectors). Energy screens read a shared per-grid service: one sample every 50 frames, 50 samples of history.

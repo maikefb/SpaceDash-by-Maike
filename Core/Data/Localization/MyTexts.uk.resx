@@ -634,12 +634,6 @@
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Мертвий</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Синхронізувати кольори</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Ділить кольори заголовка, попередження, помилки, шрифту та фону з кожним LCD вашої фракції, де ввімкнено цей перемикач. Власник блока має бути у фракції.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Колір попередження</value>
   </data>

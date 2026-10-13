@@ -20,7 +20,7 @@ namespace LcdMod.Client.Gui.UserControls.Antenna
         readonly Dictionary<string, string> _locCache = new Dictionary<string, string>();
 
         protected Color ForegroundColor => _host.ForegroundColor;
-        protected Color WarningColor => _getColors().ResolveWarningColor(_host.Block as Sandbox.ModAPI.IMyTerminalBlock).ReadableFor(_getColors(), _host.Block as Sandbox.ModAPI.IMyTerminalBlock, _host.BackgroundColor);
+        protected Color WarningColor => _getColors().ResolveWarningColor().ReadableFor(_getColors(), _host.BackgroundColor);
         protected BlockSelectionConfigComponent AntennaConfig => _getConfig();
         
         public abstract void Collect(

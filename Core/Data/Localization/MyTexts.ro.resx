@@ -634,12 +634,6 @@ Vom aștepta puțin, apoi o vom reporni pentru tine.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Mort</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sincronizează culorile</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Partajează culorile de antet, avertisment, eroare, font și fundal cu fiecare LCD al facțiunii tale care are acest comutator pornit. Proprietarul blocului trebuie să fie într-o facțiune.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Culoare avertisment</value>
   </data>

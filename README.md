@@ -30,7 +30,7 @@ Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), deriva
 | SpaceDash | Sobreviventes | `LcdInfo_Survivors` | passo da rolagem |
 | SpaceDash | Moldura digital | `LcdInfo_DigitalPictureFrames` | imagens, intervalo de troca, modo de exibição |
 
-Comuns a todas: brilho, escala, título visível, cores, copiar e colar configurações. O switch "Sincronizar cores" (ligado por padrão, antes de "Cores personalizadas", visível em bloco de facção e independente delas) guarda cabeçalho, alerta, erro, fonte e fundo na variável de mundo `LcdMod.colors.<factionId>`; todo LCD da facção com o switch ligado segue essa paleta e qualquer alteração nele a atualiza. Desligado, a tela mantém as cores atuais e edições ficam só nela.
+Comuns a todas: brilho, escala, título visível, cores, copiar e colar configurações.
 
 O Inventário escreve uma linha de diagnóstico no painel de informações do bloco (menu K): tipo de vínculo, inventários rastreados, tipos de item no grid, itens da tela, itens exibidos e fila de varredura. Serve para localizar onde a cadeia para quando a tela fica vazia.
 

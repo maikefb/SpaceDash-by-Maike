@@ -468,9 +468,6 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Dead</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sync colors</value>
-  </data>
   <data name="LcdMod_SpriteCandidates" xml:space="preserve">
     <value>Available images</value>
   </data>
@@ -527,9 +524,6 @@ We are waiting for a while, and then we will restart it for you.</value>
   </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Draws the title bar. Disabled automatically on very wide screens.</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Shares header, warning, error, font and background colors with every LCD of your faction that has this switch on. Requires the block owner to be in a faction.</value>
   </data>
   <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
     <value>Seconds between images in the slideshow. 0 keeps the first image.</value>

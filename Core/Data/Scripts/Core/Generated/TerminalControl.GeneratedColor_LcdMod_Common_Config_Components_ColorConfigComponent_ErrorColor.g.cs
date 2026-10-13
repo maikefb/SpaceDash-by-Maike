@@ -38,8 +38,6 @@ namespace LcdMod.Client.Terminal.Controls.GeneratedSettings
                 component =>
                 {
                     component.ErrorColor.Set(value);
-                    if (component.SyncColors)
-                        global::LcdMod.Client.FactionColors.FactionColorsSync.PublishModColors(block, component, GetThisSurface(block));
                 });
         }
 
@@ -48,7 +46,7 @@ namespace LcdMod.Client.Terminal.Controls.GeneratedSettings
             var component = global::LcdMod.Client.Config.ConfigManager.GetComponentForCurrentSurface<global::LcdMod.Common.Config.Components.ColorConfigComponent>(
                 block,
 "core.colors");
-            return global::LcdMod.Common.Config.Components.ColorConfigComponentExtensions.ResolveErrorColor(component, block);
+            return global::LcdMod.Common.Config.Components.ColorConfigComponentExtensions.ResolveErrorColor(component);
         }
     }
 }

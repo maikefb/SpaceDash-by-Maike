@@ -7,7 +7,6 @@ using Generated;
 using LcdMod.Client.Animation;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Config;
-using LcdMod.Client.FactionColors;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.GridData;
 using LcdMod.Client.Gui;
@@ -886,18 +885,18 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
         protected Color GetWarningColor()
         {
-            return Readable(ColorComponent.ResolveWarningColor(Block as IMyTerminalBlock));
+            return Readable(ColorComponent.ResolveWarningColor());
         }
 
         protected Color GetErrorColor()
         {
-            return Readable(ColorComponent.ResolveErrorColor(Block as IMyTerminalBlock));
+            return Readable(ColorComponent.ResolveErrorColor());
         }
 
         /// <summary>Cor padrão (não escolhida pelo usuário) ganha contraste mínimo de 3:1 com o fundo real da tela.</summary>
         Color Readable(Color color)
         {
-            return color.ReadableFor(ColorComponent, Block as IMyTerminalBlock, BackgroundColor);
+            return color.ReadableFor(ColorComponent, BackgroundColor);
         }
 
         protected static void ParseFilter(IMyTerminalBlock lcd, out string mode, out string token)

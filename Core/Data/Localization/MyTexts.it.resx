@@ -635,12 +635,6 @@ Attenderemo un momento e poi la riavvieremo per te.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Morto</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sincronizza colori</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Condivide i colori di intestazione, avviso, errore, carattere e sfondo con ogni LCD della tua fazione che ha questo interruttore attivo. Il proprietario del blocco deve essere in una fazione.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Colore avviso</value>
   </data>

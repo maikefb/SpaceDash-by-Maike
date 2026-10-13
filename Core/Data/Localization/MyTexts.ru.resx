@@ -634,12 +634,6 @@
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Мёртв</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Синхронизировать цвета</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Делит цвета заголовка, предупреждения, ошибки, шрифта и фона с каждым LCD вашей фракции, где включён этот переключатель. Владелец блока должен состоять во фракции.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Цвет предупреждения</value>
   </data>

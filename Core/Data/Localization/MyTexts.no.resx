@@ -634,12 +634,6 @@ Vi venter en stund og starter den deretter på nytt for deg.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Død</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synkroniser farger</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Deler overskrifts-, advarsels-, feil-, skrift- og bakgrunnsfarge med alle LCD-er i fraksjonen din som har denne bryteren på. Blokkeieren må være i en fraksjon.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Advarselsfarge</value>
   </data>

@@ -242,7 +242,7 @@ namespace LcdMod.Client.Apps.Abstract
         /// <summary>Cor padrão (não escolhida pelo usuário) ganha contraste mínimo de 3:1 com o fundo real da tela.</summary>
         Color Readable(Color color)
         {
-            return color.ReadableFor(ColorComponent, Host.Block as Sandbox.ModAPI.IMyTerminalBlock, Host.BackgroundColor);
+            return color.ReadableFor(ColorComponent, Host.BackgroundColor);
         }
 
         protected Color GetForegroundColor()
@@ -252,12 +252,12 @@ namespace LcdMod.Client.Apps.Abstract
 
         protected Color GetWarningColor()
         {
-            return Readable(ColorComponent.ResolveWarningColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock));
+            return Readable(ColorComponent.ResolveWarningColor());
         }
 
         protected Color GetErrorColor()
         {
-            return Readable(ColorComponent.ResolveErrorColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock));
+            return Readable(ColorComponent.ResolveErrorColor());
         }
 
         protected Color ResolveResource(ResourceKey<Color> key, Color fallback)

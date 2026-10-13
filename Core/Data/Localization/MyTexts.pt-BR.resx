@@ -488,9 +488,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Morto</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sincronizar cores</value>
-  </data>
   <data name="LcdMod_SpriteCandidates" xml:space="preserve">
     <value>Imagens disponíveis</value>
   </data>
@@ -547,9 +544,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Desenha a barra de título. Desativado automaticamente em telas muito largas.</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Compartilha cabeçalho, alerta, erro, fonte e fundo com todo LCD da sua facção que estiver com este switch ligado. Exige que o dono do bloco esteja em uma facção.</value>
   </data>
   <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
     <value>Segundos entre as imagens. 0 mantém a primeira imagem.</value>

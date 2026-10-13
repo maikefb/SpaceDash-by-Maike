@@ -634,12 +634,6 @@ Pričekat ćemo neko vrijeme, a zatim je ponovno pokrenuti za vas.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Mrtav</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sinkroniziraj boje</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Dijeli boje zaglavlja, upozorenja, greške, fonta i pozadine sa svakim LCD-om vaše frakcije koji ima uključen ovaj prekidač. Vlasnik bloka mora biti u frakciji.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Boja upozorenja</value>
   </data>

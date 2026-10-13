@@ -52,9 +52,9 @@ namespace LcdMod.Client.Gui.UserControls.Power
 
         protected bool HideEmpty => PowerComponent.HideEmpty;
         protected GridLinkTypeEnum GridLinkType => (GridLinkTypeEnum)PowerComponent.GridLinkTypeInternal;
-        protected Color HeaderColor => Colors.ResolveHeaderColor(ParentBlock).ReadableFor(Colors, ParentBlock, _host.BackgroundColor);
-        protected Color WarningColor => Colors.ResolveWarningColor(ParentBlock).ReadableFor(Colors, ParentBlock, _host.BackgroundColor);
-        protected Color ErrorColor => Colors.ResolveErrorColor(ParentBlock).ReadableFor(Colors, ParentBlock, _host.BackgroundColor);
+        protected Color HeaderColor => Colors.ResolveHeaderColor(ParentBlock).ReadableFor(Colors, _host.BackgroundColor);
+        protected Color WarningColor => Colors.ResolveWarningColor().ReadableFor(Colors, _host.BackgroundColor);
+        protected Color ErrorColor => Colors.ResolveErrorColor().ReadableFor(Colors, _host.BackgroundColor);
 
         public abstract string FooterPrefix { get; }
         public abstract FillableTexture FillableTexture { get; }

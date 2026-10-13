@@ -9,9 +9,6 @@ namespace Generated
         public static void AddTo(List<TerminalControlRegistration> registrations)
         {
             registrations.Add(new TerminalControlRegistration(
-                2150,
-                new global::LcdMod.Client.Terminal.Controls.GeneratedSettings.GeneratedSwitch_LcdMod_Common_Config_Components_ColorConfigComponent_SyncColors()));
-            registrations.Add(new TerminalControlRegistration(
                 2200,
                 new global::LcdMod.Client.Terminal.Controls.GeneratedSettings.GeneratedSwitch_LcdMod_Common_Config_Components_ColorConfigComponent_CustomizedColors()));
             registrations.Add(new TerminalControlRegistration(

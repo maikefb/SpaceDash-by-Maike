@@ -20,7 +20,7 @@ TELAS
 - Moldura digital: imagens DDS escolhidas no terminal, sincronizadas entre servidor e clientes
 
 COMUM A TODAS AS TELAS
-Brilho, escala, título visível, cores, copiar e colar configurações. O switch "Sincronizar cores" compartilha a paleta entre todos os LCDs da facção.
+Brilho, escala, título visível, cores, copiar e colar configurações.
 
 VÍNCULO
 Além dos vínculos originais, a opção "Conexão elétrica" considera os grids na mesma rede elétrica (juntas mecânicas e conectores acoplados). As telas de energia leem um serviço compartilhado por grid: uma amostra a cada 50 frames, 50 amostras de histórico.

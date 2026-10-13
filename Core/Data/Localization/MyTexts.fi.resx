@@ -634,12 +634,6 @@ Odotamme hetken ja käynnistämme sen sitten uudelleen puolestasi.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Kuollut</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synkronoi värit</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Jakaa otsikko-, varoitus-, virhe-, fontti- ja taustavärin jokaisen ryhmittymäsi LCD:n kanssa, jossa tämä kytkin on päällä. Lohkon omistajan on kuuluttava ryhmittymään.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Varoitusväri</value>
   </data>

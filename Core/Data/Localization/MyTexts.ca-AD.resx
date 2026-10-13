@@ -635,12 +635,6 @@ Esperarem una estona i després la reiniciarem per tu.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Mort</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sincronitza els colors</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Comparteix els colors de capçalera, avís, error, lletra i fons amb cada LCD de la teva facció que tingui aquest interruptor activat. El propietari del bloc ha de pertànyer a una facció.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Color d'avís</value>
   </data>

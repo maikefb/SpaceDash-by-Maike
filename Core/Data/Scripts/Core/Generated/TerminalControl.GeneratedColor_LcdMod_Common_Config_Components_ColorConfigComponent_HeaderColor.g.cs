@@ -38,8 +38,6 @@ namespace LcdMod.Client.Terminal.Controls.GeneratedSettings
                 component =>
                 {
                     component.HeaderColor.Set(value);
-                    if (component.SyncColors)
-                        global::LcdMod.Client.FactionColors.FactionColorsSync.PublishModColors(block, component, GetThisSurface(block));
                 });
         }
 

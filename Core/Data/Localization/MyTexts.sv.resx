@@ -634,12 +634,6 @@ Vi väntar en stund och startar sedan om den åt dig.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Död</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synkronisera färger</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Delar rubrik-, varnings-, fel-, teckensnitts- och bakgrundsfärg med varje LCD i din fraktion som har den här omkopplaren på. Blockets ägare måste vara med i en fraktion.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Varningsfärg</value>
   </data>

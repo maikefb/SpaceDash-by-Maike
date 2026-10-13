@@ -634,12 +634,6 @@ Ootame veidi ja seejärel taaskäivitame selle teie eest.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Surnud</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Sünkrooni värvid</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Jagab päise, hoiatuse, vea, fondi ja tausta värve iga sinu fraktsiooni LCD-ga, millel see lüliti on sees. Ploki omanik peab kuuluma fraktsiooni.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Hoiatuse värv</value>
   </data>

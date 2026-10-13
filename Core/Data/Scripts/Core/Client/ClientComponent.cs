@@ -5,7 +5,6 @@ using System.Linq;
 using Generated;
 using LcdMod.Client.SurfaceScripts.Abstract;
 using LcdMod.Client.Config;
-using LcdMod.Client.FactionColors;
 using LcdMod.Client.GridData;
 using LcdMod.Client.Gui.Styling.DataTemplates;
 using LcdMod.Client.Helpers;
@@ -79,7 +78,6 @@ namespace LcdMod.Client
         public void UnloadData()
         {
             ConfigManager.FlushPendingSyncs(true);
-            FactionColorsSync.Flush(true);
             LocalConfigManager.Save();
             UnloadTextures();
             UnloadModData();
@@ -102,7 +100,6 @@ namespace LcdMod.Client
             LcdModSessionComponent.LastSelectedBlock = null;
             ConfigManager.Clear();
             TextureHelper.Clear();
-            FactionColorsSync.Clear();
             FormatingHelper.ClearCache();
             ScreenAreaGeometry.ClearCache();
             ItemDataTemplate.InvalidateItemAssets();
@@ -230,7 +227,6 @@ namespace LcdMod.Client
             InventoryWorkScheduler.RunFrame();
             RunOnePerFrameAction();
             ConfigManager.FlushPendingSyncs(false);
-            FactionColorsSync.Flush(false);
         }
 
         public void UpdateAfterSimulation()

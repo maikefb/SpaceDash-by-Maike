@@ -634,12 +634,6 @@ Poczekamy chwilę, a następnie uruchomimy ją ponownie za ciebie.</value>
   <data name="LcdMod_Survivors_Dead" xml:space="preserve">
     <value>Martwy</value>
   </data>
-  <data name="LcdMod_SyncColors" xml:space="preserve">
-    <value>Synchronizuj kolory</value>
-  </data>
-  <data name="LcdMod_SyncColors_Tooltip" xml:space="preserve">
-    <value>Współdzieli kolory nagłówka, ostrzeżenia, błędu, czcionki i tła z każdym LCD twojej frakcji, który ma włączony ten przełącznik. Właściciel bloku musi należeć do frakcji.</value>
-  </data>
   <data name="LcdMod_WarningColor" xml:space="preserve">
     <value>Kolor ostrzeżenia</value>
   </data>
