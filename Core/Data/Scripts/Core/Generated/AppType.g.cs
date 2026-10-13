@@ -14,6 +14,7 @@ namespace Generated
         Projector = 17,
         ClockDashboard = 20,
         Thrust = 22,
+        RenderProxy = 25,
         DefenseDashboard = 30,
         Survivors = 31,
         EnergyChart = 32,

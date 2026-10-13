@@ -734,4 +734,25 @@ Vi venter et øjeblik og genstarter den derefter for dig.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Renderproxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxyforskydning X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxyforskydning Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Beregn automatisk proxyforskydningen ud fra den valgte værtsskærm.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Aktivér automatisk justering</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Juster automatisk renderingsproxyen ved opstart, og når den tilknyttede skærms rotation ændres.</value>
+  </data>
 </root>

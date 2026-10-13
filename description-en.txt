@@ -18,6 +18,7 @@ SCREENS
 - Radar: magnification and reference block
 - Survivors: ranking by time alive, with personal record and gold/silver/bronze markers
 - Digital Picture Frame: DDS images picked in the terminal, synced between server and clients
+- Render Proxy: mirrors a neighboring [SD] screen to extend it across several LCDs (reference block, X/Y offset, auto adjust)
 
 COMMON TO ALL SCREENS
 Brightness, scale, visible title, colors, copy and paste settings.

@@ -733,4 +733,25 @@ Mēs brīdi pagaidīsim un pēc tam to restartēsim jūsu vietā.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Renderēšanas proxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxy nobīde X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxy nobīde Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Automātiski</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Automātiski aprēķināt proxy nobīdi no atlasītā resursdatora ekrāna.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Iespējot automātisko pielāgošanu</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Automātiski pielāgo renderēšanas proxy palaišanas laikā un kad mainās saistītā ekrāna rotācija.</value>
+  </data>
 </root>

@@ -734,4 +734,37 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Thrust" xml:space="preserve">
     <value>[SD] Propulsão</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Proxy de renderização</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Offset X do proxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Offset Y do proxy</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Calcular automaticamente o posicionamento do proxy a partir do lcd host selecionada.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Ativar ajuste automático</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Ajusta automaticamente o proxy de renderização ao iniciar e quando a rotação da tela vinculada muda.</value>
+  </data>
+  <data name="LcdMod_RenderProxy_NotLinked" xml:space="preserve">
+    <value>Tela não vinculada</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedResolution" xml:space="preserve">
+    <value>Resolução não suportada</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedScript" xml:space="preserve">
+    <value>Script não suportado</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedScreen" xml:space="preserve">
+    <value>Tela não suportada</value>
+  </data>
 </root>

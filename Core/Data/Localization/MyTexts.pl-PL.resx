@@ -733,4 +733,25 @@ Poczekamy chwilę, a następnie uruchomimy ją ponownie za ciebie.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Proxy renderowania</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Przesunięcie proxy X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Przesunięcie proxy Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Automatycznie oblicz przesunięcie proxy na podstawie wybranego ekranu hosta.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Włącz automatyczne dostosowanie</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Automatycznie dostosowuje proxy renderowania przy uruchomieniu oraz gdy zmieni się obrót połączonego ekranu.</value>
+  </data>
 </root>

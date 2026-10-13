@@ -733,4 +733,25 @@ Vom aștepta puțin, apoi o vom reporni pentru tine.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Proxy de randare</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Decalaj proxy X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Decalaj proxy Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Calculează automat decalajul proxy din ecranul gazdă selectat.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Activează ajustarea automată</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Ajustează automat proxy-ul de randare la pornire și când se schimbă rotația ecranului conectat.</value>
+  </data>
 </root>

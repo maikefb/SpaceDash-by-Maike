@@ -733,4 +733,25 @@ Vi väntar en stund och startar sedan om den åt dig.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Renderingsproxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxyförskjutning X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxyförskjutning Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Beräkna automatiskt proxyförskjutningen från den valda värdskärmen.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Aktivera automatisk justering</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Justerar renderproxyn automatiskt vid start och när den länkade skärmens rotation ändras.</value>
+  </data>
 </root>

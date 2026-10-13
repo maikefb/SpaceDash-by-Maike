@@ -43,6 +43,8 @@ namespace Generated
         static readonly Slot DockableReference = Define<BlockReferenceConfigComponent>("reference.dockable");
         static readonly Slot ClockSettings = Define<ClockDashboardConfigComponent>("app.settings");
         static readonly Slot PictureFramesSettings = Define<DigitalPictureFramesConfigComponent>("app.settings");
+        static readonly Slot RenderProxySettings = Define<RenderProxyConfigComponent>("app.settings");
+        static readonly Slot RenderProxyReference = Define<BlockReferenceConfigComponent>("reference.render-proxy-source");
 
         static readonly Dictionary<AppType, Slot[]> Schemas = new Dictionary<AppType, Slot[]>
         {
@@ -56,6 +58,7 @@ namespace Generated
             { AppType.Projector, new[] { General, Colors, Interaction, Filters, Blocks, Items, ProjectorReference, ItemDisplay } },
             { AppType.Thrust, new[] { General, Colors, Interaction } },
             { AppType.DefenseDashboard, new[] { General, Colors, Interaction } },
+            { AppType.RenderProxy, new[] { General, Colors, Interaction, RenderProxySettings, RenderProxyReference } },
             { AppType.ClockDashboard, new[] { General, Colors, Interaction, ClockSettings } },
             { AppType.Survivors, new[] { General, Colors, Interaction } },
             { AppType.DigitalPictureFrames, new[] { General, Colors, Interaction, PictureFramesSettings } },
@@ -71,7 +74,7 @@ namespace Generated
         static readonly HashSet<string> RegisteredSlots = new HashSet<string>
         {
             "app.settings", "core.colors", "core.general", "core.interaction", "data.blocks", "data.filters",
-            "data.items", "reference.dockable", "reference.projector", "view.items"
+            "data.items", "reference.dockable", "reference.projector", "reference.render-proxy-source", "view.items"
         };
 
         public static readonly AppType[] AllAppTypes = new List<AppType>(Schemas.Keys).ToArray();

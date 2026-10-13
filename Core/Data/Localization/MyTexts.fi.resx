@@ -733,4 +733,25 @@ Odotamme hetken ja käynnistämme sen sitten uudelleen puolestasi.</value>
   <data name="LcdMod_Energy_Working" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Renderöintiproxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxyn X-siirtymä</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxyn Y-siirtymä</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Automaattinen</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Laske proxyn siirtymä automaattisesti valitusta isäntänäytöstä.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Ota automaattinen säätö käyttöön</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Säätää renderöintiproxyn automaattisesti käynnistyksessä ja kun linkitetyn näytön kierto muuttuu.</value>
+  </data>
 </root>

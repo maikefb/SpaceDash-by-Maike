@@ -714,4 +714,37 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_Thrust" xml:space="preserve">
     <value>[SD] Thrust</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] Render Proxy</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxy Offset X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxy Offset Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Automatically calculate the proxy offset from the selected host screen.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Enable Auto Adjust</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Automatically adjust the render proxy on startup and when the linked screen rotation changes.</value>
+  </data>
+  <data name="LcdMod_RenderProxy_NotLinked" xml:space="preserve">
+    <value>Screen not linked</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedResolution" xml:space="preserve">
+    <value>Unsupported resolution</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedScript" xml:space="preserve">
+    <value>Unsupported script</value>
+  </data>
+  <data name="LcdMod_RenderProxy_UnsupportedScreen" xml:space="preserve">
+    <value>Unsupported screen</value>
+  </data>
 </root>

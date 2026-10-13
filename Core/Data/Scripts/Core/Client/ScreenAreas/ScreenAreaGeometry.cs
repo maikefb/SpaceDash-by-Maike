@@ -86,6 +86,47 @@ namespace LcdMod.Client.ScreenAreas
             return true;
         }
 
+        public static bool TryGetScreenWorldMatrix(IMyCubeBlock block, int surfaceIndex, out MatrixD worldMatrix)
+        {
+            worldMatrix = MatrixD.Identity;
+            if (block == null)
+                return false;
+
+            Matrix localMatrix;
+            if (!TryGetScreenLocalMatrix(block, surfaceIndex, out localMatrix))
+                return false;
+
+            worldMatrix = (MatrixD)localMatrix * block.WorldMatrix;
+            return true;
+        }
+
+        public static bool TryGetScreenLocalMatrix(IMyCubeBlock block, int surfaceIndex, out Matrix localMatrix)
+        {
+            localMatrix = Matrix.Identity;
+            if (block == null)
+                return false;
+
+            var localKey = BuildLocalMatrixCacheKey(block, surfaceIndex);
+            if (!string.IsNullOrEmpty(localKey) && LocalMatrixCache.TryGetValue(localKey, out localMatrix))
+                return true;
+
+            MinimalMwmScreenAreaGeometry geometry;
+            if (!TryGetScreenAreaGeometry(block, surfaceIndex, out geometry))
+                return false;
+
+            var blockEntity = (IMyEntity)block;
+            if (blockEntity.Model == null)
+                return false;
+
+            if (!TryGetScreenLocalMatrix(blockEntity.Model, geometry, out localMatrix))
+                return false;
+
+            if (!string.IsNullOrEmpty(localKey))
+                LocalMatrixCache[localKey] = localMatrix;
+
+            return true;
+        }
+
         static bool TryGetScreenLocalMatrix(
             IMyModel blockModel,
             MinimalMwmScreenAreaGeometry geometry,
@@ -462,6 +503,11 @@ namespace LcdMod.Client.ScreenAreas
             var found = TryGetScreenAreaGeometry(block, surfaceIndex, screen.Description(), out geometry);
             StoreBlockCachedGeometry(block.EntityId, surfaceIndex, found ? geometry : null);
             return found;
+        }
+
+        static bool TryGetScreenAreaGeometry(IMyCubeBlock block, int surfaceIndex, out MinimalMwmScreenAreaGeometry geometry)
+        {
+            return TryGetScreenAreaGeometry(block, surfaceIndex, block?.ToString() ?? "<null>", out geometry);
         }
 
         static bool TryGetScreenAreaGeometry(

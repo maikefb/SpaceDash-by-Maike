@@ -479,4 +479,25 @@
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
     <value>Record</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] レンダープロキシ</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>プロキシオフセット X</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>プロキシオフセット Y</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>選択したホスト画面からプロキシオフセットを自動的に計算します。</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>自動調整を有効化</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>起動時、およびリンクされた画面の回転が変更されたときに、レンダープロキシを自動的に調整します。</value>
+  </data>
 </root>

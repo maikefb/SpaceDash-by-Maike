@@ -95,6 +95,24 @@ namespace LcdMod.Client.Utility
             return instances?.GetInstance(index);
         }
 
+        public SurfaceScriptBase GetActiveInstance(IMyTerminalBlock block)
+        {
+            var panel = block as IMyTextPanel;
+            return panel == null ? null : GetInstance(panel, GetActiveRotationIndex(panel));
+        }
+
+        public static int GetActiveRotationIndex(IMyTextPanel panel)
+        {
+            foreach (var component in panel.Components)
+            {
+                var lcdSurfaceComponent = component as IMyLcdSurfaceComponent;
+                if (lcdSurfaceComponent != null)
+                    return lcdSurfaceComponent.SelectedRotationIndex;
+            }
+
+            return 0;
+        }
+
         void AddToSlots(SurfaceScriptBase item)
         {
             var block = item?.Block as IMyTerminalBlock;

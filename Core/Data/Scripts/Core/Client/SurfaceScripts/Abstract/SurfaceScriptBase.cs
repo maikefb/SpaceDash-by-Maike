@@ -44,6 +44,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public static SurfaceCollection Instances = new SurfaceCollection();
         public Dictionary<string, Color> Theme { get; set; }
         readonly List<MySprite> _backgroundGrids = new List<MySprite>();
+        readonly Dictionary<long, Vector2> _registeredProxyOffsets = new Dictionary<long, Vector2>();
+        readonly List<MySprite> _cachedFrame = new List<MySprite>();
         Grid _footerRoot;
         Color _backgroundColor;
         Color _foregroundColor;
@@ -53,6 +55,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public new IMyCubeBlock Block { get; }
 
         public virtual bool AsyncRender => false;
+
+        protected virtual bool ClipToBounds => _registeredProxyOffsets.Count > 0;
 
         protected long WaitForFrame;
         protected long LastRenderFrame;
@@ -407,12 +411,33 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             var padding = (Surface.TextPadding / 100) * Surface.SurfaceSize;
             sizeOffset += padding / 2;
 
-            ViewBox = new RectangleF(
+            ViewBox = ApplyProxyOffsets(new RectangleF(
                 sizeOffset.X,
                 sizeOffset.Y,
                 Surface.SurfaceSize.X - padding.X,
-                Surface.SurfaceSize.Y - padding.Y);
+                Surface.SurfaceSize.Y - padding.Y));
         }
+
+        protected RectangleF ApplyProxyOffsets(RectangleF viewBox)
+        {
+            if (_registeredProxyOffsets.Count <= 0)
+                return viewBox;
+
+            var min = Vector2.Zero;
+            var max = Vector2.Zero;
+            foreach (var entry in _registeredProxyOffsets)
+            {
+                min = Vector2.Min(min, entry.Value);
+                max = Vector2.Max(max, entry.Value);
+            }
+
+            return new RectangleF(
+                viewBox.X + min.X,
+                viewBox.Y + min.Y,
+                viewBox.Width + (max.X - min.X),
+                viewBox.Height + (max.Y - min.Y));
+        }
+
 
         public override void Run()
         {
@@ -451,7 +476,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 GetSettings((IMyTextSurface)Surface, Block);
                 return;
             }
-            
+
             var titleCanBeVisible = SurfaceAspectRatioHelper.CanShowTitle(Surface);
             var titleVisible = GeneralComponent.TitleVisible && titleCanBeVisible;
 
@@ -1201,19 +1226,21 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             try
             {
                 var spriteList = PrepareSpritesForRender(RenderFrame(GetSprites));
+                CacheFrameForProxies(spriteList);
+                var renderList = ClipToBounds ? ClipSpriteListToSurfaceBounds(spriteList) : spriteList;
                 LastRenderFrame = currentFrame;
                 NotifyRendered();
 
                 var backgroundColor = Surface.ScriptBackgroundColor;
                 var renderOpacity = GetRenderOpacity();
-                var textureChanged = ShouldRenderTexture(spriteList, backgroundColor, renderOpacity, currentFrame);
+                var textureChanged = ShouldRenderTexture(renderList, backgroundColor, renderOpacity, currentFrame);
                 if (!force && !textureChanged)
                     return;
 
                 if (AsyncRender)
                 {
                     _asyncBuffer.Clear();
-                    _asyncBuffer.AddRange(spriteList);
+                    _asyncBuffer.AddRange(renderList);
                     _asyncRenderPending = true;
 
                     var surfaceIndex = RotationOrSurfaceIndex;
@@ -1233,7 +1260,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 }
                 else
                 {
-                    _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, spriteList, _textureSize, _aspectRatio,
+                    _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, renderList, _textureSize, _aspectRatio,
                         backgroundColor, renderOpacity);
                 }
 
@@ -1249,6 +1276,70 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             _asyncBuffer?.Clear();
             _asyncRenderPending = false;
         }
+
+        List<MySprite> ClipSpriteListToSurfaceBounds(List<MySprite> sprites)
+        {
+            if (!ClipToBounds || sprites == null || sprites.Count == 0)
+                return sprites;
+
+            var renderBounds = new RectangleF(0f, 0f, _textureSize.X, _textureSize.Y);
+            var renderSprites = new List<MySprite>(sprites.Count);
+            bool skipClippedSprites = false;
+
+            for (int i = 0; i < sprites.Count; i++)
+            {
+                var sprite = sprites[i];
+                if (sprite.Type == SpriteType.CLIP_RECT)
+                {
+                    skipClippedSprites = !TryClipRectToRenderBounds(sprite, renderBounds, out sprite);
+                    if (skipClippedSprites)
+                        continue;
+                }
+                else if (skipClippedSprites)
+                {
+                    continue;
+                }
+
+                renderSprites.Add(sprite);
+            }
+
+            return renderSprites;
+        }
+
+        static bool TryClipRectToRenderBounds(MySprite sprite, RectangleF renderBounds, out MySprite clippedSprite)
+        {
+            clippedSprite = sprite;
+            if (!sprite.Position.HasValue || !sprite.Size.HasValue)
+                return true;
+
+            var clip = NormalizeRect(new RectangleF(sprite.Position.Value, sprite.Size.Value));
+            RectangleF clipped;
+            RectangleF.Intersect(ref clip, ref renderBounds, out clipped);
+            if (clipped.Width <= 0f || clipped.Height <= 0f)
+                return false;
+
+            clippedSprite = new MySprite(
+                SpriteType.CLIP_RECT,
+                sprite.Data,
+                clipped.Position,
+                clipped.Size,
+                sprite.Color,
+                sprite.FontId,
+                sprite.Alignment,
+                sprite.RotationOrScale);
+            return true;
+        }
+
+        static RectangleF NormalizeRect(RectangleF rect)
+        {
+            float left = Math.Min(rect.X, rect.Right);
+            float top = Math.Min(rect.Y, rect.Bottom);
+            float right = Math.Max(rect.X, rect.Right);
+            float bottom = Math.Max(rect.Y, rect.Bottom);
+            return new RectangleF(left, top, right - left, bottom - top);
+        }
+
+
 
         readonly List<MySprite> _asyncBuffer = new List<MySprite>();
 
@@ -1459,6 +1550,74 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         {
             return sprites();
         }
+
+        void CacheFrameForProxies(IEnumerable<MySprite> spriteList)
+        {
+            if (_registeredProxyOffsets.Count <= 0 || spriteList == null)
+                return;
+
+            _cachedFrame.Clear();
+            _cachedFrame.AddRange(spriteList);
+        }
+
+        public List<MySprite> GetCachedFrame()
+        {
+            if (_cachedFrame.Count > 0)
+                return _cachedFrame;
+
+            return GetSprites();
+        }
+
+        public bool RegisterProxy(long proxyKey, Vector2 offset)
+        {
+            Vector2 existing;
+            bool hadExisting = _registeredProxyOffsets.TryGetValue(proxyKey, out existing);
+            if (hadExisting && existing == offset)
+                return true;
+
+            _registeredProxyOffsets[proxyKey] = offset;
+            if (!TryLayoutChangedForProxy())
+            {
+                if (hadExisting)
+                    _registeredProxyOffsets[proxyKey] = existing;
+                else
+                    _registeredProxyOffsets.Remove(proxyKey);
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool UnregisterProxy(long proxyKey)
+        {
+            Vector2 existing;
+            if (!_registeredProxyOffsets.TryGetValue(proxyKey, out existing))
+                return true;
+
+            _registeredProxyOffsets.Remove(proxyKey);
+            if (!TryLayoutChangedForProxy())
+            {
+                _registeredProxyOffsets[proxyKey] = existing;
+                return false;
+            }
+
+            return true;
+        }
+
+        bool TryLayoutChangedForProxy()
+        {
+            try
+            {
+                LayoutChanged();
+                return true;
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+        }
+
 
         public abstract void SafeRun();
     }

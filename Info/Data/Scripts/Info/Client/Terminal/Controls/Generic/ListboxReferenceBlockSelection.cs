@@ -154,7 +154,13 @@ namespace LcdMod.Client.Terminal.Controls.Generic
 
         static string GetReferenceSlot(IReferenceBlockSelection provider)
         {
-            return provider is DockingAlignment ? Constants.DOCKABLE_REFERENCE : null;
+            if (provider is DockingAlignment)
+                return Constants.DOCKABLE_REFERENCE;
+
+            if (provider is RenderProxySurfaceScript)
+                return Constants.RENDER_PROXY_REFERENCE;
+
+            return null;
         }
     }
 }

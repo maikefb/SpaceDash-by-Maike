@@ -10,6 +10,7 @@ using LcdMod.Client.Terminal.Controls.Filter.Buttons;
 using LcdMod.Client.Terminal.Controls.Filter.Listbox;
 using LcdMod.Client.Terminal.Controls.Generic;
 using LcdMod.Client.Terminal.Controls.GeneratedSettings;
+using LcdMod.Client.Terminal.Controls.Proxy;
 
 namespace LcdMod.Client.Terminal
 {
@@ -70,6 +71,10 @@ namespace LcdMod.Client.Terminal
             AddRegistration(registrations, 5300, target);
             AddRegistration(registrations, 5400, new ButtonSpriteRemoveFromSelection(source, target));
             AddRegistration(registrations, 5500, new SliderImageChangeInterval());
+            AddRegistration(registrations, 5700, new GeneratedSlider_LcdMod_Common_Config_Components_RenderProxyConfigComponent_XAxisOffset());
+            AddRegistration(registrations, 5800, new GeneratedSlider_LcdMod_Common_Config_Components_RenderProxyConfigComponent_YAxisOffset());
+            AddRegistration(registrations, 5900, new GeneratedSwitch_LcdMod_Common_Config_Components_RenderProxyConfigComponent_EnableAutoAdjust());
+            AddRegistration(registrations, 6000, new ButtonProxyAuto());
 
             AddRegistration(registrations, 3330, new ComboboxSorting());
         }

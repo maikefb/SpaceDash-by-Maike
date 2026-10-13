@@ -18,6 +18,7 @@ TELAS
 - Radar: magnificação e bloco de referência
 - Sobreviventes: ranking por tempo vivo, com recorde pessoal e marcadores ouro/prata/bronze
 - Moldura digital: imagens DDS escolhidas no terminal, sincronizadas entre servidor e clientes
+- Proxy de renderização: espelha uma tela [SD] vizinha para estendê-la por vários LCDs (bloco de referência, deslocamento X/Y, ajuste automático)
 
 COMUM A TODAS AS TELAS
 Brilho, escala, título visível, cores, copiar e colar configurações.

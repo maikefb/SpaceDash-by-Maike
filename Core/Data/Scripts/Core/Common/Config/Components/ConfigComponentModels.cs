@@ -477,9 +477,21 @@ namespace LcdMod.Common.Config.Components
     [ProtoContract]
     public sealed class RenderProxyConfigComponent : ConfigComponent
     {
+        [ProtoMember(1)]
+        public sbyte XAxisOffset { get; set; }
+        [ProtoMember(2)]
+        public sbyte YAxisOffset { get; set; }
+        [ProtoMember(3)]
+        public bool EnableAutoAdjust { get; set; } = true;
+
         public override ConfigComponent Clone()
         {
-            return new RenderProxyConfigComponent();
+            return new RenderProxyConfigComponent
+            {
+                XAxisOffset = XAxisOffset,
+                YAxisOffset = YAxisOffset,
+                EnableAutoAdjust = EnableAutoAdjust
+            };
         }
     }
 

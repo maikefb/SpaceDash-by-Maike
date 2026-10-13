@@ -77,6 +77,7 @@ namespace LcdMod.Common.Helpers
         // The slot, not the component CLR type, identifies the semantic use of a reference.
         public const string PROJECTOR_REFERENCE = "reference.projector";
         public const string DOCKABLE_REFERENCE = "reference.dockable";
+        public const string RENDER_PROXY_REFERENCE = "reference.render-proxy-source";
 
         public static Color ColorCorrection { get; set; } = new Color(175,185,200);
     }

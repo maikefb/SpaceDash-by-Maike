@@ -54,6 +54,7 @@ namespace LcdMod.Client.Terminal.Controls.Generic
             switch (script)
             {
                 case DockingAlignment.ID:
+                case RenderProxySurfaceScript.ID:
                     return true;
                 default:
                     return false;
@@ -420,6 +421,17 @@ namespace LcdMod.Client.Terminal.Controls.Generic
         public override bool VisibleForScript(string script)
         {
             return script == LcdMod.Client.SurfaceScripts.DigitalPictureFramesSurfaceScript.ID;
+        }
+    }
+}
+
+namespace LcdMod.Client.Terminal.Controls.Proxy
+{
+    public partial class ButtonProxyAuto
+    {
+        public override bool VisibleForScript(string script)
+        {
+            return script == RenderProxySurfaceScript.ID;
         }
     }
 }

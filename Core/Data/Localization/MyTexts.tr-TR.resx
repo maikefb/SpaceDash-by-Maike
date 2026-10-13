@@ -478,4 +478,25 @@ Bir süre bekleyeceğiz ve ardından sizin için yeniden başlatacağız.</value
   <data name="LcdMod_Survivors_Record" xml:space="preserve">
     <value>Record</value>
   </data>
+  <data name="LcdMod_RenderProxy" xml:space="preserve">
+    <value>[SD] İşleme proxy'si</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetX" xml:space="preserve">
+    <value>Proxy X ofseti</value>
+  </data>
+  <data name="LcdMod_ProxyOffsetY" xml:space="preserve">
+    <value>Proxy Y ofseti</value>
+  </data>
+  <data name="LcdMod_AutoOffset" xml:space="preserve">
+    <value>Otomatik</value>
+  </data>
+  <data name="LcdMod_AutoOffset_Tooltip" xml:space="preserve">
+    <value>Seçili ana ekrandan proxy ofsetini otomatik olarak hesapla.</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust" xml:space="preserve">
+    <value>Otomatik ayarlamayı etkinleştir</value>
+  </data>
+  <data name="LcdMod_EnableAutoAdjust_Tooltip" xml:space="preserve">
+    <value>Başlatmada ve bağlı ekranın dönüşü değiştiğinde render proxy'sini otomatik olarak ayarlar.</value>
+  </data>
 </root>
