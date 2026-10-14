@@ -202,6 +202,25 @@ namespace LcdMod.Client.Helpers
             return sign + a.ToString(format, Culture) + " N";
         }
 
+        public static string MassToString(double kg, string format = "0.##")
+        {
+            double a = Math.Abs(kg);
+            string sign = kg < 0 ? "-" : "";
+            if (a >= 1e6) return sign + (a / 1e6).ToString(format, Culture) + " kt";
+            if (a >= 1e3) return sign + (a / 1e3).ToString(format, Culture) + " t";
+            return sign + a.ToString(format, Culture) + " kg";
+        }
+
+        public static string VolumeToString(double liters, string format = "0.##")
+        {
+            double a = Math.Abs(liters);
+            string sign = liters < 0 ? "-" : "";
+            if (a >= 1e9) return sign + (a / 1e9).ToString(format, Culture) + " GL";
+            if (a >= 1e6) return sign + (a / 1e6).ToString(format, Culture) + " ML";
+            if (a >= 1e3) return sign + (a / 1e3).ToString(format, Culture) + " kL";
+            return sign + a.ToString(format, Culture) + " L";
+        }
+
         static readonly string[] PercentCache = new string[101];
         static string _percentCacheCulture;
 
