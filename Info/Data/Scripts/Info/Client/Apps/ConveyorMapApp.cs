@@ -70,6 +70,7 @@ namespace LcdMod.Client.Apps
         readonly List<IMyCubeBlock> _nodes = new List<IMyCubeBlock>();
         readonly List<string> _nodeIcons = new List<string>();
         readonly List<bool> _nodeAlert = new List<bool>();
+        readonly List<bool> _nodeIsolated = new List<bool>();
         readonly List<int> _edgeNetwork = new List<int>();
         readonly List<bool> _edgeBottleneck = new List<bool>();
         readonly List<int> _layoutEdges = new List<int>();
@@ -78,6 +79,7 @@ namespace LcdMod.Client.Apps
         readonly Color[] _networkColors = new Color[NetworkHueShifts.Length];
         int[] _unionFind = new int[0];
         int[] _networkOfRoot = new int[0];
+        int[] _rootSize = new int[0];
 
         int _lastBlockCount = -1;
         long _lastBuildFrame;
@@ -157,7 +159,7 @@ namespace LcdMod.Client.Apps
 
             var area = GetMapArea();
             double aspect = area.Width > 0f ? area.Height / area.Width : 1d;
-            _layout.Run(Math.Max(1, (int)Math.Ceiling(Math.Sqrt(_nodes.Count * aspect))));
+            _layout.Run(Math.Max(1, (int)Math.Ceiling(Math.Sqrt(_nodes.Count * aspect))), aspect);
         }
 
         void CollectPorts(IMyCubeGrid grid, IList<IMyCubeBlock> all)
@@ -364,6 +366,7 @@ namespace LcdMod.Client.Apps
             _nodes.Clear();
             _nodeIcons.Clear();
             _nodeAlert.Clear();
+            _nodeIsolated.Clear();
             _nodeOfBlock.Clear();
             _edgeNetwork.Clear();
             _edgeBottleneck.Clear();
@@ -385,6 +388,7 @@ namespace LcdMod.Client.Apps
             int n = _nodes.Count;
             if (_unionFind.Length < n) _unionFind = new int[n * 2];
             if (_networkOfRoot.Length < n) _networkOfRoot = new int[n * 2];
+            if (_rootSize.Length < n) _rootSize = new int[n * 2];
             for (int i = 0; i < n; i++)
                 _unionFind[i] = i;
 
@@ -398,16 +402,21 @@ namespace LcdMod.Client.Apps
                     _unionFind[Find(_nodeOfBlock[_edgeU[e]])] = Find(_nodeOfBlock[_edgeV[e]]);
             }
 
+            Array.Clear(_rootSize, 0, n);
+            for (int i = 0; i < n; i++)
+                _rootSize[Find(i)]++;
             _networkCount = 0;
             for (int i = 0; i < n; i++)
                 if (Find(i) == i)
-                    _networkOfRoot[i] = _networkCount++;
+                    _networkOfRoot[i] = _rootSize[i] >= 2 ? _networkCount++ : -1;
+            for (int i = 0; i < n; i++)
+                _nodeIsolated.Add(_rootSize[Find(i)] < 2);
             for (int e = 0; e < _edgeU.Count; e++)
                 _edgeNetwork.Add(_edgeAlive[e] ? _networkOfRoot[Find(_nodeOfBlock[_edgeU[e]])] : -1);
 
             for (int p = 0; p < _portBlock.Count; p++)
             {
-                if (_portLinked[p] || _removed[_portBlock[p]])
+                if (_portLinked[p] || _removed[_portBlock[p]] || _blocks[_portBlock[p]] is IMyTerminalBlock)
                     continue;
                 _markerNode.Add(_nodeOfBlock[_portBlock[p]]);
                 _markerFace.Add(DirIndex(_portDir[p]) % 4);
@@ -519,8 +528,9 @@ namespace LcdMod.Client.Apps
             for (int i = 0; i < _nodes.Count; i++)
             {
                 var center = NodeCenter(origin, pitch, i);
-                sprites.Add(LineRenderer.Rect(center, new Vector2(tile), tileColor));
-                sprites.Add(new MySprite(SpriteType.TEXTURE, _nodeIcons[i], center, new Vector2(tile * ICON_FILL), Color.White));
+                float alpha = _nodeIsolated[i] ? 0.5f : 1f;
+                sprites.Add(LineRenderer.Rect(center, new Vector2(tile), tileColor * alpha));
+                sprites.Add(new MySprite(SpriteType.TEXTURE, _nodeIcons[i], center, new Vector2(tile * ICON_FILL), Color.White * alpha));
                 if (_nodeAlert[i])
                     LineRenderer.DrawRectOutline(sprites, new RectangleF(center.X - half, center.Y - half, tile, tile), line * 2f, error);
             }

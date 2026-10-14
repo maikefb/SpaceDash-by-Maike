@@ -12,14 +12,14 @@ static class Program
         layout.Reset(10);
         for (int i = 0; i < ladder.Length; i += 2)
             layout.AddEdge(ladder[i], ladder[i + 1]);
-        layout.Run(3);
+        layout.Run(3, 1d);
         CheckStructure(layout);
         Check(Crossings(layout) == 0, "ladder crossings = " + Crossings(layout));
 
         layout.Reset(7);
         for (int i = 1; i <= 6; i++)
             layout.AddEdge(0, i);
-        layout.Run(2);
+        layout.Run(2, 1d);
         CheckStructure(layout);
         Check(layout.Count > layout.RealCount, "star without dummies");
         for (int l = 0; l < layout.Columns; l++)
@@ -34,12 +34,22 @@ static class Program
         layout.Reset(160);
         for (int i = 1; i < 160; i++)
             layout.AddEdge(random.Next(i), i);
-        layout.Run(12);
+        layout.Run(12, 1d);
         var watch = Stopwatch.StartNew();
-        layout.Run(12);
+        layout.Run(12, 1d);
         watch.Stop();
         CheckStructure(layout);
         Check(watch.Elapsed.TotalMilliseconds < 20, "tree run took " + watch.Elapsed.TotalMilliseconds + " ms");
+
+        layout.Reset(23);
+        for (int i = 1; i < 10; i++) layout.AddEdge(i - 1, i);
+        for (int i = 11; i < 20; i++) layout.AddEdge(i - 1, i);
+        layout.Run(10, 1d);
+        CheckStructure(layout);
+        Check(layout.Columns <= 11, "chains side by side: " + layout.Columns + " columns");
+        Check(layout.Rows >= 4, "chains not stacked: " + layout.Rows + " rows");
+        for (int v = 20; v < 23; v++)
+            Check(layout.Row[v] == layout.Rows - 1, "isolated " + v + " not on last row");
 
         Console.WriteLine("tree: " + watch.Elapsed.TotalMilliseconds.ToString("0.000") + " ms, crossings " + Crossings(layout) +
                           ", " + layout.Columns + "x" + layout.Rows + ", dummies " + (layout.Count - layout.RealCount));

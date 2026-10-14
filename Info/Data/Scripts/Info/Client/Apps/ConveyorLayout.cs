@@ -35,6 +35,16 @@ namespace LcdMod.Client.Apps
         int[] _layerFill = new int[0];
         int[] _crossA = new int[0];
         int[] _crossB = new int[0];
+        int _compCount;
+        int[] _compStart = new int[0];
+        int[] _compWidth = new int[0];
+        int[] _compSize = new int[0];
+        int[] _compHeight = new int[0];
+        int[] _compX = new int[0];
+        int[] _compY = new int[0];
+        int[] _compOrder = new int[0];
+        int[] _compOfColumn = new int[0];
+        float[] _compKeys = new float[0];
 
         public void Reset(int nodeCount)
         {
@@ -51,7 +61,7 @@ namespace LcdMod.Client.Apps
             _edgeCount++;
         }
 
-        public void Run(int maxRows)
+        public void Run(int maxRows, double aspect)
         {
             int n = RealCount;
             Count = n;
@@ -64,7 +74,7 @@ namespace LcdMod.Client.Apps
             AssignLayers(n, maxRows);
             BuildSegments();
             OrderLayers();
-            AssignRows(maxRows);
+            Pack(aspect);
         }
 
         void AssignLayers(int n, int maxRows)
@@ -80,6 +90,7 @@ namespace LcdMod.Client.Apps
 
             int sequenceLength = 0;
             int columnOffset = 0;
+            _compCount = 0;
             for (int s = 0; s < n; s++)
             {
                 if (_mark[s] != 0)
@@ -143,9 +154,22 @@ namespace LcdMod.Client.Apps
                     Layer[_queue[k]] += columnOffset;
                     _sequence[sequenceLength++] = _queue[k];
                 }
+
+                Grow(ref _compStart, _compCount + 1);
+                Grow(ref _compWidth, _compCount + 1);
+                Grow(ref _compSize, _compCount + 1);
+                _compStart[_compCount] = columnOffset;
+                _compWidth[_compCount] = cur + 1;
+                _compSize[_compCount] = size;
+                _compCount++;
                 columnOffset += cur + 2;
             }
             Columns = columnOffset - 1;
+
+            Grow(ref _compOfColumn, Columns + 1);
+            for (int c = 0; c < _compCount; c++)
+                for (int l = _compStart[c]; l < _compStart[c] + _compWidth[c]; l++)
+                    _compOfColumn[l] = c;
         }
 
         int Degree(int v)
@@ -301,15 +325,80 @@ namespace LcdMod.Client.Apps
             return total;
         }
 
-        void AssignRows(int maxRows)
+        // ponytail: shelf packing por largura decrescente; blocos isolados numa prateleira final. Guilhotina/MaxRects se sobrar muito vazio.
+        void Pack(double aspect)
         {
-            Rows = maxRows;
-            for (int l = 0; l < Columns; l++)
-                Rows = Math.Max(Rows, _layerStart[l + 1] - _layerStart[l]);
+            Grow(ref _compHeight, _compCount);
+            Grow(ref _compX, _compCount);
+            Grow(ref _compY, _compCount);
+            Grow(ref _compOrder, _compCount);
+            Grow(ref _compKeys, _compCount);
+
+            int connected = 0, width = 1, area = 0;
+            for (int c = 0; c < _compCount; c++)
+            {
+                int h = 0;
+                for (int l = _compStart[c]; l < _compStart[c] + _compWidth[c]; l++)
+                    h = Math.Max(h, _layerStart[l + 1] - _layerStart[l]);
+                _compHeight[c] = h;
+                area += (_compWidth[c] + 1) * (h + 1);
+                if (_compSize[c] < 2)
+                    continue;
+                _compKeys[connected] = -_compWidth[c];
+                _compOrder[connected++] = c;
+                width = Math.Max(width, _compWidth[c]);
+            }
+            Array.Sort(_compKeys, _compOrder, 0, connected);
+            width = Math.Max(width, (int)Math.Ceiling(Math.Sqrt(area / Math.Max(aspect, 1e-3))));
+
+            int x = 0, y = 0, shelf = 0;
+            for (int i = 0; i < connected; i++)
+            {
+                int c = _compOrder[i];
+                if (x > 0 && x + _compWidth[c] > width)
+                {
+                    y += shelf + 1;
+                    x = 0;
+                    shelf = 0;
+                }
+                _compX[c] = x;
+                _compY[c] = y;
+                x += _compWidth[c] + 1;
+                shelf = Math.Max(shelf, _compHeight[c]);
+            }
+
+            if (connected > 0)
+            {
+                y += shelf + 1;
+                x = 0;
+            }
+            for (int c = 0; c < _compCount; c++)
+            {
+                if (_compSize[c] >= 2)
+                    continue;
+                if (x >= width)
+                {
+                    y++;
+                    x = 0;
+                }
+                _compX[c] = x++;
+                _compY[c] = y;
+            }
+
+            Columns = 0;
+            Rows = 0;
+            for (int c = 0; c < _compCount; c++)
+            {
+                Columns = Math.Max(Columns, _compX[c] + _compWidth[c]);
+                Rows = Math.Max(Rows, _compY[c] + _compHeight[c]);
+            }
+
             for (int v = 0; v < Count; v++)
             {
-                int size = _layerStart[Layer[v] + 1] - _layerStart[Layer[v]];
-                Row[v] = _pos[v] + (Rows - size) / 2;
+                int l = Layer[v], c = _compOfColumn[l];
+                int size = _layerStart[l + 1] - _layerStart[l];
+                Row[v] = _compY[c] + _pos[v] + (_compHeight[c] - size) / 2;
+                Layer[v] = _compX[c] + l - _compStart[c];
             }
         }
 
