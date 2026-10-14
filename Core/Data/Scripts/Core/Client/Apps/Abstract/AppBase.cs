@@ -36,6 +36,7 @@ namespace LcdMod.Client.Apps.Abstract
         float _themeFontScale;
         float _themeAutoScrollSecondsPerStep;
         string _themeTextFont;
+        int _themeKind;
         bool _hasTheme;
         long _themeFrame = -1;
         GridLogic _neededGridLogic;
@@ -245,6 +246,8 @@ namespace LcdMod.Client.Apps.Abstract
             return color.ReadableFor(ColorComponent, Host.BackgroundColor);
         }
 
+        protected LcdTheme Theme => Host.ThemeKind;
+
         protected Color GetForegroundColor()
         {
             return Host.ForegroundColor;
@@ -283,8 +286,10 @@ namespace LcdMod.Client.Apps.Abstract
             float layoutScale = GetLayoutScaleResourceValue();
             float fontScale = GetFontScaleResourceValue();
             string textFont = GetTextFontResourceValue();
+            int themeKind = (int)Host.ThemeKind;
 
             if (!_hasTheme ||
+                themeKind != _themeKind ||
                 !headerColor.Equals(_themeHeaderColor) ||
                 !foregroundColor.Equals(_themeForegroundColor) ||
                 !warningColor.Equals(_themeWarningColor) ||
@@ -309,6 +314,7 @@ namespace LcdMod.Client.Apps.Abstract
                 _resources.Set(ThemeResources.FontScale, fontScale);
                 _resources.Set(ThemeResources.AutoScrollSecondsPerStep, InteractionComponent.AutoScrollStep);
                 _resources.Set(ThemeResources.TextFont, textFont);
+                _resources.Set(ThemeResources.Theme, themeKind);
                 _themeHeaderColor = headerColor;
                 _themeForegroundColor = foregroundColor;
                 _themeWarningColor = warningColor;
@@ -318,6 +324,7 @@ namespace LcdMod.Client.Apps.Abstract
                 _themeFontScale = fontScale;
                 _themeAutoScrollSecondsPerStep = InteractionComponent.AutoScrollStep;
                 _themeTextFont = textFont;
+                _themeKind = themeKind;
                 _hasTheme = true;
                 MarkSubtreeDirty();
             }

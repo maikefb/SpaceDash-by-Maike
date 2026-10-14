@@ -144,23 +144,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
                 var growthColor = GrowthBarColor.ReadableFor(colors, containerBackgroundColor);
                 var waterColor = GetWaterBarColor(colors, entry.WaterRatio, containerBackgroundColor);
 
-                BarPanel.CreateSprites(
-                    sprites,
-                    topLeft,
-                    size,
-                    growthColor,
-                    containerBackgroundColor,
-                    entry.Ratio,
-                    cornerRadius: size.Y * .5f);
-
-                BarPanel.CreateSprites(
-                    sprites,
-                    new Vector2(topLeft.X, topLeft.Y + size.Y + gap),
-                    size,
-                    waterColor,
-                    containerBackgroundColor,
-                    entry.WaterRatio,
-                    cornerRadius: size.Y * .5f);
+                var foreground = ResolveColor(ThemeResources.FontColor);
+                var theme = ResolveTheme();
+                ThemeChrome.DrawBar(sprites, theme, new RectangleF(topLeft, size), entry.Ratio, growthColor, foreground, LayoutScale);
+                ThemeChrome.DrawBar(sprites, theme, new RectangleF(topLeft.X, topLeft.Y + size.Y + gap, size.X, size.Y), entry.WaterRatio, waterColor, foreground, LayoutScale);
             }
 
             Color GetWaterBarColor(ColorConfigComponent colors, float waterRatio, Color backgroundColor)

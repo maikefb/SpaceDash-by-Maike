@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.ControlsTemplates.Progress;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
+using LcdMod.Common.Config.Components;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 using IMyTextSurface = Sandbox.ModAPI.Ingame.IMyTextSurface;
@@ -33,6 +35,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
     /// <summary>Moldura com cantoneiras, barra de título, tabela rótulo | valor, caixa de valor e ilustração dos painéis de energia.</summary>
     public static class EnergyCardRenderer
     {
+        const float BAR_ROW_RATIO = 0.45f;
         /// <summary>Quanto rótulos e valores podem crescer além do tamanho natural quando a linha é alta.</summary>
         public const float MAX_GROWTH = 1.6f;
 
@@ -44,6 +47,13 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
 
         public static void DrawPanel(List<MySprite> sprites, RectangleF rect, ref EnergyPalette palette, ref EnergyMetrics metrics)
         {
+            if (metrics.Theme == LcdTheme.Clean)
+                return;
+            if (metrics.Theme == LcdTheme.Futuristic)
+            {
+                ThemeChrome.DrawChamferedBox(sprites, rect, palette.Panel, palette.Frame, palette.ValueAttention, metrics.S);
+                return;
+            }
             if (palette.Panel.A > 0)
                 sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, palette.Panel));
             LineRenderer.DrawRectOutline(sprites, rect, metrics.FrameLine, palette.Frame);
@@ -58,25 +68,31 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
         public static void DrawTitleBar(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF bar, string title, string shortTitle,
             ref EnergyPalette palette, ref EnergyMetrics metrics)
         {
-            float blockWidth = metrics.U * 0.6f;
+            bool clean = metrics.Theme == LcdTheme.Clean;
+            bool futuristic = metrics.Theme == LcdTheme.Futuristic;
+            bool plain = clean || futuristic;
+            float blockWidth = plain ? 0f : metrics.U * 0.6f;
             float blockHeight = bar.Height * 0.4f;
             float left = bar.X + metrics.Padding;
             float right = bar.Right - metrics.Padding;
-            sprites.Add(LineRenderer.Rect(new Vector2(left + blockWidth * 0.5f, bar.Center.Y), new Vector2(blockWidth, blockHeight), palette.Frame));
-            sprites.Add(LineRenderer.Rect(new Vector2(right - blockWidth * 0.5f, bar.Center.Y), new Vector2(blockWidth, blockHeight), palette.Frame));
+            if (!plain)
+            {
+                sprites.Add(LineRenderer.Rect(new Vector2(left + blockWidth * 0.5f, bar.Center.Y), new Vector2(blockWidth, blockHeight), palette.Frame));
+                sprites.Add(LineRenderer.Rect(new Vector2(right - blockWidth * 0.5f, bar.Center.Y), new Vector2(blockWidth, blockHeight), palette.Frame));
+            }
 
-            float textLeft = left + blockWidth + metrics.Padding * 0.6f;
-            float lineEnd = right - blockWidth - metrics.Padding * 0.6f;
+            float textLeft = plain ? left : left + blockWidth + metrics.Padding * 0.6f;
+            float lineEnd = plain ? right : right - blockWidth - metrics.Padding * 0.6f;
             float maxWidth = lineEnd - textLeft - metrics.U;
             float scale;
-            string upper = (title ?? string.Empty).ToUpperInvariant();
-            string titleFont = FormatingHelper.BoldFont(font, upper);
+            string upper = clean ? title ?? string.Empty : (title ?? string.Empty).ToUpperInvariant();
+            string titleFont = clean ? font : FormatingHelper.BoldFont(font, upper);
             string text = FormatingHelper.FitText(surface, upper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
                 metrics.Text(EnergyTheme.LABEL), out scale);
             if (text.Length != upper.Length)
             {
-                string shortUpper = (shortTitle ?? upper).ToUpperInvariant();
-                titleFont = FormatingHelper.BoldFont(font, shortUpper);
+                string shortUpper = clean ? shortTitle ?? upper : (shortTitle ?? upper).ToUpperInvariant();
+                titleFont = clean ? font : FormatingHelper.BoldFont(font, shortUpper);
                 text = FormatingHelper.FitText(surface, shortUpper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
                     EnergyMetrics.MIN_TEXT, out scale);
             }
@@ -84,15 +100,18 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             if (maxWidth > 0f)
             {
                 Vector2 size = FormatingHelper.GetSizeInPixel(text, titleFont, scale, surface);
-                sprites.Add(Text(text, new Vector2(textLeft, bar.Center.Y - size.Y * 0.5f), scale, palette.Label, TextAlignment.LEFT, titleFont));
+                if (futuristic)
+                    sprites.Add(Text(text, new Vector2(bar.Center.X, bar.Center.Y - size.Y * 0.5f), scale, palette.Label, TextAlignment.CENTER, titleFont));
+                else
+                    sprites.Add(Text(text, new Vector2(textLeft, bar.Center.Y - size.Y * 0.5f), scale, palette.Label, TextAlignment.LEFT, titleFont));
 
                 float lineStart = textLeft + size.X + metrics.Padding;
-                if (lineEnd - lineStart >= metrics.U)
+                if (!plain && lineEnd - lineStart >= metrics.U)
                     sprites.Add(LineRenderer.Rect(new Vector2((lineStart + lineEnd) * 0.5f, bar.Center.Y), new Vector2(lineEnd - lineStart, metrics.DividerThickness), palette.Divider));
             }
 
             sprites.Add(LineRenderer.Rect(new Vector2(bar.Center.X, bar.Bottom - metrics.DividerThickness * 0.5f),
-                new Vector2(bar.Width - metrics.Padding * 2f, metrics.DividerThickness), palette.Divider));
+                new Vector2(bar.Width - metrics.Padding * 2f, metrics.DividerThickness), futuristic ? palette.Frame : palette.Divider));
         }
 
         /// <summary>Medidas de uma tabela para as primeiras <see cref="Measured"/> linhas.</summary>
@@ -137,7 +156,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             int rowCount = plan.Rows;
             bool anyBar = AnyBar(rows, rowCount);
             float rowHeight = area.Height / rowCount;
-            float barHeight = anyBar ? Math.Max(2f, rowHeight * 0.12f) : 0f;
+            bool futuristic = metrics.Theme == LcdTheme.Futuristic;
+            float barHeight = anyBar ? Math.Max(2f, rowHeight * BAR_ROW_RATIO) : 0f;
             float textArea = rowHeight - (anyBar ? barHeight + pad * 0.9f : 0f);
             float stackFit = Math.Min((area.Width - pad) / Math.Max(1f, Math.Max(plan.LabelWidth, plan.ValueWidth)),
                 textArea / (unitLine * (labelNatural + valueNatural)));
@@ -166,44 +186,68 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
 
             float labelLeft = area.X + (stacked ? pad * 0.5f : pad);
             float dividerX = labelLeft + plan.LabelWidth * (labelScale / labelNatural) + pad;
-            if (!stacked)
+            float rowGap = futuristic ? Math.Max(2f, pad * 0.4f) : 0f;
+            if (!stacked && !futuristic)
                 sprites.Add(LineRenderer.Rect(new Vector2(dividerX, area.Center.Y), new Vector2(metrics.DividerThickness, area.Height), palette.BoxFrame));
 
             for (int i = 0; i < rowCount; i++)
             {
                 EnergyRow row = rows[i];
                 float top = area.Y + rowHeight * i;
-                if (i > 0)
+                if (futuristic)
+                    DrawRowCells(sprites, new RectangleF(area.X, top + rowGap * 0.5f, area.Width, rowHeight - rowGap), stacked ? -1f : dividerX - pad * 0.5f, rowGap,
+                        ref palette, ref metrics);
+                else if (i > 0)
                     sprites.Add(LineRenderer.Rect(new Vector2(area.Center.X, top), new Vector2(area.Width, metrics.DividerThickness), palette.Divider));
 
-                float barLeft;
-                float barWidth;
+                bool hasBar = row.BarFraction >= 0f;
                 if (stacked)
                 {
                     float labelLine = unitLine * labelScale;
                     float valueLine = unitLine * valueScale;
                     DrawText(sprites, surface, font, row.Label, labelLeft, top + labelLine * 0.5f, area.Width - pad, labelLine, labelScale,
                         palette.Label, TextAlignment.LEFT);
-                    DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad * 0.5f, top + labelLine + valueLine * 0.5f,
-                        area.Width - pad, valueLine, valueScale, row.ValueColor, TextAlignment.RIGHT);
-                    barLeft = labelLeft;
-                    barWidth = area.Width - pad;
+                    if (hasBar)
+                        DrawBar(sprites, new RectangleF(labelLeft, top + labelLine + pad * 0.5f, area.Width - pad, rowHeight - labelLine - pad), row.BarFraction, false,
+                            row.ValueColor, ref palette, ref metrics);
+                    else
+                        DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad * 0.5f, top + labelLine + valueLine * 0.5f,
+                            area.Width - pad, valueLine, valueScale, row.ValueColor, TextAlignment.RIGHT);
                 }
                 else
                 {
-                    float textCenterY = top + textArea * 0.5f;
+                    float textCenterY = top + rowHeight * 0.5f;
                     DrawText(sprites, surface, font, row.Label, labelLeft, textCenterY, dividerX - pad - labelLeft, textArea, labelScale,
                         palette.Label, TextAlignment.LEFT);
-                    DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad, textCenterY, area.Right - dividerX - pad * 2f, textArea,
-                        valueScale, row.ValueColor, TextAlignment.RIGHT);
-                    barLeft = dividerX + pad;
-                    barWidth = area.Right - dividerX - pad * 2f;
+                    if (hasBar)
+                        DrawBar(sprites, new RectangleF(dividerX + pad, top + pad, area.Right - dividerX - pad * 2f, rowHeight - pad * 2f), row.BarFraction, false,
+                            row.ValueColor, ref palette, ref metrics);
+                    else
+                        DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad, textCenterY, area.Right - dividerX - pad * 2f, textArea,
+                            valueScale, row.ValueColor, TextAlignment.RIGHT);
                 }
-
-                if (row.BarFraction >= 0f)
-                    DrawBar(sprites, new RectangleF(barLeft, top + rowHeight - pad * 0.5f - barHeight, barWidth, barHeight), row.BarFraction, false,
-                        row.ValueColor, ref palette);
             }
+        }
+
+        /// <summary>Células chanfradas de uma linha do Futuristic: rótulo e valor separados em <paramref name="splitX"/>, ou uma só quando empilhados.</summary>
+        static void DrawRowCells(List<MySprite> sprites, RectangleF row, float splitX, float gap, ref EnergyPalette palette, ref EnergyMetrics metrics)
+        {
+            Color fill = CellFill(ref palette);
+            Color line = ThemeChrome.WithAlpha(palette.Frame, 0.6f);
+            if (splitX < 0f)
+            {
+                ThemeChrome.DrawChamferedBox(sprites, row, fill, line, palette.ValueAttention, metrics.S);
+                return;
+            }
+
+            ThemeChrome.DrawChamferedBox(sprites, new RectangleF(row.X, row.Y, splitX - gap * 0.5f - row.X, row.Height), fill, line, palette.ValueAttention, metrics.S);
+            ThemeChrome.DrawChamferedBox(sprites, new RectangleF(splitX + gap * 0.5f, row.Y, row.Right - splitX - gap * 0.5f, row.Height), fill, line,
+                new Color(0, 0, 0, 0), metrics.S);
+        }
+
+        static Color CellFill(ref EnergyPalette palette)
+        {
+            return new Color(Color.Lerp(palette.Backdrop, palette.Frame, 0.08f), 1f);
         }
 
         static TablePlan Plan(IMyTextSurface surface, string font, RectangleF area, List<EnergyRow> rows, int measured,
@@ -286,7 +330,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             Color valueColor, string subText, float barFraction, bool bipolarBar, float valueType, ref EnergyPalette palette, ref EnergyMetrics metrics,
             string widthTemplate = null)
         {
-            LineRenderer.DrawRectOutline(sprites, box, metrics.DividerThickness, palette.BoxFrame);
+            if (metrics.Theme == LcdTheme.Futuristic)
+                ThemeChrome.DrawChamferedBox(sprites, box, CellFill(ref palette), ThemeChrome.WithAlpha(palette.Frame, 0.6f), palette.ValueAttention, metrics.S);
+            else if (metrics.Theme != LcdTheme.Clean)
+                LineRenderer.DrawRectOutline(sprites, box, metrics.DividerThickness, palette.BoxFrame);
             float pad, inner, labelHeight, subHeight, barHeight;
             LayoutValueBox(surface, font, box.Height, !string.IsNullOrEmpty(label), !string.IsNullOrEmpty(subText), barFraction >= 0f || bipolarBar,
                 ref metrics, out pad, out inner, out labelHeight, out subHeight, out barHeight);
@@ -313,7 +360,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             if (barHeight > 0f)
             {
                 float height = barHeight - pad * 0.4f;
-                DrawBar(sprites, new RectangleF(box.X + pad, innerTop + inner - height, innerWidth, height), barFraction, bipolarBar, valueColor, ref palette);
+                DrawBar(sprites, new RectangleF(box.X + pad, innerTop + inner - height, innerWidth, height), barFraction, bipolarBar, valueColor, ref palette, ref metrics);
             }
 
             DrawText(sprites, surface, font, subText, box.X + pad, bottom + subHeight * 0.5f, innerWidth, subHeight, Math.Min(subHeight / unitLine, valueScale),
@@ -365,7 +412,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
         ///     pílula na cor do estado. Sem altura para o ícone (<see cref="MIN_ICON_UNITS"/>), a pílula vira chip e depois o selo
         ///     sai. Com <paramref name="loadRatio"/> ≥ 0, um anel de utilização com brilho envolve o ícone.
         /// </summary>
-        public static void DrawIllustration(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF area, string icon, Color iconColor,
+        public static void DrawIllustration(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF area, string icon, Color iconColor, float iconAspect,
             string badge, string stateText, Color stateColor, float loadRatio, ref EnergyPalette palette, ref EnergyMetrics metrics)
         {
             float pad = metrics.Padding;
@@ -439,18 +486,30 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
                 iconSize = radius * (1f - EnergyTheme.RING_THICKNESS) * 2f * 0.72f;
             }
 
-            sprites.Add(new MySprite(SpriteType.TEXTURE, icon, center, new Vector2(iconSize), iconColor));
+            var iconBox = new Vector2(iconSize);
+            if (iconAspect > 1f)
+            {
+                float width = Math.Min(innerWidth, (bottom - top) * iconAspect);
+                iconBox = new Vector2(width, width / iconAspect);
+            }
+            sprites.Add(new MySprite(SpriteType.TEXTURE, icon, center, iconBox, iconColor));
+            if (metrics.Theme == LcdTheme.Futuristic && iconAspect > 1f)
+            {
+                float margin = pad * 0.4f;
+                ThemeChrome.DrawChamferedBox(sprites, new RectangleF(center.X - iconBox.X * 0.5f - margin, center.Y - iconBox.Y * 0.5f - margin,
+                    iconBox.X + margin * 2f, iconBox.Y + margin * 2f), new Color(0, 0, 0, 0), ThemeChrome.WithAlpha(palette.Frame, 0.6f), palette.ValueAttention, metrics.S);
+            }
         }
 
         /// <summary>Barra em pílula (0..1) ou bipolar (-1..1 a partir do centro), sem clip.</summary>
-        public static void DrawBar(List<MySprite> sprites, RectangleF rect, float fraction, bool bipolar, Color fillColor, ref EnergyPalette palette)
+        public static void DrawBar(List<MySprite> sprites, RectangleF rect, float fraction, bool bipolar, Color fillColor, ref EnergyPalette palette, ref EnergyMetrics metrics)
         {
             if (rect.Width <= 0f || rect.Height <= 0f)
                 return;
 
             if (!bipolar)
             {
-                BarPanel.CreateSprites(sprites, rect.Position, rect.Size, fillColor, palette.GaugeTrack, fraction);
+                ThemeChrome.DrawBar(sprites, metrics.Theme, rect, fraction, fillColor, palette.Label, metrics.S);
                 return;
             }
 

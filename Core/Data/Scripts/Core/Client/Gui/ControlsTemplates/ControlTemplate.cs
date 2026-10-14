@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
+using LcdMod.Common.Config.Components;
 using LcdMod.Common.Mvvm;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -519,6 +520,12 @@ namespace LcdMod.Client.Gui.ControlsTemplates
                 return value;
 
             throw new KeyNotFoundException("Resource key not found: " + key.Name + " in ResourceTree");
+        }
+
+        public LcdTheme ResolveTheme()
+        {
+            int value;
+            return ScopedResourceResolver.TryResolve(this, ThemeResources.Theme, out value) ? (LcdTheme)value : LcdTheme.Default;
         }
 
         protected virtual void RenderDefault(List<MySprite> sprites)

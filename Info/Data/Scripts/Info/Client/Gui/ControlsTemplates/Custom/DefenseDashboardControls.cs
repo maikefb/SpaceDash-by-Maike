@@ -6,6 +6,7 @@ using LcdMod.Client.Gui.ControlsTemplates.Progress;
 using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.Modules.Defense;
+using LcdMod.Common.Config.Components;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -49,6 +50,9 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
 
         protected void DrawCard(List<MySprite> sprites)
         {
+            if (ThemeChrome.DrawCard(sprites, ResolveTheme(), Bounds, _cardColor, Accent, Foreground, LayoutScale))
+                return;
+
             Color cardColor = _cardColor;
             Color shadowColor = cardColor.MulValue(0.2f);
             float shadowOffset = 2f * LayoutScale;
@@ -67,32 +71,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
 
         protected void DrawBar(List<MySprite> sprites, RectangleF rect, float fraction, Color fill)
         {
-            if (rect.Width <= 0f || rect.Height <= 0f)
-                return;
-
-            sprites.Add(new MySprite
-            {
-                Type = SpriteType.TEXTURE,
-                Data = "SquareSimple",
-                Position = rect.Center,
-                Size = rect.Size,
-                Color = ResolveColor(ThemeResources.SurfaceContainerHighestColor),
-                Alignment = TextAlignment.CENTER
-            });
-
-            float fillWidth = rect.Width * MathHelper.Clamp(fraction, 0f, 1f);
-            if (fillWidth <= 0.1f)
-                return;
-
-            sprites.Add(new MySprite
-            {
-                Type = SpriteType.TEXTURE,
-                Data = "SquareSimple",
-                Position = new Vector2(rect.X + fillWidth * 0.5f, rect.Center.Y),
-                Size = new Vector2(fillWidth, rect.Height),
-                Color = fill,
-                Alignment = TextAlignment.CENTER
-            });
+            ThemeChrome.DrawBar(sprites, ResolveTheme(), rect, fraction, fill, Foreground, LayoutScale);
         }
 
         protected void DrawIcon(List<MySprite> sprites, string spriteName, RectangleF rect)
@@ -575,11 +554,22 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             if (rect.Width <= 0f || rect.Height <= 0f)
                 return;
 
-            BorderRenderer.CreateSpritesFromRect(
-                rect,
-                sprites,
-                ResolveColor(ThemeResources.SurfaceContainerHighestColor),
-                radiusScale: LayoutScale);
+            switch (ResolveTheme())
+            {
+                case LcdTheme.Futuristic:
+                    LineRenderer.DrawRectOutline(sprites, rect, Math.Max(1f, LayoutScale), ThemeChrome.WithAlpha(Foreground, 0.6f));
+                    break;
+                case LcdTheme.Clean:
+                    sprites.Add(LineRenderer.Rect(rect.Center, new Vector2(rect.Width, Math.Min(rect.Height, Math.Max(1f, 4f * LayoutScale))), ThemeChrome.WithAlpha(Foreground, 0.15f)));
+                    break;
+                default:
+                    BorderRenderer.CreateSpritesFromRect(
+                        rect,
+                        sprites,
+                        ResolveColor(ThemeResources.SurfaceContainerHighestColor),
+                        radiusScale: LayoutScale);
+                    break;
+            }
 
             if (_total <= 0)
                 return;
@@ -614,11 +604,20 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
                 return;
 
             float width = availableWidth * count / _total;
-            BorderRenderer.CreateSpritesFromRect(
-                new RectangleF(x, rect.Y, width, rect.Height),
-                sprites,
-                color,
-                radiusScale: LayoutScale);
+            var segment = new RectangleF(x, rect.Y, width, rect.Height);
+            switch (ResolveTheme())
+            {
+                case LcdTheme.Futuristic:
+                    float inset = Math.Max(1f, LayoutScale) * 2f;
+                    sprites.Add(LineRenderer.Rect(segment.Center, new Vector2(Math.Max(0f, width - inset * 2f), Math.Max(0f, rect.Height - inset * 2f)), color));
+                    break;
+                case LcdTheme.Clean:
+                    sprites.Add(LineRenderer.Rect(segment.Center, new Vector2(width, Math.Min(rect.Height, Math.Max(1f, 4f * LayoutScale))), color));
+                    break;
+                default:
+                    BorderRenderer.CreateSpritesFromRect(segment, sprites, color, radiusScale: LayoutScale);
+                    break;
+            }
             x += width + gap;
         }
     }

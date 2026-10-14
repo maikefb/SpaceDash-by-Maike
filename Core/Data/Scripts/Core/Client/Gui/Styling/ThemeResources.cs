@@ -87,5 +87,9 @@ namespace LcdMod.Client.Gui.Styling
         
         public static readonly ResourceKey<string> TextFont =
             ResourceKey.Register<string>("textFont");
+
+        /// <summary>Valor de <see cref="LcdMod.Common.Config.Components.LcdTheme"/> da superfície, para controles sem acesso à config.</summary>
+        public static readonly ResourceKey<int> Theme =
+            ResourceKey.Register<int>("theme");
     }
 }

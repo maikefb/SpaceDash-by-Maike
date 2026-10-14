@@ -43,34 +43,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
 
         protected override void RenderDefault(List<MySprite> sprites)
         {
-            var rect = GetViewBox();
-            var fill = FillColor ?? TextColor;
-            var background = BackgroundColor ?? base.BackgroundColor;
-            BarPanel.CreateBackgroundSprites(
-                sprites,
-                new Vector2(rect.X, rect.Y),
-                rect.Size,
-                background,
-                Fraction,
-                CornerRadius,
-                ProgressBarStyle);
-
-            var fillWidth = rect.Width * (Fraction > .99f ? 1f : MathHelper.Clamp(Fraction, 0f, 1f));
-            if (fillWidth <= 0.001f)
-                return;
-
-            var fillClip = new RectangleF(rect.X, rect.Y, fillWidth, rect.Height);
-            if (!BeginContentClip(sprites, fillClip))
-                return;
-
-            BarPanel.CreateFillSprites(
-                sprites,
-                new Vector2(rect.X, rect.Y),
-                rect.Size,
-                FillColorOverride ?? fill,
-                CornerRadius,
-                ProgressBarStyle);
-            EndContentClip(sprites);
+            ThemeChrome.DrawBar(sprites, ResolveTheme(), GetViewBox(), Fraction, FillColorOverride ?? FillColor ?? TextColor, ResolveColor(ThemeResources.FontColor), LayoutScale);
         }
 
         RectangleF GetStyledBarBounds(RectangleF bounds)

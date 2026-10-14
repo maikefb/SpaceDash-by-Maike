@@ -8,6 +8,7 @@ using LcdMod.Client.Helpers;
 using LcdMod.Client.Modules.Energy;
 using LcdMod.Client.ScreenAreas;
 using LcdMod.Client.SurfaceScripts.Abstract;
+using LcdMod.Common.Config.Components;
 using VRage;
 using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI;
@@ -100,6 +101,7 @@ namespace LcdMod.Client.Apps.Abstract
             float configuredScale = Host.ConfiguredScale;
             float fontSize = Host.Surface.FontSize;
             Metrics = EnergyMetrics.From(view, configuredScale, fontSize);
+            Metrics.Theme = Theme;
             Metrics.TitleBarHeight = Math.Max(Metrics.TitleBarHeight,
                 FormatingHelper.LineHeight(Metrics.Text(EnergyTheme.TITLE), Host.Surface, TextFont) / 0.9f);
 
@@ -135,7 +137,8 @@ namespace LcdMod.Client.Apps.Abstract
             Color header = GetHeaderColor();
             Color accent = ResolveResource(ThemeResources.AccentColor, header);
             Color onSurface = ResolveResource(ThemeResources.OnSurfaceColor, Host.ForegroundColor);
-            bool paintPanel = OwnsTitle && !ScreenAreaGeometry.IsTransparentScreenArea(Host.Block, Host.SurfaceIndex);
+            bool clean = Theme == LcdTheme.Clean;
+            bool paintPanel = !clean && OwnsTitle && !ScreenAreaGeometry.IsTransparentScreenArea(Host.Block, Host.SurfaceIndex);
             Color panel = paintPanel ? new Color(ResolveResource(ThemeResources.SurfaceColor, background), 1f) : new Color(0, 0, 0, 0);
             Color backdrop = paintPanel ? panel : background;
             Color label = OnBackdrop(onSurface, paintPanel, panel);
@@ -151,7 +154,9 @@ namespace LcdMod.Client.Apps.Abstract
                 ValueOk = OnBackdrop(ResolveResource(ThemeResources.SuccessColor, header), paintPanel, panel),
                 ValueAttention = OnBackdrop(GetWarningColor(), paintPanel, panel),
                 ValueAlert = OnBackdrop(GetErrorColor(), paintPanel, panel),
-                Divider = ResolveResource(ThemeResources.DividerColor, onSurface).EnsureMinimalContrast(backdrop, 1.5),
+                Divider = clean
+                    ? ThemeChrome.DividerColor(LcdTheme.Clean, onSurface)
+                    : ResolveResource(ThemeResources.DividerColor, onSurface).EnsureMinimalContrast(backdrop, 1.5),
                 BoxFrame = ResolveResource(ThemeResources.BorderVariantColor, onSurface).EnsureMinimalContrast(backdrop, 1.5),
                 GaugeTrack = ResolveResource(ThemeResources.SurfaceContainerHighestColor, onSurface),
                 PlotBackground = ResolveResource(ThemeResources.SurfaceContainerLowColor, background),

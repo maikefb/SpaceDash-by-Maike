@@ -160,5 +160,53 @@
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
 
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusBattery"/>
+            <SpritePath>Textures/Sprites/Illustrations/Battery.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusSolar"/>
+            <SpritePath>Textures/Sprites/Illustrations/Solar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusWind"/>
+            <SpritePath>Textures/Sprites/Illustrations/Wind.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusEngine"/>
+            <SpritePath>Textures/Sprites/Illustrations/Engine.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusReactor"/>
+            <SpritePath>Textures/Sprites/Illustrations/Reactor.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_IllusDocking"/>
+            <SpritePath>Textures/Sprites/Illustrations/Docking.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_FrameCorner"/>
+            <SpritePath>Textures/Sprites/Chrome/FrameCorner.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_FrameEdge"/>
+            <SpritePath>Textures/Sprites/Chrome/FrameEdge.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+
     </LCDTextures>
 </Definitions>

@@ -5,6 +5,7 @@ using System.Text;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.Gui;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.Terminal.Controls;
 using Sandbox.Definitions;
@@ -70,6 +71,8 @@ namespace LcdMod.Client.Apps
         readonly List<IMySlimBlock> _parkingSearchBlocks = new List<IMySlimBlock>();
         readonly List<IMyEntity> _entityBuffer = new List<IMyEntity>();
         readonly List<MySprite> _sprites = new List<MySprite>();
+        const float DOCKING_ILLUSTRATION_ASPECT = 1024f / 504f;
+        const float DOCKING_ILLUSTRATION_CIRCLE = 0.86f;
         readonly List<MySprite> _staticSprites = new List<MySprite>();
         readonly string[] _footerLabels = new string[8];
         readonly int[] _footerQuantized = new int[8];
@@ -544,6 +547,12 @@ namespace LcdMod.Client.Apps
             var accent = GetHeaderColor();
             var mutedAccent = ColorExtensions.Alpha(accent, 0.66f);
 
+            if (Theme != LcdTheme.Default)
+            {
+                float reticleHeight = _layout.Square.Height / DOCKING_ILLUSTRATION_CIRCLE;
+                AddTexture(_staticSprites, "SD_IllusDocking", _layout.Square.Center,
+                    new Vector2(reticleHeight * DOCKING_ILLUSTRATION_ASPECT, reticleHeight), Color.White, 0f);
+            }
             DrawAlignmentTicks(_staticSprites, _layout.Square, mutedAccent);
             DrawRollArcTicks(_staticSprites, _layout.Square, mutedAccent);
             AddTexture(_staticSprites, "CircleHollow", _layout.Square.Center,
@@ -560,11 +569,14 @@ namespace LcdMod.Client.Apps
                 new Vector2(_layout.Square.Center.X, _layout.RollArcTopY - _layout.Font * 22f),
                 _layout.Font * 0.65f, accent, TextAlignment.CENTER);
 
-            AddTexture(_staticSprites, "SquareSimple",
-                new Vector2(ViewBox.Center.X, _layout.FooterTop + _layout.FooterHeight * 0.5f),
-                new Vector2(ViewBox.Width, _layout.FooterHeight),
-                new Color(BackgroundColor.MulValue(0.8f), 0.5f),
-                0f);
+            if (!ThemeChrome.DrawFooterBand(_staticSprites, Theme, new RectangleF(ViewBox.X, _layout.FooterTop, ViewBox.Width, _layout.FooterHeight), BackgroundColor, accent, GetForegroundColor(), LayoutScale))
+            {
+                AddTexture(_staticSprites, "SquareSimple",
+                    new Vector2(ViewBox.Center.X, _layout.FooterTop + _layout.FooterHeight * 0.5f),
+                    new Vector2(ViewBox.Width, _layout.FooterHeight),
+                    new Color(BackgroundColor.MulValue(0.8f), 0.5f),
+                    0f);
+            }
         }
 
         void AddStaticChromeSprites()

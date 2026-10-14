@@ -260,6 +260,7 @@ namespace LcdMod.Common.Config.Components
         [ProtoMember(3)] public bool DrawLines { get; set; }
         [ProtoMember(4)] public int DisplayMode { get; set; }
         [ProtoMember(5)] public OptionalValue<byte> BackgroundAlpha { get; set; } = new OptionalValue<byte>();
+        [ProtoMember(6)] public int ThemeInternal { get; set; }
         public override ConfigComponent Clone()
         {
             return new GeneralConfigComponent
@@ -268,7 +269,8 @@ namespace LcdMod.Common.Config.Components
                 InternalScale = InternalScale,
                 DrawLines = DrawLines,
                 DisplayMode = DisplayMode,
-                BackgroundAlpha = ConfigComponentClone.Copy(BackgroundAlpha)
+                BackgroundAlpha = ConfigComponentClone.Copy(BackgroundAlpha),
+                ThemeInternal = ThemeInternal
             };
         }
     }

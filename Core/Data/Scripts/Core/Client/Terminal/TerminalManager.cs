@@ -117,6 +117,7 @@ namespace LcdMod.Client.Terminal
             AddRegistration(registrations, 9000, new ButtonCopySettings(_settingsClipboard, pasteSettings));
             AddRegistration(registrations, 9100, pasteSettings);
             AddRegistration(registrations, 2700, new SliderScale());
+            AddRegistration(registrations, 2710, new ComboboxTheme());
             AddModRegistrations(registrations);
         }
 

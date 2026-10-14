@@ -19,6 +19,13 @@ namespace LcdMod.Common.Config.Components
             if (config != null)
                 config.InternalScale = MathHelper.Clamp(value, MIN_SCALE, MAX_SCALE);
         }
+
+        public static LcdTheme GetTheme(this GeneralConfigComponent config)
+        {
+            if (config == null || config.ThemeInternal < (int)LcdTheme.Default || config.ThemeInternal > (int)LcdTheme.Clean)
+                return LcdTheme.Default;
+            return (LcdTheme)config.ThemeInternal;
+        }
     }
 
     public static class ColorConfigComponentExtensions

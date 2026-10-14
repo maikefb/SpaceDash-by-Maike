@@ -13,6 +13,7 @@ using LcdMod.Client.Gui.ControlsTemplates;
 using LcdMod.Client.Gui.ControlsTemplates.Basic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.ControlsTemplates.Progress;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.SurfaceScripts.Abstract;
 using LcdMod.Client.Terminal.Controls;
@@ -140,15 +141,18 @@ namespace LcdMod.Client.Apps
 
             var footerTop = layout.Top;
 
-            frame.Add(new MySprite
+            if (!ThemeChrome.DrawFooterBand(frame, Theme, new RectangleF(ViewBox.X, footerTop, ViewBox.Width, FooterHeight), BackgroundColor, GetHeaderColor(), ForegroundColor, Scale))
             {
-                Type = SpriteType.TEXTURE,
-                Data = "SquareSimple",
-                Position = new Vector2(ViewBox.X + ViewBox.Width * 0.5f, footerTop + FooterHeight * 0.5f),
-                Size = new Vector2(ViewBox.Width, FooterHeight),
-                Color = new Color(BackgroundColor.MulValue(0.8f), 0.5f),
-                Alignment = TextAlignment.CENTER
-            });
+                frame.Add(new MySprite
+                {
+                    Type = SpriteType.TEXTURE,
+                    Data = "SquareSimple",
+                    Position = new Vector2(ViewBox.X + ViewBox.Width * 0.5f, footerTop + FooterHeight * 0.5f),
+                    Size = new Vector2(ViewBox.Width, FooterHeight),
+                    Color = new Color(BackgroundColor.MulValue(0.8f), 0.5f),
+                    Alignment = TextAlignment.CENTER
+                });
+            }
 
             float legendTextSpacing = GetFooterLegendTextSpacing();
             float pieToTextGap = 10f * Scale;

@@ -351,8 +351,18 @@ namespace LcdMod.Client.Gui.Styling.DataTemplates
             List<MySprite> sprites,
             RectangleF rect)
         {
+            var theme = control.ResolveTheme();
             if (ReferenceEquals(control.Styles, ItemGridLineStyles))
             {
+                var lineColor = control.ResolveColor(ThemeResources.OnSurfaceColor);
+                if (ThemeChrome.DrawDivider(sprites, theme, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), lineColor, control.LayoutScale))
+                {
+                    ThemeChrome.DrawDivider(sprites, theme, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), lineColor, control.LayoutScale);
+                    ThemeChrome.DrawDivider(sprites, theme, new Vector2(rect.X, rect.Y), new Vector2(rect.X, rect.Bottom), lineColor, control.LayoutScale);
+                    ThemeChrome.DrawDivider(sprites, theme, new Vector2(rect.Right, rect.Y), new Vector2(rect.Right, rect.Bottom), lineColor, control.LayoutScale);
+                    return;
+                }
+
                 var divider = control.ResolveColor(ThemeResources.SurfaceColor);
                 var thickness = Math.Max(1f, control.LayoutScale);
                 AddLine(sprites, new Vector2(rect.Center.X, rect.Y), new Vector2(rect.Width, thickness), divider);
@@ -372,6 +382,9 @@ namespace LcdMod.Client.Gui.Styling.DataTemplates
                 rect.Y + margin,
                 Math.Max(0f, rect.Width - margin * 2f),
                 Math.Max(0f, rect.Height - margin * 2f));
+            if (ThemeChrome.DrawCard(sprites, theme, cardRect, background, control.ResolveColor(ThemeResources.AccentColor), control.ResolveColor(ThemeResources.OnSurfaceColor), control.LayoutScale))
+                return;
+
             var shadow = new RectangleF(cardRect.Position + new Vector2(2f), cardRect.Size);
             BorderRenderer.CreateSpritesFromRect(
                 shadow,

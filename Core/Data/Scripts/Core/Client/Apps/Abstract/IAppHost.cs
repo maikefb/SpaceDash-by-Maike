@@ -25,6 +25,7 @@ namespace LcdMod.Client.Apps.Abstract
         IComponentContainer Config { get; }
         int SurfaceIndex { get; }
         float ConfiguredScale { get; }
+        LcdTheme ThemeKind { get; }
         GridLogic GridLogic { get; }
         ScreenProviderConfig ProviderConfig { get; }
         void AddBackground(List<MySprite> frame, Color? color = null);

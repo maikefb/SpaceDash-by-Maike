@@ -135,6 +135,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         float _cachedTitleAvailableWidth = -1f;
         float _cachedTitleFontSize = -1f;
         bool _cachedTitleLocalized;
+        LcdTheme _cachedTitleTheme;
         public bool TitleCanBeVisible { get; private set; } = true;
         public bool TitleVisible { get; private set; } = true;
         public override ScriptUpdate NeedsUpdate => ScriptUpdate.Update10;
@@ -142,6 +143,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public SurfaceConfig Config { get; protected set; }
         IComponentContainer IAppHost.Config => Config;
         public GeneralConfigComponent GeneralComponent => Config.GetComponent<GeneralConfigComponent>();
+        public virtual LcdTheme ThemeKind => GeneralComponent.GetTheme();
         public ColorConfigComponent ColorComponent => Config.GetComponent<ColorConfigComponent>();
         /// <summary>Fonte escolhida no terminal, com o padrão do jogo como reserva.</summary>
         public string TextFont => string.IsNullOrEmpty(Surface.Font) ? "White" : Surface.Font;
@@ -411,12 +413,13 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             var padding = (Surface.TextPadding / 100) * Surface.SurfaceSize;
             sizeOffset += padding / 2;
+            float frameInset = FrameThickness;
 
             ViewBox = ApplyProxyOffsets(new RectangleF(
-                sizeOffset.X,
-                sizeOffset.Y,
-                Surface.SurfaceSize.X - padding.X,
-                Surface.SurfaceSize.Y - padding.Y));
+                sizeOffset.X + frameInset,
+                sizeOffset.Y + frameInset,
+                Surface.SurfaceSize.X - padding.X - frameInset * 2f,
+                Surface.SurfaceSize.Y - padding.Y - frameInset * 2f));
         }
 
         protected RectangleF ApplyProxyOffsets(RectangleF viewBox)
@@ -718,9 +721,11 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 RotationOrScale = ConfiguredScale * 1.3f * FontScale,
                 Color = GetHeaderColor(),
                 Alignment = TextAlignment.LEFT,
-                FontId = TextFont            });
+                FontId = ThemeChrome.TitleFont(ThemeKind, TextFont, titleText)
+            });
 
             frame.Add(MySprite.CreateClearClipRect());
+            ThemeChrome.DrawTitleAccent(frame, ThemeKind, new RectangleF(ViewBox.X, ViewBox.Y, ViewBox.Width, titleBarHeight), ViewBox, GetHeaderColor(), ForegroundColor, headerScale);
 
             CaretY += titleBarHeight;
         }
@@ -1078,22 +1083,25 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             var rawTitle = Title;
             availableWidth = Math.Max(0f, availableWidth);
 
+            var theme = ThemeKind;
             if (_cachedTitleText != null &&
                 _cachedTitleSource == rawTitle &&
                 _cachedTitleLocalized == localizeTitle &&
+                _cachedTitleTheme == theme &&
                 Math.Abs(_cachedTitleAvailableWidth - availableWidth) <= 0.1f &&
                 Math.Abs(_cachedTitleFontSize - fontSize) <= 0.0001f)
             {
                 return _cachedTitleText;
             }
 
-            var source = localizeTitle ? MyTexts.GetString(rawTitle) : rawTitle;
+            var source = ThemeChrome.LabelText(theme, localizeTitle ? MyTexts.GetString(rawTitle) : rawTitle);
             var sb = new StringBuilder(source ?? string.Empty);
             if (availableWidth > 0f)
                 TrimText(ref sb, availableWidth, fontSize);
 
             _cachedTitleSource = rawTitle;
             _cachedTitleLocalized = localizeTitle;
+            _cachedTitleTheme = theme;
             _cachedTitleAvailableWidth = availableWidth;
             _cachedTitleFontSize = fontSize;
             _cachedTitleText = sb.ToString();
@@ -1126,6 +1134,40 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             }
 
             frame.AddRange(_backgroundGrids);
+            DrawChrome(frame);
+        }
+
+        const float FRAME_RATIO = 0.04f;
+
+        protected float FrameThickness => (float)Math.Round(Math.Min(Surface.SurfaceSize.X, Surface.SurfaceSize.Y) * FRAME_RATIO);
+
+        /// <summary>Moldura neon 9-slice em volta do ViewBox (canto + borda, rotacionados).</summary>
+        void DrawChrome(List<MySprite> frame)
+        {
+            float t = FrameThickness;
+            if (t < 4f)
+                return;
+
+            RectangleF box = ViewBox;
+            float half = t * 0.5f;
+            float left = box.X - half;
+            float right = box.Right + half;
+            float top = box.Y - half;
+            float bottom = box.Bottom + half;
+            var corner = new Vector2(t);
+            AddChromeSprite(frame, "SD_FrameCorner", new Vector2(left, top), corner, 0f);
+            AddChromeSprite(frame, "SD_FrameCorner", new Vector2(right, top), corner, MathHelper.PiOver2);
+            AddChromeSprite(frame, "SD_FrameCorner", new Vector2(right, bottom), corner, MathHelper.Pi);
+            AddChromeSprite(frame, "SD_FrameCorner", new Vector2(left, bottom), corner, MathHelper.Pi + MathHelper.PiOver2);
+            AddChromeSprite(frame, "SD_FrameEdge", new Vector2(box.Center.X, top), new Vector2(box.Width, t), 0f);
+            AddChromeSprite(frame, "SD_FrameEdge", new Vector2(right, box.Center.Y), new Vector2(box.Height, t), MathHelper.PiOver2);
+            AddChromeSprite(frame, "SD_FrameEdge", new Vector2(box.Center.X, bottom), new Vector2(box.Width, t), MathHelper.Pi);
+            AddChromeSprite(frame, "SD_FrameEdge", new Vector2(left, box.Center.Y), new Vector2(box.Height, t), MathHelper.Pi + MathHelper.PiOver2);
+        }
+
+        static void AddChromeSprite(List<MySprite> frame, string texture, Vector2 position, Vector2 size, float rotation)
+        {
+            frame.Add(new MySprite(SpriteType.TEXTURE, texture, position, size, Color.White, null, TextAlignment.CENTER, rotation));
         }
 
         void AddTiledBackground(MySpriteDrawFrame frame, Color color)

@@ -1,5 +1,6 @@
 using System;
 using LcdMod.Client.Modules.Energy;
+using LcdMod.Common.Config.Components;
 using VRageMath;
 
 namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
@@ -37,6 +38,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
     public struct EnergyMetrics
     {
         public const float MIN_TEXT = 0.4f;
+
+        public LcdTheme Theme;
 
         /// <summary>Fator do tamanho da tela, sem o zoom do usuário.</summary>
         public float ScreenFactor;

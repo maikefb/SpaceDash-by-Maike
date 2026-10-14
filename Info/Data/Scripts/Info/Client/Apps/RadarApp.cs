@@ -9,6 +9,7 @@ using LcdMod.Client.Gui;
 using LcdMod.Client.Gui.ControlsTemplates;
 using LcdMod.Client.Gui.ControlsTemplates.Basic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
+using LcdMod.Client.Gui.Styling;
 using StackPanelControl = LcdMod.Client.Gui.ControlsTemplates.Panels.StackPanel.StackPanel;
 using LcdMod.Client.Helpers;
 using LcdMod.Common.Helpers;
@@ -222,15 +223,18 @@ namespace LcdMod.Client.Apps
                 if (rect.Width <= 0f || rect.Height <= 0f)
                     return;
 
-                sprites.Add(new MySprite
+                if (!ThemeChrome.DrawFooterBand(sprites, ResolveTheme(), rect, ResolveColor(ThemeResources.BackgroundColor), ResolveColor(ThemeResources.AccentColor), ResolveColor(ThemeResources.FontColor), LayoutScale))
                 {
-                    Type = SpriteType.TEXTURE,
-                    Data = "SquareSimple",
-                    Position = rect.Center,
-                    Size = rect.Size,
-                    Color = FooterBackgroundColor,
-                    Alignment = TextAlignment.CENTER
-                });
+                    sprites.Add(new MySprite
+                    {
+                        Type = SpriteType.TEXTURE,
+                        Data = "SquareSimple",
+                        Position = rect.Center,
+                        Size = rect.Size,
+                        Color = FooterBackgroundColor,
+                        Alignment = TextAlignment.CENTER
+                    });
+                }
 
                 sprites.Add(MySprite.CreateClipRect(ToClipRectangle(rect)));
                 RenderChildren(sprites);
@@ -1123,6 +1127,9 @@ namespace LcdMod.Client.Apps
         }
 
 
+        const long SWEEP_PERIOD_FRAMES = 720;
+        const float SWEEP_ALPHA = 0.7f;
+
         void RenderRadar(List<MySprite> sprites)
         {
             var lineColor = ForegroundColor;
@@ -1150,6 +1157,14 @@ namespace LcdMod.Client.Apps
                 lineColor,
                 backColor,
                 planeColor);
+            if (Theme != LcdTheme.Default)
+            {
+                long sweepFrame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
+                float sweepAngle = (sweepFrame % SWEEP_PERIOD_FRAMES) / (float)SWEEP_PERIOD_FRAMES * MathHelper.TwoPi;
+                float sweepRadius = Math.Min(layout.PlaneSize.X, layout.PlaneSize.Y) * 0.5f;
+                Vector2 sweepTip = layout.ContentCenter + new Vector2((float)Math.Sin(sweepAngle), -(float)Math.Cos(sweepAngle)) * sweepRadius;
+                LineRenderer.DrawLine(sprites, layout.ContentCenter, sweepTip, Math.Max(1f, QUADRANT_LINE_WIDTH * layout.ContentScale), new Color(lineColor, SWEEP_ALPHA));
+            }
             DrawRadarPlane(sprites, layout.ContentCenter, layout.PlaneSize, layout.ContentScale, lineColor);
 
             BuildTargetLayers(errColor, warnColor, allyColor, layout.WorldRange);

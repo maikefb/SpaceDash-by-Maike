@@ -8,6 +8,7 @@ using LcdMod.Client.Gui;
 using LcdMod.Client.Gui.ControlsTemplates;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.ControlsTemplates.Panels.WrapPanel;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Gui.UserControls.Antenna;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.Terminal.Controls;
@@ -263,6 +264,9 @@ namespace LcdMod.Client.Apps
             for (int row = 0; row <= _scrollPanel.MaxVisibleRows; row++)
             {
                 var y = _scrollPanel.ContentBounds.Y + row * rowHeight;
+                if (ThemeChrome.DrawDivider(sprites, Theme, new Vector2(contentStart, y), new Vector2(contentEnd, y), GetForegroundColor(), GeneralComponent.GetScale()))
+                    continue;
+
                 sprites.Add(new MySprite
                 {
                     Type = SpriteType.TEXTURE,
@@ -289,6 +293,10 @@ namespace LcdMod.Client.Apps
             for (int col = 0; col <= layout.Columns; col++)
             {
                 var x = col == layout.Columns ? contentEnd : contentStart + col * layout.ColumnWidth;
+                var top = _scrollPanel.ContentViewportBounds.Y;
+                if (ThemeChrome.DrawDivider(sprites, Theme, new Vector2(x, top), new Vector2(x, top + gridHeight), GetForegroundColor(), GeneralComponent.GetScale()))
+                    continue;
+
                 sprites.Add(new MySprite
                 {
                     Type = SpriteType.TEXTURE,
@@ -444,9 +452,12 @@ namespace LcdMod.Client.Apps
                     yStart + cellPadding / 2f,
                     (xEnd - xStart) - cellPadding,
                     rowHeight - cellPadding);
-                var dropShadow = new RectangleF(cellRect.Position + 2, cellRect.Size);
-                BorderRenderer.CreateSpritesFromRect(dropShadow, sprites, hsv.HSVtoColor(), radiusScale: GeneralComponent.GetScale());
-                BorderRenderer.CreateSpritesFromRect(cellRect, sprites, backgroundColor,radiusScale: GeneralComponent.GetScale());
+                if (!ThemeChrome.DrawCard(sprites, Theme, cellRect, backgroundColor, backgroundColor, Host.Surface.ScriptForegroundColor, GeneralComponent.GetScale()))
+                {
+                    var dropShadow = new RectangleF(cellRect.Position + 2, cellRect.Size);
+                    BorderRenderer.CreateSpritesFromRect(dropShadow, sprites, hsv.HSVtoColor(), radiusScale: GeneralComponent.GetScale());
+                    BorderRenderer.CreateSpritesFromRect(cellRect, sprites, backgroundColor,radiusScale: GeneralComponent.GetScale());
+                }
             }
 
             var foreground = drawAsLines ? entry.StatusColor : Host.Surface.ScriptForegroundColor;

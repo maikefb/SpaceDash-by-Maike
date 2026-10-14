@@ -584,8 +584,11 @@ namespace LcdMod.Client.Apps
             float left = ViewBox.X + 6f * Scale;
             var foreground = Host.ForegroundColor;
 
-            sprites.Add(LineRenderer.Rect(new Vector2(ViewBox.Center.X, top + height * 0.5f), new Vector2(ViewBox.Width, height),
-                new Color(BackgroundColor.MulValue(0.8f), 0.5f)));
+            if (!ThemeChrome.DrawFooterBand(sprites, Theme, new RectangleF(ViewBox.X, top, ViewBox.Width, height), BackgroundColor, GetHeaderColor(), foreground, LayoutScale))
+            {
+                sprites.Add(LineRenderer.Rect(new Vector2(ViewBox.Center.X, top + height * 0.5f), new Vector2(ViewBox.Width, height),
+                    new Color(BackgroundColor.MulValue(0.8f), 0.5f)));
+            }
 
             var summary = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Footer").Split('|');
             var position = new Vector2(left, top + textY);

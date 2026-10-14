@@ -424,13 +424,16 @@ namespace LcdMod.Client.Apps.Abstract
             var nameLeft = Math.Min(header.Right, header.X + 38f * LayoutScale);
             var amountLeft = Math.Max(nameLeft, header.Right - amountWidth);
 
-            sprites.Add(new MySprite(SpriteType.TEXTURE, "SquareSimple")
+            if (!ThemeChrome.DrawDivider(sprites, Theme, new Vector2(header.X, header.Bottom - 1f), new Vector2(header.Right, header.Bottom - 1f), ForegroundColor, LayoutScale))
             {
-                Position = new Vector2(header.Center.X, header.Bottom - Math.Max(1f, LayoutScale)),
-                Size = new Vector2(header.Width, Math.Max(1f, LayoutScale)),
-                Color = ResolveResource(ThemeResources.DividerColor, ForegroundColor),
-                Alignment = TextAlignment.CENTER
-            });
+                sprites.Add(new MySprite(SpriteType.TEXTURE, "SquareSimple")
+                {
+                    Position = new Vector2(header.Center.X, header.Bottom - Math.Max(1f, LayoutScale)),
+                    Size = new Vector2(header.Width, Math.Max(1f, LayoutScale)),
+                    Color = ResolveResource(ThemeResources.DividerColor, ForegroundColor),
+                    Alignment = TextAlignment.CENTER
+                });
+            }
 
             ConfigureSortHeader(
                 _itemSortHeader,
@@ -616,7 +619,7 @@ namespace LcdMod.Client.Apps.Abstract
             _listModel.ScrollerWidthPixels = ScrollPanel.DEFAULT_SCROLLER_WIDTH_PIXELS * Scale;
             _listBox.SetRect(contentBounds);
             _listBox.BackgroundColor = Color.Transparent;
-            _listBox.BorderRadiusPixels = PresentationMode == ItemDisplayMode.Table
+            _listBox.BorderRadiusPixels = PresentationMode == ItemDisplayMode.Table || Theme != LcdTheme.Default
                 ? 0f
                 : BorderRenderer.DEFAULT_RADIUS_PIXELS;
             _listModel.ItemClassSelector = PresentationMode == ItemDisplayMode.Table

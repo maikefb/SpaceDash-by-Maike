@@ -1,3 +1,4 @@
+using LcdMod.Common.Config.Components;
 using System;
 using System.Collections.Generic;
 using LcdMod.Client.Apps.Abstract;
@@ -79,10 +80,31 @@ namespace LcdMod.Client.Apps
         void DrawIllustration(EnergyKindStats stats, RectangleF area)
         {
             EnergyUnitState state = stats.State;
-            bool showsLoad = (_kind == EnergyKind.Reactor || _kind == EnergyKind.Hydrogen) && stats.Working > 0;
-            EnergyCardRenderer.DrawIllustration(_sprites, Host.Surface, TextFont, area, TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, "IconEnergy"),
-                state == EnergyUnitState.Offline || state == EnergyUnitState.Inoperative ? Palette.LabelMuted : Palette.Label, Host.TitleVisible ? null : KindName(_kind),
+            bool dimmed = state == EnergyUnitState.Offline || state == EnergyUnitState.Inoperative;
+            string illustration = Theme == LcdTheme.Default ? null : IllustrationTexture(_kind);
+            bool showsLoad = illustration == null && (_kind == EnergyKind.Reactor || _kind == EnergyKind.Hydrogen) && stats.Working > 0;
+            string icon = illustration ?? TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, "IconEnergy");
+            Color iconColor = illustration != null
+                ? Color.White
+                : dimmed ? Palette.LabelMuted : Palette.Label;
+            EnergyCardRenderer.DrawIllustration(_sprites, Host.Surface, TextFont, area, icon, iconColor, illustration != null ? ILLUSTRATION_ASPECT : 1f,
+                Host.TitleVisible ? null : KindName(_kind),
                 StateText(state), EnergyTheme.StateColor(ref Palette, state), showsLoad ? stats.LoadRatio : -1f, ref Palette, ref Metrics);
+        }
+
+        const float ILLUSTRATION_ASPECT = 1024f / 344f;
+
+        static string IllustrationTexture(EnergyKind kind)
+        {
+            switch (kind)
+            {
+                case EnergyKind.Battery: return "SD_IllusBattery";
+                case EnergyKind.Solar: return "SD_IllusSolar";
+                case EnergyKind.Wind: return "SD_IllusWind";
+                case EnergyKind.Reactor: return "SD_IllusReactor";
+                case EnergyKind.Hydrogen: return "SD_IllusEngine";
+                default: return null;
+            }
         }
 
         /// <summary>Linhas em ordem de prioridade: a tabela descarta as do fim quando falta altura.</summary>
