@@ -36,10 +36,7 @@
     <value>Tómt</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gasfylling %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Orkufylling %</value>
   </data>

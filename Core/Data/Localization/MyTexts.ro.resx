@@ -36,10 +36,7 @@
     <value>Gol</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gaz umplut %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Energie umplută %</value>
   </data>

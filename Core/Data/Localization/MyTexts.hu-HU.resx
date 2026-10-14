@@ -36,10 +36,7 @@
     <value>Üres</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gáz töltöttség %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Energia töltöttség %</value>
   </data>

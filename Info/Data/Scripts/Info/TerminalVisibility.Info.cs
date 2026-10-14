@@ -8,7 +8,6 @@ namespace LcdMod.Client.Terminal.Controls.Generic
         {
             switch (script)
             {
-                case GasSurfaceScript.ID:
                 case AntennaSurfaceScript.ID:
                 case DockingAlignment.ID:
                 case DigitalPictureFramesSurfaceScript.ID:
@@ -16,6 +15,14 @@ namespace LcdMod.Client.Terminal.Controls.Generic
                 default:
                     return false;
             }
+        }
+    }
+
+    public partial class ComboboxTheme
+    {
+        public override bool VisibleForScript(string script)
+        {
+            return script != PowerFilledSurfaceScript.ID;
         }
     }
 
@@ -93,7 +100,6 @@ namespace LcdMod.Client.Terminal.Controls.Generic
         {
             switch (script)
             {
-                case GasSurfaceScript.ID:
                 case PowerFilledSurfaceScript.ID:
                 case FarmSurfaceScript.ID:
                 case AntennaSurfaceScript.ID:
@@ -446,6 +452,7 @@ namespace LcdMod.Client.Terminal.Controls.Generic
             {
                 case LcdMod.Client.SurfaceScripts.DefenseDashboardSurfaceScript.ID:
                 case LcdMod.Client.SurfaceScripts.ThrustSurfaceScript.ID:
+                case LcdMod.Client.SurfaceScripts.LiftCapacitySurfaceScript.ID:
                     return false;
                 default:
                     return true;

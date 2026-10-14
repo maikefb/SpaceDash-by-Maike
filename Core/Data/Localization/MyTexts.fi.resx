@@ -36,10 +36,7 @@
     <value>Tyhjä</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Kaasun täyttö %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Virran täyttö %</value>
   </data>

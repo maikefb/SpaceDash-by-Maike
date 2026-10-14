@@ -3,7 +3,7 @@ SpaceDash by Maike
 Mod de LCD derivado do "Arthur's LCD Mod" 0.2.6, sem a interação por clique na tela. Todas as telas aparecem na lista de scripts do LCD com o prefixo [SD].
 
 TELAS
-- Gás Preenchido %: nível dos tanques (modo de exibição, tipo de vínculo, passo da rolagem)
+- Gás: armazenamento de H2/O2, geradores, gelo, vazão líquida, estoque e reabastecimento em 8 cartões (tipo de vínculo)
 - Painel de Defesa
 - Energia %: carga das baterias
 - Gráfico de energia: histórico de produção, consumo e armazenamento, com previsão "Vazia em"/"Cheia em"
@@ -14,6 +14,7 @@ TELAS
 - Projetor: componentes faltantes da projeção, com o botão "Fabricar componentes faltantes" (também como ação de barra)
 - Relógio do jogo: hora, temperatura, tempo de jogo da sessão e tempo de servidor ligado
 - Propulsão
+- Capacidade de Elevação: gravidade, massa da nave, empuxo de elevação, massa máxima e segura, SEGURO/ATENÇÃO/CRÍTICO
 - Alinhamento de acoplagem
 - Radar: magnificação e bloco de referência
 - Sobreviventes: ranking por tempo vivo, com recorde pessoal e marcadores ouro/prata/bronze

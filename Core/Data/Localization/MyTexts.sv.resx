@@ -36,10 +36,7 @@
     <value>Tom</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gasfyllnad %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Energifyllnad %</value>
   </data>

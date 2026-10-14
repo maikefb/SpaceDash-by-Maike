@@ -23,10 +23,7 @@
     <value>Leer</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gas gefüllt %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Energie gefüllt %</value>
   </data>

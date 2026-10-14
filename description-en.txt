@@ -3,7 +3,7 @@ SpaceDash by Maike
 LCD mod derived from "Arthur's LCD Mod" 0.2.6, without the click interaction on the screen. All screens show up in the LCD script list with the [SD] prefix.
 
 SCREENS
-- Gas Fill %: tank levels (display mode, link type, scroll step)
+- Gas: H2/O2 storage, generators, ice, net flow, stockpile and auto-refill in 8 cards (link type)
 - Defense Dashboard
 - Power %: battery charge
 - Energy Chart: production, consumption and storage history, with "Empty in"/"Full in" forecast
@@ -14,6 +14,7 @@ SCREENS
 - Projector: missing projection components, with the "Craft missing components" button (also available as a toolbar action)
 - In-Game Clock: time, temperature, session play time and server uptime
 - Thrust
+- Lift Capacity: gravity, ship mass, lift thrust, max and safe mass, SAFE/WARN/CRIT
 - Docking Alignment
 - Radar: magnification and reference block
 - Survivors: ranking by time alive, with personal record and gold/silver/bronze markers

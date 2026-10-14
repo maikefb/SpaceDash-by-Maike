@@ -36,10 +36,7 @@
     <value>Порожньо</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Заповнення газом %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Заповнення енергією %</value>
   </data>

@@ -32,8 +32,116 @@
     <value>Empty</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gas Filled %</value>
+    <data name="LcdMod_GasDashboard" xml:space="preserve">
+    <value>[SD] Gas</value>
+  </data>
+  <data name="LcdMod_Gas_H2Stored" xml:space="preserve">
+    <value>H2 stored</value>
+  </data>
+  <data name="LcdMod_Gas_O2Stored" xml:space="preserve">
+    <value>O2 stored</value>
+  </data>
+  <data name="LcdMod_Gas_Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="LcdMod_Gas_Capacity" xml:space="preserve">
+    <value>Capacity</value>
+  </data>
+  <data name="LcdMod_Gas_Generators" xml:space="preserve">
+    <value>Generators</value>
+  </data>
+  <data name="LcdMod_Gas_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="LcdMod_Gas_Production" xml:space="preserve">
+    <value>Production</value>
+  </data>
+  <data name="LcdMod_Gas_IceReserve" xml:space="preserve">
+    <value>Ice reserve</value>
+  </data>
+  <data name="LcdMod_Gas_IceInGenerators" xml:space="preserve">
+    <value>In generators</value>
+  </data>
+  <data name="LcdMod_Gas_IceOnGrid" xml:space="preserve">
+    <value>On grid</value>
+  </data>
+  <data name="LcdMod_Gas_H2Output" xml:space="preserve">
+    <value>H2 output</value>
+  </data>
+  <data name="LcdMod_Gas_O2Output" xml:space="preserve">
+    <value>O2 output</value>
+  </data>
+  <data name="LcdMod_Gas_Flow" xml:space="preserve">
+    <value>Net flow</value>
+  </data>
+  <data name="LcdMod_Gas_Usage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="LcdMod_Gas_Stockpile" xml:space="preserve">
+    <value>Stockpile</value>
+  </data>
+  <data name="LcdMod_Gas_StockpileTanks" xml:space="preserve">
+    <value>Stockpile tanks</value>
+  </data>
+  <data name="LcdMod_Gas_TotalStored" xml:space="preserve">
+    <value>Total stored</value>
+  </data>
+  <data name="LcdMod_Gas_Refill" xml:space="preserve">
+    <value>Refill</value>
+  </data>
+  <data name="LcdMod_Gas_GenAutoRefill" xml:space="preserve">
+    <value>Generators auto-refill</value>
+  </data>
+  <data name="LcdMod_Gas_TankAutoRefill" xml:space="preserve">
+    <value>Tanks auto-refill</value>
+  </data>
+  <data name="LcdMod_Gas_SystemStatus" xml:space="preserve">
+    <value>System status</value>
+  </data>
+  <data name="LcdMod_Gas_Nominal" xml:space="preserve">
+    <value>Nominal</value>
+  </data>
+  <data name="LcdMod_Gas_Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="LcdMod_Gas_Critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="LcdMod_LiftCapacity" xml:space="preserve">
+    <value>[SD] Lift Capacity</value>
+  </data>
+  <data name="LcdMod_Lift_Gravity" xml:space="preserve">
+    <value>Gravity</value>
+  </data>
+  <data name="LcdMod_Lift_ShipMass" xml:space="preserve">
+    <value>Ship mass</value>
+  </data>
+  <data name="LcdMod_Lift_LiftThrust" xml:space="preserve">
+    <value>Lift thrust</value>
+  </data>
+  <data name="LcdMod_Lift_LiftUsage" xml:space="preserve">
+    <value>Lift usage</value>
+  </data>
+  <data name="LcdMod_Lift_MaxMass" xml:space="preserve">
+    <value>Max mass</value>
+  </data>
+  <data name="LcdMod_Lift_SafeMax" xml:space="preserve">
+    <value>Safe max</value>
+  </data>
+  <data name="LcdMod_Lift_CanCarry" xml:space="preserve">
+    <value>Can carry</value>
+  </data>
+  <data name="LcdMod_Lift_Safe" xml:space="preserve">
+    <value>SAFE</value>
+  </data>
+  <data name="LcdMod_Lift_Warn" xml:space="preserve">
+    <value>WARN</value>
+  </data>
+  <data name="LcdMod_Lift_Crit" xml:space="preserve">
+    <value>CRIT</value>
+  </data>
+  <data name="LcdMod_Lift_NoGravity" xml:space="preserve">
+    <value>NO GRAVITY</value>
   </data>
 
     <data name="LcdMod_PowerFilled" xml:space="preserve">
@@ -521,6 +629,21 @@ We are waiting for a while, and then we will restart it for you.</value>
   </data>
   <data name="LcdMod_ShowTitle" xml:space="preserve">
     <value>Show title</value>
+  </data>
+  <data name="LcdMod_Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="LcdMod_Theme_Tooltip" xml:space="preserve">
+    <value>Visual style of this screen: N/A keeps the current look, Futuristic adds corner brackets and outlined cards, Clean uses thin dividers only.</value>
+  </data>
+  <data name="LcdMod_Theme_Default" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="LcdMod_Theme_Futuristic" xml:space="preserve">
+    <value>Futuristic</value>
+  </data>
+  <data name="LcdMod_Theme_Clean" xml:space="preserve">
+    <value>Clean</value>
   </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Draws the title bar. Disabled automatically on very wide screens.</value>

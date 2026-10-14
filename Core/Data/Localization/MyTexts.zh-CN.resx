@@ -36,9 +36,6 @@
     <value>空</value>
   </data>
 
-  <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] 气体填充 %</value>
-  </data>
 
   <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] 电量填充 %</value>

@@ -36,10 +36,7 @@
     <value>Boş</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gaz doluluk %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Güç doluluk %</value>
   </data>

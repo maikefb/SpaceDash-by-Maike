@@ -36,10 +36,7 @@
     <value>Leeg</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gas gevuld %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Energie gevuld %</value>
   </data>

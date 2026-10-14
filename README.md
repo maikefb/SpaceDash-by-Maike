@@ -2,7 +2,7 @@
 
 [![Licença: GPL v3](https://img.shields.io/badge/licen%C3%A7a-GPL%20v3-blue.svg)](LICENSE) **Licença: GNU GPL v3** — mods derivados devem permanecer abertos e gratuitos. Veja [COPYRIGHT.md](COPYRIGHT.md).
 
-Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), derivado do "Arthur's LCD Mod" 0.2.6, sem a interação por clique no LCD. Até 27/09/2026 eram dois mods (`LCD_INFO_MAIKE` e `LCD_Maike`); as telas do segundo foram incorporadas ao primeiro.
+Um mod de LCD para Space Engineers, `SpaceDash`, derivado do "Arthur's LCD Mod" 0.2.6, sem a interação por clique no LCD. Até 27/09/2026 eram dois mods (`LCD_INFO_MAIKE` e `LCD_Maike`); as telas do segundo foram incorporadas ao primeiro.
 
 | Pasta | Vai para | Conteúdo |
 |---|---|---|
@@ -13,7 +13,7 @@ Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), deriva
 
 | Mod | Tela (aparece com o prefixo `[SD]` na lista de scripts) | ID do script | Controles próprios no menu K |
 |---|---|---|---|
-| SpaceDash | Gás Preenchido % | `LcdInfo_GasGraph` | modo de exibição, tipo de vínculo, passo da rolagem |
+| SpaceDash | Gás | `LcdInfo_GasGraph` | tipo de vínculo |
 | SpaceDash | Painel de Defesa | `LcdInfo_DefenseDashboard` | só os comuns |
 | SpaceDash | Energia % | `LcdInfo_BatteryGraph` | tipo de vínculo, passo da rolagem |
 | SpaceDash | Gráfico de energia | `LcdInfo_EnergyChart` | tipo de vínculo |
@@ -25,6 +25,7 @@ Um mod de LCD para Space Engineers, `SpaceDash` (antes `LCD_INFO_MAIKE`), deriva
 | SpaceDash | Projetor | `LcdInfo_ProjectorCharts` | exibição de itens, projetor de referência, **Fabricar componentes faltantes**, filtro de blocos, tipo de vínculo |
 | SpaceDash | Relógio do jogo | `LcdInfo_InGameClockDashboard` | formato 24 horas, unidade de temperatura |
 | SpaceDash | Propulsão | `LcdInfo_Thrust` | só os comuns |
+| SpaceDash | Capacidade de Elevação | `LcdInfo_LiftCapacity` | só os comuns |
 | SpaceDash | Alinhamento de acoplagem | `LcdInfo_DockingAlignment` | modo de exibição, bloco de referência |
 | SpaceDash | Radar | `LcdInfo_Radar` | magnificação, referência |
 | SpaceDash | Sobreviventes | `LcdInfo_Survivors` | passo da rolagem |

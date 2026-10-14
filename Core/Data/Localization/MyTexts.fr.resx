@@ -23,10 +23,7 @@
     <value>Vide</value>
   </data>
 
-    <data name="LcdMod_GasFilled" xml:space="preserve">
-    <value>[SD] Gaz Rempli %</value>
-  </data>
-
+  
     <data name="LcdMod_PowerFilled" xml:space="preserve">
     <value>[SD] Énergie Remplie %</value>
   </data>
