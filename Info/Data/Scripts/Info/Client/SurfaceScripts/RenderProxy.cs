@@ -43,11 +43,11 @@ namespace LcdMod.Client.SurfaceScripts
         static readonly List<IMySlimBlock> AutoCascadeBlocks = new List<IMySlimBlock>();
         static readonly HashSet<long> ActiveRotationCascadeHosts = new HashSet<long>();
 
-        static readonly Comparison<ProxyAutoTarget> ByDistance = (a, b) =>
+        static int CompareByDistance(ProxyAutoTarget a, ProxyAutoTarget b)
         {
             int distance = a.DistanceFromStart.CompareTo(b.DistanceFromStart);
             return distance != 0 ? distance : a.Block.EntityId.CompareTo(b.Block.EntityId);
-        };
+        }
 
         SurfaceScriptBase _parent;
         SurfaceTssInstances _parentInstances;
@@ -363,7 +363,7 @@ namespace LcdMod.Client.SurfaceScripts
             }
 
             AutoCascadeBlocks.Clear();
-            targets.Sort(ByDistance);
+            targets.Sort(CompareByDistance);
             return targets;
         }
 
@@ -536,7 +536,7 @@ namespace LcdMod.Client.SurfaceScripts
             }
 
             AutoCascadeBlocks.Clear();
-            targets.Sort(ByDistance);
+            targets.Sort(CompareByDistance);
             return targets;
         }
 
