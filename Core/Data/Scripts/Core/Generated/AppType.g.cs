@@ -24,6 +24,7 @@ namespace Generated
         EnergyWind = 36,
         EnergyHydrogen = 37,
         EnergyReactors = 38,
-        ConveyorMap = 39
+        ConveyorMap = 39,
+        LiftCapacity = 40
     }
 }

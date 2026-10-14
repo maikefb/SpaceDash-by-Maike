@@ -5,6 +5,7 @@ using System.Text;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.Gui;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.GridData;
 using LcdMod.Client.Helpers;
 using Sandbox.ModAPI;
@@ -40,12 +41,12 @@ namespace LcdMod.Client.Apps
         const double STOP_SPEED_EPSILON = 5e-2d;
         const double STOP_FORCE_EPSILON = 1e-3d;
         const double STOP_ACCELERATION_EPSILON = 1e-3d;
-        const int DIR_FORWARD = 0;
-        const int DIR_BACKWARD = 1;
-        const int DIR_LEFT = 2;
-        const int DIR_RIGHT = 3;
-        const int DIR_UP = 4;
-        const int DIR_DOWN = 5;
+        const int DIR_FORWARD = LiftPhysics.DIR_FORWARD;
+        const int DIR_BACKWARD = LiftPhysics.DIR_BACKWARD;
+        const int DIR_LEFT = LiftPhysics.DIR_LEFT;
+        const int DIR_RIGHT = LiftPhysics.DIR_RIGHT;
+        const int DIR_UP = LiftPhysics.DIR_UP;
+        const int DIR_DOWN = LiftPhysics.DIR_DOWN;
 
         readonly double[] _maxThrust = new double[6];
         readonly double[] _curThrust = new double[6];
@@ -96,29 +97,8 @@ namespace LcdMod.Client.Apps
                 var gridLogic = Host.GridLogic;
                 if (gridLogic != null)
                 {
-                    var thrusts = gridLogic.Blocks.Thrusts;
-
-                    for (int i = 0; i < thrusts.Count; i++)
-                    {
-                        var thr = thrusts[i];
-                        if (thr == null) continue;
-                        if (!thr.Enabled) continue; // turned off
-                        if (!thr.IsFunctional) continue; // damaged below functional line
-                        if (!thr.IsWorking) continue; // no fuel/power or otherwise unable to provide thrust
-
-                        var pushDir = Base6Directions.GetOppositeDirection(thr.Orientation.Forward);
-                        int idx = DirIndex(pushDir);
-                        if (idx < 0) continue;
-
-                        double max;
-                        double cur;
-                        max = thr.MaxEffectiveThrust;
-                        cur = thr.CurrentThrust;
-
-                        _maxThrust[idx] += max;
-                        _curThrust[idx] += cur;
-                        if (max > 0d) HasData = true;
-                    }
+                    if (LiftPhysics.AccumulateMaxThrust(gridLogic.Blocks.Thrusts, _maxThrust, _curThrust))
+                        HasData = true;
                 }
             }
             catch (Exception ex)
@@ -236,7 +216,7 @@ namespace LcdMod.Client.Apps
         {
             gravity = Vector3D.Zero;
             utilization = 0f;
-            var cockpit = ResolveCockpitForGravity();
+            var cockpit = LiftPhysics.ResolveCockpit(Block);
             if (cockpit == null) return false;
 
             gravity = cockpit.GetNaturalGravity();
@@ -245,18 +225,6 @@ namespace LcdMod.Client.Apps
             var shipMass = cockpit.CalculateShipMass();
             utilization = ComputeGravityCounterUtilization(maxThrust, gravity, shipMass.PhysicalMass);
             return true;
-        }
-
-        IMyCockpit ResolveCockpitForGravity()
-        {
-            var cockpit = Block as IMyCockpit;
-            if (cockpit != null) return cockpit;
-
-            var myGrid = Block.CubeGrid as Sandbox.Game.Entities.MyCubeGrid;
-            var mainCockpit = myGrid?.MainCockpit as IMyCockpit;
-            if (mainCockpit != null) return mainCockpit;
-
-            return null;
         }
 
         void DrawGravityLoadWarning(List<MySprite> sprites, bool hasGravity, float gravityLoad)
@@ -334,28 +302,7 @@ namespace LcdMod.Client.Apps
             double gravityMagnitude = gravity.Length();
             if (gravityMagnitude <= 1e-6) return 0f;
 
-            Vector3D antiGravityDir = -gravity / gravityMagnitude;
-            var gridMatrix = Block.CubeGrid.WorldMatrix;
-
-            double desiredForward = Vector3D.Dot(antiGravityDir, gridMatrix.Forward);
-            double desiredRight = Vector3D.Dot(antiGravityDir, gridMatrix.Right);
-            double desiredUp = Vector3D.Dot(antiGravityDir, gridMatrix.Up);
-
-            // Per-axis force availability in the exact anti-gravity sign direction.
-            double availableForwardAxis = GetAxisForce(maxThrust,
-                desiredForward >= 0d ? DIR_FORWARD : DIR_BACKWARD);
-            double availableRightAxis = GetAxisForce(maxThrust,
-                desiredRight >= 0d ? DIR_RIGHT : DIR_LEFT);
-            double availableUpAxis = GetAxisForce(maxThrust,
-                desiredUp >= 0d ? DIR_UP : DIR_DOWN);
-
-            double availableForce = ComputeAxisConstrainedForce(
-                desiredForward,
-                desiredRight,
-                desiredUp,
-                availableForwardAxis,
-                availableRightAxis,
-                availableUpAxis);
+            double availableForce = LiftPhysics.AvailableForce(maxThrust, -gravity / gravityMagnitude, Block.CubeGrid.WorldMatrix);
             if (availableForce <= 1e-3) return 1f;
 
             double requiredForce = shipMass * gravityMagnitude;
@@ -379,12 +326,12 @@ namespace LcdMod.Client.Apps
             }
 
             Vector3D brakeDirection = -velocity / _stopSpeed;
-            double opposingThrust = ComputeAvailableForceInDirection(maxThrust, brakeDirection);
+            double opposingThrust = LiftPhysics.AvailableForce(maxThrust, brakeDirection, grid.WorldMatrix);
             if (opposingThrust <= STOP_FORCE_EPSILON)
                 return;
 
             double mass;
-            if (!TryGetShipMass(out mass))
+            if (!LiftPhysics.TryGetShipMass(Block, out mass))
                 return;
 
             Vector3D gravity;
@@ -406,7 +353,7 @@ namespace LcdMod.Client.Apps
         {
             gravity = Vector3D.Zero;
 
-            var cockpit = ResolveCockpitForGravity();
+            var cockpit = LiftPhysics.ResolveCockpit(Block);
             if (cockpit != null)
             {
                 gravity = cockpit.GetTotalGravity();
@@ -419,90 +366,6 @@ namespace LcdMod.Client.Apps
 
             gravity = grid.NaturalGravity;
             return gravity.LengthSquared() > 1e-8;
-        }
-
-        bool TryGetShipMass(out double mass)
-        {
-            mass = 0d;
-
-            var cockpit = ResolveCockpitForGravity();
-            if (cockpit != null)
-            {
-                var shipMass = cockpit.CalculateShipMass();
-                mass = shipMass.PhysicalMass;
-            }
-
-            if (mass <= 0d)
-            {
-                var grid = Block?.CubeGrid;
-                if (grid != null && grid.Physics != null)
-                    mass = grid.Physics.Mass;
-            }
-
-            return mass > 0d;
-        }
-
-        double ComputeAvailableForceInDirection(
-            double[] maxThrust,
-            Vector3D desiredWorldDirection)
-        {
-            if (maxThrust == null || maxThrust.Length < 6 || desiredWorldDirection.LengthSquared() <= 1e-8)
-                return 0d;
-
-            var grid = Block?.CubeGrid;
-            if (grid == null) return 0d;
-
-            desiredWorldDirection.Normalize();
-            var gridMatrix = grid.WorldMatrix;
-
-            double desiredForward = Vector3D.Dot(desiredWorldDirection, gridMatrix.Forward);
-            double desiredRight = Vector3D.Dot(desiredWorldDirection, gridMatrix.Right);
-            double desiredUp = Vector3D.Dot(desiredWorldDirection, gridMatrix.Up);
-
-            double availableForwardAxis = GetAxisForce(maxThrust,
-                desiredForward >= 0d ? DIR_FORWARD : DIR_BACKWARD);
-            double availableRightAxis = GetAxisForce(maxThrust,
-                desiredRight >= 0d ? DIR_RIGHT : DIR_LEFT);
-            double availableUpAxis = GetAxisForce(maxThrust,
-                desiredUp >= 0d ? DIR_UP : DIR_DOWN);
-
-            return ComputeAxisConstrainedForce(
-                desiredForward,
-                desiredRight,
-                desiredUp,
-                availableForwardAxis,
-                availableRightAxis,
-                availableUpAxis);
-        }
-
-        static double ComputeAxisConstrainedForce(
-            double desiredForward,
-            double desiredRight,
-            double desiredUp,
-            double availableForwardAxis,
-            double availableRightAxis,
-            double availableUpAxis)
-        {
-            // Resultant force along a requested direction is limited by the weakest axis contribution.
-            const double eps = 1e-6;
-            double lambdaMax = double.PositiveInfinity;
-
-            if (Math.Abs(desiredForward) > eps)
-                lambdaMax = Math.Min(lambdaMax, availableForwardAxis / Math.Abs(desiredForward));
-            if (Math.Abs(desiredRight) > eps)
-                lambdaMax = Math.Min(lambdaMax, availableRightAxis / Math.Abs(desiredRight));
-            if (Math.Abs(desiredUp) > eps)
-                lambdaMax = Math.Min(lambdaMax, availableUpAxis / Math.Abs(desiredUp));
-
-            return double.IsInfinity(lambdaMax) ? 0d : Math.Max(0d, lambdaMax);
-        }
-
-        static double GetAxisForce(double[] maxThrust, int index)
-        {
-            if (maxThrust == null || index < 0 || index >= maxThrust.Length)
-                return 0d;
-
-            return Math.Max(0d, maxThrust[index]);
         }
 
         void DrawBottomLegend(List<MySprite> sprites, double[] maxThrust)
@@ -524,15 +387,18 @@ namespace LcdMod.Client.Apps
             string up = LocHelper.GetLoc("Thrust_Up");
             string down = LocHelper.GetLoc("Thrust_Down");
 
-            sprites.Add(new MySprite
+            if (!ThemeChrome.DrawFooterBand(sprites, Theme, new RectangleF(left, top, width, legendRowsHeight), BackgroundColor, GetHeaderColor(), ForegroundColor, Scale))
             {
-                Type = SpriteType.TEXTURE,
-                Data = "SquareSimple",
-                Position = new Vector2(left + width * 0.5f, top + legendRowsHeight * 0.5f),
-                Size = new Vector2(width, legendRowsHeight),
-                Color = new Color(BackgroundColor.MulValue(0.8f), 0.5f),
-                Alignment = TextAlignment.CENTER
-            });
+                sprites.Add(new MySprite
+                {
+                    Type = SpriteType.TEXTURE,
+                    Data = "SquareSimple",
+                    Position = new Vector2(left + width * 0.5f, top + legendRowsHeight * 0.5f),
+                    Size = new Vector2(width, legendRowsHeight),
+                    Color = new Color(BackgroundColor.MulValue(0.8f), 0.5f),
+                    Alignment = TextAlignment.CENTER
+                });
+            }
 
             DrawLegendCell(sprites, left, top, colW, rowH, padX, forward,
                 maxThrust[DIR_FORWARD], AxisBlue, ForegroundColor, textScale);
@@ -601,16 +467,23 @@ namespace LcdMod.Client.Apps
             var valueSize = FormatingHelper.GetSizeInPixel(valueText, TextFont, valueScale, Surface);
 
             var color = _stopSpeed > 1 ? ForegroundColor : new Color(ForegroundColor, (float)_stopSpeed);
-            
-            sprites.Add(new MySprite
+
+            if (Theme == LcdTheme.Futuristic)
             {
-                Type = SpriteType.TEXTURE,
-                Data = "AH_TextBox",
-                Position = rightCenter,
-                Size = boxSize,
-                Color = color,
-                Alignment = TextAlignment.RIGHT
-            });
+                ThemeChrome.DrawCard(sprites, Theme, new RectangleF(rect.Center.X - boxSize.X * 0.5f, rect.Center.Y - boxSize.Y * 0.5f, boxSize.X, boxSize.Y), BackgroundColor, color, ForegroundColor, hudScale);
+            }
+            else if (Theme == LcdTheme.Default)
+            {
+                sprites.Add(new MySprite
+                {
+                    Type = SpriteType.TEXTURE,
+                    Data = "AH_TextBox",
+                    Position = rightCenter,
+                    Size = boxSize,
+                    Color = color,
+                    Alignment = TextAlignment.RIGHT
+                });
+            }
 
             sprites.Add(new MySprite
             {
@@ -712,7 +585,7 @@ namespace LcdMod.Client.Apps
 
         static float FillForDirection(float[] fills, Base6Directions.Direction direction)
         {
-            return SafeFill(fills, DirIndex(direction));
+            return SafeFill(fills, LiftPhysics.DirIndex(direction));
         }
 
         void DrawAxesPass(List<MySprite> sprites, Vector2 origin, float length, float thickness, float arrowSize,
@@ -749,20 +622,6 @@ namespace LcdMod.Client.Apps
 
             sprites.Add(new MySprite(SpriteType.TEXTURE, "Triangle", position, new Vector2(size, size), color, null,
                 TextAlignment.CENTER, rotation));
-        }
-
-        static int DirIndex(Base6Directions.Direction dir)
-        {
-            switch (dir)
-            {
-                case Base6Directions.Direction.Forward: return DIR_FORWARD;
-                case Base6Directions.Direction.Backward: return DIR_BACKWARD;
-                case Base6Directions.Direction.Left: return DIR_LEFT;
-                case Base6Directions.Direction.Right: return DIR_RIGHT;
-                case Base6Directions.Direction.Up: return DIR_UP;
-                case Base6Directions.Direction.Down: return DIR_DOWN;
-                default: return -1;
-            }
         }
 
         // todo: convert to interactive app

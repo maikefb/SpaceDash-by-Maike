@@ -60,6 +60,7 @@ namespace Generated
             { AppType.DefenseDashboard, new[] { General, Colors, Interaction } },
             { AppType.RenderProxy, new[] { General, Colors, Interaction, RenderProxySettings, RenderProxyReference } },
             { AppType.ConveyorMap, new[] { General, Colors, Interaction } },
+            { AppType.LiftCapacity, new[] { General, Colors, Interaction } },
             { AppType.ClockDashboard, new[] { General, Colors, Interaction, ClockSettings } },
             { AppType.Survivors, new[] { General, Colors, Interaction } },
             { AppType.DigitalPictureFrames, new[] { General, Colors, Interaction, PictureFramesSettings } },
