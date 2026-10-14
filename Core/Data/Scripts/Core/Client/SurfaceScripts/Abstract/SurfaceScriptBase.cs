@@ -63,6 +63,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public long LastRunTick { get; private set; } = long.MinValue;
 
         public Vector2 TextureSize => Surface.TextureSize;
+        public Vector2 SurfaceSize => Surface.SurfaceSize;
 
         /// <summary>
         /// Relative area of the <see cref="Sandbox.ModAPI.IMyTextSurface.TextureSize"/> That is Visible
@@ -983,7 +984,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
         protected virtual void LayoutChanged()
         {
-            if (_disposed || Surface == null)
+            if (_disposed || Surface == null || Config == null)
                 return;
 
             _userPadding = Surface.TextPadding;
@@ -1560,62 +1561,22 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             _cachedFrame.AddRange(spriteList);
         }
 
-        public List<MySprite> GetCachedFrame()
-        {
-            if (_cachedFrame.Count > 0)
-                return _cachedFrame;
+        public List<MySprite> GetCachedFrame() => _cachedFrame;
 
-            return GetSprites();
-        }
-
-        public bool RegisterProxy(long proxyKey, Vector2 offset)
+        public void RegisterProxy(long proxyKey, Vector2 offset)
         {
             Vector2 existing;
-            bool hadExisting = _registeredProxyOffsets.TryGetValue(proxyKey, out existing);
-            if (hadExisting && existing == offset)
-                return true;
+            if (_registeredProxyOffsets.TryGetValue(proxyKey, out existing) && existing == offset)
+                return;
 
             _registeredProxyOffsets[proxyKey] = offset;
-            if (!TryLayoutChangedForProxy())
-            {
-                if (hadExisting)
-                    _registeredProxyOffsets[proxyKey] = existing;
-                else
-                    _registeredProxyOffsets.Remove(proxyKey);
-
-                return false;
-            }
-
-            return true;
+            LayoutChanged();
         }
 
-        public bool UnregisterProxy(long proxyKey)
+        public void UnregisterProxy(long proxyKey)
         {
-            Vector2 existing;
-            if (!_registeredProxyOffsets.TryGetValue(proxyKey, out existing))
-                return true;
-
-            _registeredProxyOffsets.Remove(proxyKey);
-            if (!TryLayoutChangedForProxy())
-            {
-                _registeredProxyOffsets[proxyKey] = existing;
-                return false;
-            }
-
-            return true;
-        }
-
-        bool TryLayoutChangedForProxy()
-        {
-            try
-            {
+            if (_registeredProxyOffsets.Remove(proxyKey))
                 LayoutChanged();
-                return true;
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }
         }
 
 

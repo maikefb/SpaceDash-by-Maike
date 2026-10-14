@@ -111,12 +111,15 @@ namespace LcdMod.Client.SurfaceScripts
             if (panel == null)
                 return false;
 
-            return SameResolution(panel.TextureSize, Surface.TextureSize);
+            return SameResolution(panel.TextureSize, Surface.TextureSize) &&
+                   SameResolution(panel.SurfaceSize, Surface.SurfaceSize);
         }
 
         bool HasMatchingResolution(SurfaceScriptBase parent)
         {
-            return parent != null && SameResolution(parent.TextureSize, Surface.TextureSize);
+            return parent != null &&
+                   SameResolution(parent.TextureSize, Surface.TextureSize) &&
+                   SameResolution(parent.SurfaceSize, Surface.SurfaceSize);
         }
 
         static bool SameResolution(Vector2 a, Vector2 b)
@@ -127,6 +130,9 @@ namespace LcdMod.Client.SurfaceScripts
 
         public bool CanApplyProxyAutoOffset()
         {
+            if (Config == null)
+                return false;
+
             sbyte x;
             sbyte y;
             ProxyAutoContext context;
@@ -165,6 +171,20 @@ namespace LcdMod.Client.SurfaceScripts
                 StartProxyAutoCascade(context, x, y);
 
             return true;
+        }
+
+        void ResetSiblingsActiveFlag()
+        {
+            var instances = Instances.GetInstances(Block as IMyTerminalBlock);
+            if (instances == null)
+                return;
+
+            foreach (var sibling in instances.GetInstances())
+            {
+                var proxy = sibling as RenderProxySurfaceScript;
+                if (proxy != null && proxy != this)
+                    proxy._wasActive = false;
+            }
         }
 
         void HandleBecameActiveInstance()
@@ -758,12 +778,7 @@ namespace LcdMod.Client.SurfaceScripts
             return RenderProxyComponent.EnableAutoAdjust && SurfaceCollection.GetActiveRotationIndex(panel) != hostRotationIndex;
         }
 
-        long GetProxyRegistrationId()
-        {
-            var panel = Block as IMyTextPanel;
-            return GetRotationKey(Block.EntityId,
-                panel != null ? SurfaceCollection.GetActiveRotationIndex(panel) : RotationOrSurfaceIndex);
-        }
+        long GetProxyRegistrationId() => GetRotationKey(Block.EntityId, RotationOrSurfaceIndex);
 
         static long GetRotationKey(long entityId, int rotationIndex)
         {
@@ -818,16 +833,7 @@ namespace LcdMod.Client.SurfaceScripts
             if (_registeredParent == _parent && _registeredProxyKey != 0L && _registeredProxyKey != proxyKey)
                 _registeredParent?.UnregisterProxy(_registeredProxyKey);
 
-            if (!_parent.RegisterProxy(proxyKey,
-                    GetProxyPixelOffset(x, y)))
-            {
-                _hostScriptUnsupported = false;
-                UnsubscribeFromParentRender();
-                if (MyAPIGateway.Session != null)
-                    _rebindBlockedUntilFrame = MyAPIGateway.Session.GameplayFrameCounter + 1;
-                return;
-            }
-
+            _parent.RegisterProxy(proxyKey, GetProxyPixelOffset(x, y));
             _registeredParent = _parent;
             _registeredProxyKey = proxyKey;
             _lastOffsetX = x;
@@ -973,7 +979,10 @@ namespace LcdMod.Client.SurfaceScripts
         {
             bool active = ReferenceEquals(Instances.GetActiveInstance(Block as IMyTerminalBlock), this);
             if (active && !_wasActive)
+            {
+                ResetSiblingsActiveFlag();
                 HandleBecameActiveInstance();
+            }
             _wasActive = active;
 
             UpdateRebindCooldown();
