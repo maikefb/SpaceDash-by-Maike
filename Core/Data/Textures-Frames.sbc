@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <LCDTextures>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyGeneral"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyGeneral.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyBatteries"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyBatteries.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergySolar"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergySolar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyWind"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyWind.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyHydrogen"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyHydrogen.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyReactors"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyReactors.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_InGameClockDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_InGameClockDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_DefenseDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_DefenseDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyChart"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyChart.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_Radar"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_Radar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_DockingAlignment"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_DockingAlignment.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_GasGraph"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_GasGraph.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_LiftCapacity"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_LiftCapacity.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyBatteries_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyBatteries_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergySolar_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergySolar_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyWind_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyWind_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyHydrogen_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyHydrogen_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyReactors_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyReactors_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyGeneral"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyGeneral.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyBatteries"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyBatteries.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergySolar"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergySolar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyWind"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyWind.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyHydrogen"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyHydrogen.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyReactors"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyReactors.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_InGameClockDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_InGameClockDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_DefenseDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_DefenseDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyChart"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyChart.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_Radar"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_Radar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_DockingAlignment"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_DockingAlignment.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_GasGraph"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_GasGraph.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_LiftCapacity"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_LiftCapacity.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyBatteries_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyBatteries_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergySolar_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergySolar_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyWind_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyWind_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyHydrogen_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyHydrogen_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyReactors_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyReactors_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyGeneral"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyGeneral.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyBatteries"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyBatteries.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergySolar"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergySolar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyWind"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyWind.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyHydrogen"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyHydrogen.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyReactors"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyReactors.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_InGameClockDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_InGameClockDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_DefenseDashboard"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_DefenseDashboard.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyChart"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyChart.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_Radar"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_Radar.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_DockingAlignment"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_DockingAlignment.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_GasGraph"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_GasGraph.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_LiftCapacity"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_LiftCapacity.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyBatteries_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyBatteries_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergySolar_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergySolar_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyWind_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyWind_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyHydrogen_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyHydrogen_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyReactors_Tiny"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyReactors_Tiny.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_Generic"/>
+            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_GenericFrame.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_Generic"/>
+            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_GenericFrame.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+        <LCDTextureDefinition>
+            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_Generic"/>
+            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_GenericFrame.dds</SpritePath>
+            <Selectable>false</Selectable>
+        </LCDTextureDefinition>
+    </LCDTextures>
+</Definitions>

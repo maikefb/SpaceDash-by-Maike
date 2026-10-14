@@ -178,6 +178,17 @@ namespace LcdMod.Client.Apps.Abstract
             _lease = null;
         }
 
+        protected void FramedHeader(List<MySprite> sprites)
+        {
+            Host.Frame.Header(sprites, Host.Block, PowerComponent.GridLinkTypeInternal, Palette.Label);
+        }
+
+        /// <summary>Potência que cabe na largura do campo da moldura.</summary>
+        protected string FramedPower(string field, float megaWatts, bool signed)
+        {
+            return PowerText(megaWatts, signed, Host.Frame.Rect(field).Width);
+        }
+
         protected static string Loc(string suffix)
         {
             return LocHelper.GetLoc(MOD_PREFIX + "Energy_" + suffix);

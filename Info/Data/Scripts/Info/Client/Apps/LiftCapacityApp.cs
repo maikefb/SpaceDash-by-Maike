@@ -95,9 +95,34 @@ namespace LcdMod.Client.Apps
             HasData = hasThrust || HasGravity;
         }
 
+        void DrawFramed(List<MySprite> sprites)
+        {
+            var f = Host.Frame;
+            Color fg = ForegroundColor;
+            Color accent = GetHeaderColor();
+            Color stateColor = !HasGravity ? fg : State == STATE_CRIT ? GetErrorColor() : State == STATE_WARN ? GetWarningColor() : accent;
+            string na = LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
+            f.Header(sprites, Host.Block, 0, accent);
+            f.Text(sprites, "gravidade.valor", HasGravity ? GravityG.ToString("0.00", FormatingHelper.Culture) + " g" : na, fg);
+            f.Text(sprites, "massa_da_nave.valor", ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, fg);
+            f.Text(sprites, "empuxo_de_elevacao.valor", HasGravity ? FormatingHelper.NewtonForceToString(LiftForceN) : na, fg);
+            f.Bar(sprites, "uso_de_elevacao.barra", HasGravity ? (float)MathHelper.Clamp(Usage, 0d, 1d) : 0f, stateColor);
+            f.Text(sprites, "uso_de_elevacao.valor", HasGravity ? FormatingHelper.PercentageToString((float)Usage) : na, stateColor);
+            f.Text(sprites, "massa_maxima.valor", HasGravity ? FormatingHelper.MassToString(MaxMassKg) : na, fg);
+            f.Text(sprites, "max_seguro.valor", HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, fg);
+            f.Text(sprites, "carga.capacidade", HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, fg);
+            f.Text(sprites, "carga.estado", !HasGravity ? Loc("NoGravity") : State == STATE_CRIT ? Loc("Crit") : State == STATE_WARN ? Loc("Warn") : Loc("Safe"), stateColor);
+        }
+
         public override List<MySprite> GetSprites()
         {
             var sprites = new List<MySprite>();
+            if (Host.Frame != null)
+            {
+                DrawFramed(sprites);
+                return sprites;
+            }
+
             float ls = LayoutScale;
             float titleOffset = Host.TitleVisible ? TITLE_HEIGHT_BASE * ls : 0f;
             var view = ViewBox;

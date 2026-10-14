@@ -197,6 +197,12 @@ namespace LcdMod.Client.Apps
         public override List<MySprite> GetSprites()
         {
             var sprites = new List<MySprite>();
+            if (Host.Frame != null)
+            {
+                DrawFramed(sprites);
+                return sprites;
+            }
+
             var bounds = GetContentBounds();
             if (bounds.Width <= 5f || bounds.Height <= 5f)
                 return sprites;
@@ -429,6 +435,37 @@ namespace LcdMod.Client.Apps
             _rootGrid.SetRows(1f, 1f);
             _rootGrid.Set(_squareTopCard, 0, 0);
             _rootGrid.Set(_squareLowerGrid, 0, 1);
+        }
+
+        /// <summary>Ciclo dia/noite fica vazio: a moldura tem o campo, o snapshot não tem o dado.</summary>
+        void DrawFramed(List<MySprite> sprites)
+        {
+            if (_snapshot == null)
+                _snapshot = _reader.Read(Host.Block, Host.GridLogic, null);
+            var f = Host.Frame;
+            Color fg = GetForegroundColor();
+            f.Header(sprites, Host.Block, 0, GetHeaderColor());
+            if (_snapshot == null)
+                return;
+
+            string na = ClockDashboardLocalization.Unavailable;
+            string temperature = _snapshot.HasAmbientTemperature
+                ? FormatingHelper.TemperatureToString(_snapshot.AmbientTemperatureNormalized, _snapshot.AmbientTemperatureLevel,
+                    (ClockDashboardTemperatureMode)ClockDashboardComponent.TemperatureModeInternal)
+                : na;
+            bool hasSolarEvents = _snapshot.ClockMode == DashboardClockMode.LocalSolar && _snapshot.HasLocalSolarTime;
+            string sunrise = hasSolarEvents && _snapshot.HasTerrainSunrise
+                ? ClockDashboardFormatter.FormatSolarEventTime(_snapshot.TerrainSunriseHour, ClockDashboardComponent) : na;
+            string sunset = hasSolarEvents && _snapshot.HasTerrainSunset
+                ? ClockDashboardFormatter.FormatSolarEventTime(_snapshot.TerrainSunsetHour, ClockDashboardComponent) : na;
+            var session = MyAPIGateway.Session;
+            f.Text(sprites, "relogio.planeta", _snapshot.HasPlanet ? _snapshot.PlanetName : null, fg);
+            f.Text(sprites, "relogio.hora", ClockDashboardFormatter.FormatCompactTime(_snapshot.DisplayDateTime, ClockDashboardComponent), fg);
+            f.Text(sprites, "relogio.dia_periodo", ClockDashboardFormatter.FormatDayMoment(_snapshot.DayMoment), fg);
+            f.Text(sprites, "relogio.clima", (_snapshot.WeatherDisplayName ?? na) + ", " + temperature, fg);
+            f.Text(sprites, "nascer_por.valor", sunrise + " / " + sunset, fg);
+            f.Text(sprites, "tempo_de_jogo.valor", ClockDashboardFormatter.FormatDuration(session != null ? session.ElapsedPlayTime.TotalSeconds : 0d), fg);
+            f.Text(sprites, "uptime.valor", ClockDashboardFormatter.FormatDuration(session != null ? ClockDashboardFormatter.WorldElapsedSeconds(session.GameDateTime) : 0d), fg);
         }
 
         void BindSnapshot()

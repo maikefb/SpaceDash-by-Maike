@@ -48,6 +48,7 @@ namespace LcdMod.Client.SurfaceScripts
         DockingAlignmentApp _app;
         public override IApp App => _app;
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public DockingAlignment(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {

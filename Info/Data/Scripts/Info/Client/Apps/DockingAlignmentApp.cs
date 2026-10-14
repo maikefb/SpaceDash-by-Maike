@@ -547,6 +547,13 @@ namespace LcdMod.Client.Apps
             var accent = GetHeaderColor();
             var mutedAccent = ColorExtensions.Alpha(accent, 0.66f);
 
+            if (Host.Frame != null)
+            {
+                Host.Frame.Header(_staticSprites, Host.Block, 0, accent);
+                _staticChromeSpriteCount = _staticSprites.Count;
+                return;
+            }
+
             if (Theme != LcdTheme.Default)
             {
                 float reticleHeight = _layout.Square.Height / DOCKING_ILLUSTRATION_CIRCLE;
@@ -599,6 +606,12 @@ namespace LcdMod.Client.Apps
                 content.Center.Y - squareSize / 2f,
                 squareSize,
                 squareSize);
+            if (Host.Frame != null)
+            {
+                var target = Host.Frame.Rect("acoplagem.alvo");
+                squareSize = Math.Min(target.Width, target.Height);
+                square = new RectangleF(target.Center.X - squareSize / 2f, target.Center.Y - squareSize / 2f, squareSize, squareSize);
+            }
 
             var font = Math.Max(0.45f, Math.Min(0.95f, squareSize / 560f)) * Scale * FontScale;
             var angleAxisLength = square.Width * 0.72f;
@@ -649,6 +662,16 @@ namespace LcdMod.Client.Apps
             AddTexture(_sprites, "AH_VelocityVector", NormalizedToSquare(_layout.Square, velocityVector.X, velocityVector.Y),
                 new Vector2(_layout.MarkerSize * VELOCITY_SCALE * GetVectorTextureScale(velocityOffset.Z)),
                 statusColor.Alpha(velocityOpacity), 0);
+
+            if (Host.Frame != null)
+            {
+                var f = Host.Frame;
+                f.Text(_sprites, "distancia.valor", string.Format(FormatingHelper.Culture, "{0:0.##} m", positionOffset.Length()), foreground);
+                f.Text(_sprites, "pitch.valor", $"{rotationOffset.X:0.0}°", foreground);
+                f.Text(_sprites, "yaw.valor", $"{rotationOffset.Y:0.0}°", foreground);
+                f.Text(_sprites, "roll.valor", $"{rotationOffset.Z:0.0}°", foreground);
+                return;
+            }
 
             AddText(_sprites, $"{rotationOffset.X:0.0}°", NormalizedToSquare(_layout.Square, 0.39f, -0.02f),
                 _layout.Font, foreground, TextAlignment.LEFT);

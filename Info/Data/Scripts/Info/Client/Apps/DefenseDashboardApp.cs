@@ -82,6 +82,12 @@ namespace LcdMod.Client.Apps
         public override List<MySprite> GetSprites()
         {
             var sprites = new List<MySprite>();
+            if (Host.Frame != null)
+            {
+                DrawFramed(sprites);
+                return sprites;
+            }
+
             float scale = Math.Max(0.25f, GeneralComponent.GetScale());
             float fontScale = Math.Max(0.25f, Host.Surface.FontSize);
             float titleOffset = Host.TitleVisible ? 40f * scale * fontScale : 0f;
@@ -97,6 +103,32 @@ namespace LcdMod.Client.Apps
             _rootGrid.Render(sprites);
             ClearDirtyAfterRender();
             return sprites;
+        }
+
+        /// <summary>Escudo principal e as seis primeiras armas (prontas / total) nos campos da moldura.</summary>
+        void DrawFramed(List<MySprite> sprites)
+        {
+            var f = Host.Frame;
+            Color fg = GetForegroundColor();
+            Color accent = GetHeaderColor();
+            f.Header(sprites, Host.Block, (int)GridLinkTypeEnum.Logical, accent);
+            ShieldInfo shield = _lease != null && _lease.Service != null ? _lease.Service.Latest.Primary : null;
+            if (shield != null && shield.HasCapacity)
+            {
+                float ratio = shield.ChargeRatio;
+                f.Bar(sprites, "escudo.barra", ratio, accent);
+                f.Text(sprites, "escudo.valor", FormatingHelper.PercentageToString(ratio), fg);
+            }
+
+            for (int i = 0; i < 6 && i < _sortedWeapons.Count; i++)
+            {
+                WeaponAggregate weapon = _sortedWeapons[i];
+                string line = "linha_" + (i + 1);
+                f.Text(sprites, line + ".nome_bloco", weapon.DisplayName, fg, false);
+                f.Text(sprites, line + ".valor", weapon.Ready + " / " + weapon.Total, weapon.Warning + weapon.Unavailable > 0 ? GetWarningColor() : fg);
+            }
+
+            ClearDirtyAfterRender();
         }
 
         public override void Close()

@@ -4,6 +4,7 @@ namespace LcdMod.Common.Config.Components
     {
         Default = 0,
         Futuristic = 1,
-        Clean = 2
+        Clean = 2,
+        Cafe = 3
     }
 }

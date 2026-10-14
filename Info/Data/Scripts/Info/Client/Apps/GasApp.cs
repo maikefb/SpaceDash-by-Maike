@@ -268,9 +268,52 @@ namespace LcdMod.Client.Apps
             return STATUS_NOMINAL;
         }
 
+        /// <summary>Campo da moldura por cartão × linha; null quando a moldura não tem o dado (limite de reserva, nível de disparo).</summary>
+        static readonly string[] FRAME_ROWS =
+        {
+            "h2_armazenado.nivel", "h2_armazenado.capacidade", "o2_armazenado.nivel", "o2_armazenado.capacidade",
+            "geradores.ativos", "geradores.producao_total", "reserva_de_gelo.nivel", "reserva_de_gelo.capacidade",
+            "saida_de_h2.vazao", "saida_de_h2.uso", "saida_de_o2.vazao", "saida_de_o2.uso",
+            null, "estoque.total_armazenado", "reabastecimento.estado", null
+        };
+
+        void DrawFramed(List<MySprite> sprites)
+        {
+            var f = Host.Frame;
+            Color fg = ForegroundColor;
+            Color accent = GetHeaderColor();
+            Color warn = GetWarningColor();
+            Color error = GetErrorColor();
+            string na = LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
+            f.Header(sprites, Host.Block, BlockSelectionComponent.GridLinkTypeInternal, accent);
+            for (int i = 0; i < CARD_COUNT; i++)
+            {
+                string icon, title;
+                FillCard(i, out icon, out title, fg, accent, warn, error, na);
+                for (int r = 0; r < 2; r++)
+                {
+                    string field = FRAME_ROWS[i * 2 + r];
+                    if (field == null)
+                        continue;
+                    f.Text(sprites, field + ".valor", _rows[r].Value, fg);
+                    f.Bar(sprites, field + ".barra", _rows[r].Fraction, _rows[r].Fill);
+                }
+            }
+
+            string status = Status == STATUS_CRITICAL ? LocHelper.GetLoc(MOD_PREFIX + "Gas_Critical")
+                : Status == STATUS_ATTENTION ? Loc("Attention") : Loc("Nominal");
+            f.Text(sprites, "sistema.estado", status, Status == STATUS_CRITICAL ? error : Status == STATUS_ATTENTION ? warn : accent);
+        }
+
         public override List<MySprite> GetSprites()
         {
             var sprites = new List<MySprite>();
+            if (Host.Frame != null)
+            {
+                DrawFramed(sprites);
+                return sprites;
+            }
+
             float ls = LayoutScale;
             float titleOffset = Host.TitleVisible ? TITLE_HEIGHT_BASE * ls : 0f;
             var view = ViewBox;

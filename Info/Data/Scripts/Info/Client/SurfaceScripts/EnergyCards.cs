@@ -16,6 +16,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergyBatteries";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergyBatteriesSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {
@@ -34,6 +35,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergySolar";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergySolarSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {
@@ -52,6 +54,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergyWind";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergyWindSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {
@@ -70,6 +73,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergyHydrogen";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergyHydrogenSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {
@@ -88,6 +92,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergyReactors";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergyReactorsSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {

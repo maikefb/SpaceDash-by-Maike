@@ -15,6 +15,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "EnergyGeneral";
 
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public EnergyGeneralSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {

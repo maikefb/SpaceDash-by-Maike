@@ -11,6 +11,7 @@ using LcdMod.Client.Extensions;
 using LcdMod.Client.GridData;
 using LcdMod.Client.Gui;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
+using LcdMod.Client.Gui.Frames;
 using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Gui.UserControls;
 using LcdMod.Client.Helpers;
@@ -144,6 +145,13 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         IComponentContainer IAppHost.Config => Config;
         public GeneralConfigComponent GeneralComponent => Config.GetComponent<GeneralConfigComponent>();
         public virtual LcdTheme ThemeKind => GeneralComponent.GetTheme();
+        /// <summary>Moldura do tema para esta tela (textura, rótulos e campos); null quando a tela não tem moldura.</summary>
+        public FrameRenderer Frame { get; private set; }
+        /// <summary>ID da tela na tabela de molduras; null quando a tela não tem moldura dedicada.</summary>
+        protected virtual string FrameId => null;
+        protected virtual bool FrameTiny => Surface.SurfaceSize.Y / Surface.SurfaceSize.X < 0.375f;
+        string _genericFrame;
+        LcdTheme _userTheme;
         public ColorConfigComponent ColorComponent => Config.GetComponent<ColorConfigComponent>();
         /// <summary>Fonte escolhida no terminal, com o padrão do jogo como reserva.</summary>
         public string TextFont => string.IsNullOrEmpty(Surface.Font) ? "White" : Surface.Font;
@@ -413,13 +421,13 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             var padding = (Surface.TextPadding / 100) * Surface.SurfaceSize;
             sizeOffset += padding / 2;
-            float frameInset = FrameThickness;
+            Vector2 frameInset = _genericFrame != null ? FrameLayouts.GenericInset(Surface.SurfaceSize) : new Vector2(FrameThickness);
 
             ViewBox = ApplyProxyOffsets(new RectangleF(
-                sizeOffset.X + frameInset,
-                sizeOffset.Y + frameInset,
-                Surface.SurfaceSize.X - padding.X - frameInset * 2f,
-                Surface.SurfaceSize.Y - padding.Y - frameInset * 2f));
+                sizeOffset.X + frameInset.X,
+                sizeOffset.Y + frameInset.Y,
+                Surface.SurfaceSize.X - padding.X - frameInset.X * 2f,
+                Surface.SurfaceSize.Y - padding.Y - frameInset.Y * 2f));
         }
 
         protected RectangleF ApplyProxyOffsets(RectangleF viewBox)
@@ -494,7 +502,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 BackgroundColor != _backgroundColor ||
                 ForegroundColor != _foregroundColor ||
                 TitleCanBeVisible != titleCanBeVisible ||
-                TitleVisible != titleVisible)
+                TitleVisible != titleVisible ||
+                _userTheme != ThemeKind)
                 LayoutChanged();
 
 
@@ -692,7 +701,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             CaretY = position.Y;
 
-            if (!TitleVisible)
+            if (Frame != null || !TitleVisible)
                 return;
 
             AddHeaderSprite(frame, new MySprite
@@ -1002,6 +1011,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             TitleCanBeVisible = SurfaceAspectRatioHelper.CanShowTitle(Surface);
             TitleVisible = GeneralComponent.TitleVisible && TitleCanBeVisible;
             InvalidateTitleCache();
+            ResolveFrame();
             UpdateViewBox();
             _backgroundGrids.Clear();
             LayoutDirty = true;
@@ -1120,8 +1130,23 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
         Color _backgroundGridsColor;
 
+        void ResolveFrame()
+        {
+            _userTheme = ThemeKind;
+            var layout = FrameLayouts.Resolve(_userTheme, FrameId, FrameTiny);
+            Frame = layout == null ? null : new FrameRenderer(layout, Surface, TextFont);
+            _genericFrame = Frame == null ? FrameLayouts.GenericTexture(_userTheme) : null;
+        }
+
         public void AddBackground(List<MySprite> frame, Color? color = null)
         {
+            if (Frame != null)
+            {
+                Frame.Background(frame);
+                Frame.Labels(frame, GetHeaderColor());
+                return;
+            }
+
             var requested = color ?? BackgroundColor;
             if (_backgroundGrids.Count == 0 || _backgroundGridsColor != requested)
             {
@@ -1134,7 +1159,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             }
 
             frame.AddRange(_backgroundGrids);
-            DrawChrome(frame);
+            if (_genericFrame != null)
+                frame.Add(new MySprite(SpriteType.TEXTURE, _genericFrame, Surface.TextureSize * 0.5f, Surface.SurfaceSize, Color.White));
+            else
+                DrawChrome(frame);
         }
 
         const float FRAME_RATIO = 0.04f;

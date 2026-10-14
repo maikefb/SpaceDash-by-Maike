@@ -76,11 +76,32 @@ namespace LcdMod.Client.Apps
             PrepareFrame();
             _sprites.Clear();
             var snapshot = Snapshot;
-            if (Mode == EnergyLayoutMode.Tiny)
+            if (Host.Frame != null)
+                DrawFramed(snapshot);
+            else if (Mode == EnergyLayoutMode.Tiny)
                 DrawTiny(snapshot);
             else
                 DrawFull(snapshot);
             return _sprites;
+        }
+
+        /// <summary>As duas séries no mesmo plot da moldura, que já traz o quadro e as linhas de grade.</summary>
+        void DrawFramed(EnergySnapshot s)
+        {
+            var f = Host.Frame;
+            Color neutral = Palette.ValueNeutral;
+            FramedHeader(_sprites);
+            RectangleF plot = f.Rect("grafico.series");
+            float axisMax = AxisMax(s);
+            LineChartPanel.DrawSeries(_sprites, plot, s.ProducedHistory, s.HistoryHead, axisMax, LineThickness, neutral, Palette.Bracket);
+            LineChartPanel.DrawSeries(_sprites, plot, s.UsedHistory, s.HistoryHead, axisMax, LineThickness, Palette.ChartUsed, Palette.Bracket);
+            f.Text(_sprites, "producao.valor", FramedPower("producao.valor", s.ProducedMw, false), neutral);
+            f.Text(_sprites, "consumo.valor", FramedPower("consumo.valor", s.ConsumedMw, false), Palette.ChartUsed);
+            f.Text(_sprites, "saldo.valor", FramedPower("saldo.valor", s.NetMw, true), EnergyTheme.BalanceColor(ref Palette, s.NetMw, s.BatteryEmptySoon));
+            f.Text(_sprites, "pico_1_h.valor", FramedPower("pico_1_h.valor", s.ProducedHistory.Max(), false), neutral);
+            f.Text(_sprites, "armazenado.valor", s.HasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
+                s.HasBatteries ? EnergyTheme.ChargeColor(ref Palette, s.StoredRatio) : Palette.LabelMuted);
+            f.Text(_sprites, "autonomia.valor", s.HasBatteries ? EtaText(s.EtaSeconds) : NotAvailable, neutral);
         }
 
         void DrawFull(EnergySnapshot s)

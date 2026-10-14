@@ -44,7 +44,7 @@ namespace LcdMod.Client.SurfaceScripts
 
         public override void DrawTitle(List<MySprite> frame)
         {
-            if (_app == null || !_app.OwnsTitle || !_app.HasData)
+            if (Frame != null || _app == null || !_app.OwnsTitle || !_app.HasData)
             {
                 base.DrawTitle(frame);
                 return;

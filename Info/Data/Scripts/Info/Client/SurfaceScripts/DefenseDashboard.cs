@@ -23,6 +23,7 @@ namespace LcdMod.Client.SurfaceScripts
 
         public override IApp App => _app;
         protected override string DefaultTitle => TITLE;
+        protected override string FrameId => ID;
 
         public DefenseDashboardSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size)
             : base((Sandbox.ModAPI.IMyTextSurface)surface, block, size)

@@ -436,6 +436,8 @@ namespace LcdMod.Client.Apps
         IMyCubeBlock Block => _host.Block;
         Sandbox.ModAPI.Ingame.IMyTextSurface Surface => _host.Surface;
         RectangleF ViewBox => _host.ViewBox;
+        /// <summary>Área do radar: o campo da moldura quando há uma, senão a ViewBox.</summary>
+        RectangleF RadarArea => _host.Frame != null ? _host.Frame.Rect("radar.contatos_varredura") : ViewBox;
         float Scale => _host.ConfiguredScale;
         float FontScale => _host.Surface.FontSize;
         float LayoutScale => Scale * FontScale;
@@ -501,7 +503,39 @@ namespace LcdMod.Client.Apps
             UpdateFooterControlBounds();
             _cameraControl.Render(_backgroundSprites);
             _footerControl.Render(_backgroundSprites);
+            DrawFramedCounts();
             return _backgroundSprites;
+        }
+
+        /// <summary>Com moldura, o rodapé de contatos vira três contagens por relação.</summary>
+        void DrawFramedCounts()
+        {
+            var f = _host.Frame;
+            if (f == null)
+                return;
+            int allies = 0, neutrals = 0, hostiles = 0;
+            for (int i = 0; i < _sortedContacts.Count; i++)
+            {
+                switch (_sortedContacts[i].Relationship)
+                {
+                    case MyRelationsBetweenPlayerAndBlock.Owner:
+                    case MyRelationsBetweenPlayerAndBlock.FactionShare:
+                        allies++;
+                        break;
+                    case MyRelationsBetweenPlayerAndBlock.Enemies:
+                        hostiles++;
+                        break;
+                    default:
+                        neutrals++;
+                        break;
+                }
+            }
+
+            Color fg = GetForegroundColor();
+            f.Header(_backgroundSprites, Block, 0, GetHeaderColor());
+            f.Text(_backgroundSprites, "aliados.valor", allies.ToString(), fg);
+            f.Text(_backgroundSprites, "neutros.valor", neutrals.ToString(), fg);
+            f.Text(_backgroundSprites, "hostis.valor", hostiles.ToString(), fg);
         }
 
         void CollectContacts()
@@ -1209,10 +1243,11 @@ namespace LcdMod.Client.Apps
             GetRadarCappedScales(out cappedScale, out cappedLayoutScale);
             float margin = RADAR_MARGIN_PX * cappedScale;
             float worldRange = GetWorldRange();
-            float areaTop = ViewBox.Y + margin;
-            float areaBottom = ViewBox.Bottom - margin;
+            RectangleF area = RadarArea;
+            float areaTop = area.Y + margin;
+            float areaBottom = area.Bottom - margin;
             float areaHeight = areaBottom - areaTop;
-            float areaWidth = ViewBox.Width - margin * 2f;
+            float areaWidth = area.Width - margin * 2f;
             if (areaWidth <= 0f || areaHeight <= 0f)
                 return false;
 
@@ -1226,7 +1261,7 @@ namespace LcdMod.Client.Apps
                 ? viewportCropped.X
                 : viewportCropped.Y / _radarProjectionCos;
 
-            Vector2 viewCenter = new Vector2(ViewBox.Center.X, areaTop + viewportCropped.Y * 0.5f);
+            Vector2 viewCenter = new Vector2(area.Center.X, areaTop + viewportCropped.Y * 0.5f);
             Vector2 planeSize = new Vector2(sideLength, sideLength * _radarProjectionCos) *
                                 GeneralComponent.GetScale() *
                                 cameraZoomScale;
@@ -1247,10 +1282,10 @@ namespace LcdMod.Client.Apps
             layout.ContentCenter = viewCenter - cameraOffsetPixels;
             layout.PlaneSize = planeSize;
             layout.ViewportBounds = new RectangleF(
-                ViewBox.X,
-                ViewBox.Y,
-                ViewBox.Width,
-                Math.Max(1f, ViewBox.Height));
+                area.X,
+                area.Y,
+                area.Width,
+                Math.Max(1f, area.Height));
             layout.RadarScale = radarScale;
             layout.ContentScale = radarScale * cameraZoomScale;
             layout.CappedScale = cappedScale;
@@ -1283,7 +1318,7 @@ namespace LcdMod.Client.Apps
         void ApplyCameraControlBounds()
         {
             _cameraControl.SetVisible(true);
-            _cameraControl.SetRect(ViewBox);
+            _cameraControl.SetRect(RadarArea);
             _radarSceneControl.SetRect(ViewBox);
         }
 
@@ -1771,7 +1806,7 @@ namespace LcdMod.Client.Apps
         void UpdateFooterHeights()
         {
             int entries = _sortedContacts.Count;
-            _footerHeight = CalculateFooterHeight(entries, LayoutScale);
+            _footerHeight = _host.Frame != null ? 0f : CalculateFooterHeight(entries, LayoutScale);
         }
 
         void UpdateFooterControls()

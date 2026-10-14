@@ -31,6 +31,12 @@ namespace LcdMod.Client.Apps
                 Mode = EnergyLayoutMode.Tiny;
             _sprites.Clear();
             var snapshot = Snapshot;
+            if (Host.Frame != null)
+            {
+                DrawFramed(snapshot);
+                return _sprites;
+            }
+
             switch (Mode)
             {
                 case EnergyLayoutMode.Tiny:
@@ -240,6 +246,44 @@ namespace LcdMod.Client.Apps
 
             EnergyCardRenderer.DrawValueBox(_sprites, Host.Surface, TextFont, box, Loc("Charge"), value, color, sub, hasBatteries ? s.StoredRatio : -1f, false,
                 EnergyTheme.BIG_VALUE, ref Palette, ref Metrics, FormatingHelper.PercentageToString(1f));
+        }
+
+        void DrawFramed(EnergySnapshot s)
+        {
+            var f = Host.Frame;
+            Color neutral = Palette.ValueNeutral;
+            Color muted = Palette.LabelMuted;
+            FramedHeader(_sprites);
+            f.Text(_sprites, "producao_total.valor", FramedPower("producao_total.valor", s.ProducedMw, false), neutral);
+            f.Text(_sprites, "producao_total.detalhe", string.Format(Loc("MaxFormat"), FormatingHelper.MegaWattsToString(s.MaxProducedMw)), muted, false);
+            f.Text(_sprites, "consumo_total.valor", FramedPower("consumo_total.valor", s.ConsumedMw, false), EnergyTheme.UsedColor(ref Palette, s.UsedRatio));
+            f.Text(_sprites, "consumo_total.detalhe", string.Format(Loc("OfCapacityFormat"), FormatingHelper.PercentageToString(s.UsedRatio)), muted, false);
+            float reference = Math.Max(Math.Max(s.ProducedMw, s.ConsumedMw), EnergySnapshot.EPSILON_MW);
+            Color balance = EnergyTheme.BalanceColor(ref Palette, s.NetMw, s.BatteryEmptySoon);
+            f.BipolarBar(_sprites, "saldo.barra", s.NetMw / reference, balance);
+            f.Text(_sprites, "saldo.valor", FramedPower("saldo.valor", s.NetMw, true), balance);
+            DrawFramedKind("baterias", EnergyKind.Battery, s);
+            DrawFramedKind("paineis_solares", EnergyKind.Solar, s);
+            DrawFramedKind("turbinas_eolicas", EnergyKind.Wind, s);
+            bool hasBatteries = s.HasBatteries;
+            Color charge = hasBatteries ? EnergyTheme.ChargeColor(ref Palette, s.StoredRatio) : muted;
+            f.Text(_sprites, "armazenado.valor", hasBatteries ? FormatingHelper.MegaWattHoursToString(s.StoredMwh) : NotAvailable, neutral);
+            f.Text(_sprites, "armazenado.detalhe", hasBatteries ? string.Format(Loc("MaxFormat"), FormatingHelper.MegaWattHoursToString(s.CapacityMwh)) : Loc("NoUnits"), muted, false);
+            f.Text(_sprites, "carga.valor", ChargeText(s), charge);
+            string detail = !hasBatteries ? Loc("NoUnits")
+                : s.EtaSeconds >= 0f ? Loc(s.BatteryStatus == EnergyBatteryStatus.Charging ? "FullIn" : "EmptyIn") + " " + EtaText(s.EtaSeconds)
+                : BatteryStatusText(s.BatteryStatus);
+            f.Text(_sprites, "carga.detalhe", detail, muted, false);
+        }
+
+        void DrawFramedKind(string prefix, EnergyKind kind, EnergySnapshot s)
+        {
+            var stats = s.Kinds[(int)kind];
+            Host.Frame.Text(_sprites, prefix + ".valor", WorkingText(stats.Working, stats.Total), EnergyTheme.StateColor(ref Palette, stats.State));
+            string detail = stats.Total == 0 ? Loc("NoUnits")
+                : kind == EnergyKind.Battery ? BatteryStatusText(s.BatteryStatus)
+                : FramedPower(prefix + ".detalhe", stats.CurrentOutputMw, false);
+            Host.Frame.Text(_sprites, prefix + ".detalhe", detail, Palette.LabelMuted, false);
         }
 
         void DrawBox(RectangleF box, string label, string value, Color color, string sub, float valueType, string widthTemplate = null)

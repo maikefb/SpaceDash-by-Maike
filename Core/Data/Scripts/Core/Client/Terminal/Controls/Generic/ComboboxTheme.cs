@@ -31,6 +31,7 @@ namespace LcdMod.Client.Terminal.Controls.Generic
             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Default, Value = MyStringId.GetOrCompute("LcdMod_Theme_Default") });
             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Futuristic, Value = MyStringId.GetOrCompute("LcdMod_Theme_Futuristic") });
             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Clean, Value = MyStringId.GetOrCompute("LcdMod_Theme_Clean") });
+            items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Cafe, Value = MyStringId.GetOrCompute("LcdMod_Theme_Cafe") });
         }
 
         void Setter(IMyTerminalBlock block, long value)

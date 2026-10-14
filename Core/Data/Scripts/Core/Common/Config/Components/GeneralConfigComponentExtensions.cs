@@ -22,7 +22,7 @@ namespace LcdMod.Common.Config.Components
 
         public static LcdTheme GetTheme(this GeneralConfigComponent config)
         {
-            if (config == null || config.ThemeInternal < (int)LcdTheme.Default || config.ThemeInternal > (int)LcdTheme.Clean)
+            if (config == null || config.ThemeInternal < (int)LcdTheme.Default || config.ThemeInternal > (int)LcdTheme.Cafe)
                 return LcdTheme.Default;
             return (LcdTheme)config.ThemeInternal;
         }

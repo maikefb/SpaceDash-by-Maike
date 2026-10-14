@@ -38,6 +38,11 @@ namespace LcdMod.Client.Apps
             _sprites.Clear();
             var snapshot = Snapshot;
             var stats = snapshot.Kinds[(int)_kind];
+            if (Host.Frame != null)
+            {
+                DrawFramed(snapshot, stats);
+                return _sprites;
+            }
 
             float gap = Metrics.U;
             RectangleF illustration;
@@ -81,7 +86,7 @@ namespace LcdMod.Client.Apps
         {
             EnergyUnitState state = stats.State;
             bool dimmed = state == EnergyUnitState.Offline || state == EnergyUnitState.Inoperative;
-            string illustration = Theme == LcdTheme.Default ? null : IllustrationTexture(_kind);
+            string illustration = IllustrationTexture(_kind);
             bool showsLoad = illustration == null && (_kind == EnergyKind.Reactor || _kind == EnergyKind.Hydrogen) && stats.Working > 0;
             string icon = illustration ?? TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, "IconEnergy");
             Color iconColor = illustration != null
@@ -92,7 +97,7 @@ namespace LcdMod.Client.Apps
                 StateText(state), EnergyTheme.StateColor(ref Palette, state), showsLoad ? stats.LoadRatio : -1f, ref Palette, ref Metrics);
         }
 
-        const float ILLUSTRATION_ASPECT = 1024f / 344f;
+        const float ILLUSTRATION_ASPECT = 2172f / 724f;
 
         static string IllustrationTexture(EnergyKind kind)
         {
@@ -105,6 +110,39 @@ namespace LcdMod.Client.Apps
                 case EnergyKind.Hydrogen: return "SD_IllusEngine";
                 default: return null;
             }
+        }
+
+        void DrawFramed(EnergySnapshot s, EnergyKindStats stats)
+        {
+            var f = Host.Frame;
+            Color neutral = Palette.ValueNeutral;
+            Color state = EnergyTheme.StateColor(ref Palette, stats.State);
+            string units = WorkingText(stats.Working, stats.Total);
+            FramedHeader(_sprites);
+            if (_kind == EnergyKind.Battery)
+            {
+                Color charge = EnergyTheme.ChargeColor(ref Palette, s.StoredRatio);
+                f.Text(_sprites, "modo.valor", BatteryModeText(s.BatteryMode), neutral);
+                f.Text(_sprites, "baterias.valor", units, state);
+                f.Text(_sprites, "entrada.valor", FramedPower("entrada.valor", s.BatteryInputMw, false), neutral);
+                f.Text(_sprites, "saida.valor", FramedPower("saida.valor", stats.CurrentOutputMw, false), neutral);
+                f.Text(_sprites, "armazenado.valor", string.Format(Loc("Of"), FormatingHelper.MegaWattHoursToString(s.StoredMwh),
+                    FormatingHelper.MegaWattHoursToString(s.CapacityMwh)), neutral);
+                f.Bar(_sprites, "carga.barra", s.StoredRatio, charge);
+                f.Text(_sprites, "carga.valor", FormatingHelper.PercentageToString(s.StoredRatio), charge);
+                return;
+            }
+
+            string unitsField = _kind == EnergyKind.Solar ? "paineis.valor"
+                : _kind == EnergyKind.Wind ? "turbinas.valor"
+                : _kind == EnergyKind.Hydrogen ? "motores.valor" : "reatores.valor";
+            f.Text(_sprites, "estado.valor", StateText(stats.State), state);
+            f.Text(_sprites, unitsField, units, state);
+            f.Text(_sprites, "saida_atual.valor", FramedPower("saida_atual.valor", stats.CurrentOutputMw, false), neutral);
+            f.Text(_sprites, "saida_maxima.valor", FramedPower("saida_maxima.valor", stats.MaxOutputMw, false), neutral);
+            Color load = EnergyTheme.LoadColor(ref Palette, stats.LoadRatio);
+            f.Bar(_sprites, "utilizacao.barra", stats.LoadRatio, load);
+            f.Text(_sprites, "utilizacao.valor", stats.Working == 0 ? NotAvailable : FormatingHelper.PercentageToString(stats.LoadRatio), load);
         }
 
         /// <summary>Linhas em ordem de prioridade: a tabela descarta as do fim quando falta altura.</summary>

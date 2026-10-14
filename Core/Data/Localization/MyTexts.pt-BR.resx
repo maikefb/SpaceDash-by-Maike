@@ -665,6 +665,9 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Theme_Clean" xml:space="preserve">
     <value>Clean</value>
   </data>
+  <data name="LcdMod_Theme_Cafe" xml:space="preserve">
+    <value>Café</value>
+  </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Desenha a barra de título. Desativado automaticamente em telas muito largas.</value>
   </data>
@@ -904,5 +907,89 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   </data>
   <data name="LcdMod_ConveyorMap_NoConveyors" xml:space="preserve">
     <value>Nenhuma esteira nesta grid</value>
+  </data>
+  <data name="LcdMod_Frame_GridTelemetry" xml:space="preserve">
+    <value>Telemetria da grid</value>
+  </data>
+  <data name="LcdMod_Frame_Telemetry" xml:space="preserve">
+    <value>Telemetria</value>
+  </data>
+  <data name="LcdMod_Frame_OfGrid" xml:space="preserve">
+    <value>da grid</value>
+  </data>
+  <data name="LcdMod_Frame_RealTime" xml:space="preserve">
+    <value>em tempo real</value>
+  </data>
+  <data name="LcdMod_Frame_EnergySubtitle" xml:space="preserve">
+    <value>Gestão dinâmica de energia</value>
+  </data>
+  <data name="LcdMod_Frame_CurrentOutput" xml:space="preserve">
+    <value>Saída atual</value>
+  </data>
+  <data name="LcdMod_Frame_ClockSubtitle" xml:space="preserve">
+    <value>Ciclo do planeta e tempo de sessão</value>
+  </data>
+  <data name="LcdMod_Frame_LocalTime" xml:space="preserve">
+    <value>Hora local</value>
+  </data>
+  <data name="LcdMod_Frame_SunriseSunset" xml:space="preserve">
+    <value>Nascer / pôr</value>
+  </data>
+  <data name="LcdMod_Frame_DefenseSubtitle" xml:space="preserve">
+    <value>Escudo e armamento</value>
+  </data>
+  <data name="LcdMod_Frame_ChartSubtitle" xml:space="preserve">
+    <value>Produção e consumo · 1 h</value>
+  </data>
+  <data name="LcdMod_Frame_ChartLegend" xml:space="preserve">
+    <value>Produção ━━  Consumo ╌╌</value>
+  </data>
+  <data name="LcdMod_Frame_Consumption" xml:space="preserve">
+    <value>Consumo</value>
+  </data>
+  <data name="LcdMod_Frame_Peak1h" xml:space="preserve">
+    <value>Pico 1 h</value>
+  </data>
+  <data name="LcdMod_Frame_Autonomy" xml:space="preserve">
+    <value>Autonomia</value>
+  </data>
+  <data name="LcdMod_Frame_RadarSubtitle" xml:space="preserve">
+    <value>Contatos em alcance</value>
+  </data>
+  <data name="LcdMod_Frame_Allies" xml:space="preserve">
+    <value>Aliados</value>
+  </data>
+  <data name="LcdMod_Frame_Neutrals" xml:space="preserve">
+    <value>Neutros</value>
+  </data>
+  <data name="LcdMod_Frame_Hostiles" xml:space="preserve">
+    <value>Hostis</value>
+  </data>
+  <data name="LcdMod_Frame_DockingSubtitle" xml:space="preserve">
+    <value>Conector de referência</value>
+  </data>
+  <data name="LcdMod_Frame_Distance" xml:space="preserve">
+    <value>Distância</value>
+  </data>
+  <data name="LcdMod_Frame_GasSubtitle" xml:space="preserve">
+    <value>Gestão dinâmica de gás</value>
+  </data>
+  <data name="LcdMod_Frame_ReserveLimit" xml:space="preserve">
+    <value>Limite de reserva</value>
+  </data>
+  <data name="LcdMod_Frame_TriggerLevel" xml:space="preserve">
+    <value>Nível de disparo</value>
+  </data>
+  <data name="LcdMod_Frame_Systems" xml:space="preserve">
+    <value>Sistemas</value>
+  </data>
+  <data name="LcdMod_Frame_Storage" xml:space="preserve">
+    <value>Armazenamento</value>
+  </data>
+  <data name="LcdMod_Frame_Automation" xml:space="preserve">
+    <value>Automação</value>
+  </data>
+  <data name="LcdMod_Frame_LiftSubtitle" xml:space="preserve">
+    <value>Massa, empuxo e margem</value>
   </data>
 </root>
