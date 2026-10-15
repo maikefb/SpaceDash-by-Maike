@@ -173,7 +173,8 @@ def emit_cs(screens):
         for field, kind, x, y, w, h, font, align in s["slots"]:
             out.append(f"            Slot(\"{field}\", '{kind}', {f(x)}, {f(y)}, {f(w)}, {f(h)}, {f(font)}, '{align}');")
         for key, x, y, align, px, bold, maxw, _ in s["labels"]:
-            out.append(f"            Label(\"{key}\", {f(x)}, {f(y)}, '{align}', {f(px)}, {'true' if bold else 'false'}, {f(maxw)});")
+            key = key[1:] if key[0] == "@" else key
+            out.append(f"            Label(\"{key}\",{f(x)}, {f(y)}, '{align}', {f(px)}, {'true' if bold else 'false'}, {f(maxw)});")
     out += ["        }", "    }", "}", ""]
     return "\n".join(out)
 
