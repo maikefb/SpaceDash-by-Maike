@@ -23,6 +23,8 @@ namespace LcdMod.Client.Gui.Frames
         const float MIN_SCALE_RATIO = 0.5f;
         // ponytail: valores ocupam 1,3× a altura da caixa; rótulos sem largura máxima usam a distância à borda (ou 60 % da textura quando centrados).
         const float VALUE_FILL = 1.3f;
+        // ponytail: fator fixo sobre o FontPx da tabela; ajustar no jogo se o rotulo encostar na capsula.
+        const float LABEL_BOOST = 1.6f;
         const float LABEL_MARGIN = 16f;
         const float CENTER_MAX_FRACTION = 0.6f;
 
@@ -80,12 +82,13 @@ namespace LcdMod.Client.Gui.Frames
                 if (string.IsNullOrEmpty(text))
                     continue;
                 string font = label.Bold ? FormatingHelper.BoldFont(_font, text) : _font;
-                float requested = Scale(label.FontPx);
+                float tableScale = Scale(label.FontPx);
+                float requested = tableScale * LABEL_BOOST;
                 float maxWidth = (label.MaxWidth > 0f ? label.MaxWidth : DefaultMaxWidth(label)) * _scale.X;
                 float scale;
                 text = FormatingHelper.FitText(_surface, text, font, requested, maxWidth, 0f, requested * MIN_SCALE_RATIO, out scale);
                 var anchor = _origin + label.Anchor * _scale;
-                float top = anchor.Y - _unitLine * scale * BASELINE;
+                float top = anchor.Y - _unitLine * tableScale * BASELINE - _unitLine * (scale - tableScale) * 0.5f;
                 sprites.Add(new MySprite(SpriteType.TEXT, text, new Vector2(anchor.X, top), null, color, font, label.Align, scale));
             }
         }
