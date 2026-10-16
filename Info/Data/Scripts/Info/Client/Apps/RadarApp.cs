@@ -100,9 +100,6 @@ namespace LcdMod.Client.Apps
         readonly List<IMySlimBlock> _tempSlimBlocks = new List<IMySlimBlock>();
         readonly Dictionary<long, SignalCacheEntry> _longRangeSignalCache = new Dictionary<long, SignalCacheEntry>();
         readonly IMyEntity[] _lockCandidates = new IMyEntity[6];
-        static readonly Comparison<ContactRecord> ContactOrder = (a, b) =>
-            a.IsTargeted != b.IsTargeted ? (a.IsTargeted ? -1 : 1) : a.Distance.CompareTo(b.Distance);
-
         float _maxRange = DEFAULT_RANGE;
         Vector2 _cameraPanMeters;
         float _cameraZoomScale = CAMERA_DEFAULT_ZOOM_SCALE;
@@ -1749,7 +1746,8 @@ namespace LcdMod.Client.Apps
             }
 
             // Targeted contacts first, then closest-first
-            _sortedContacts.Sort(ContactOrder);
+            _sortedContacts.Sort((a, b) =>
+                a.IsTargeted != b.IsTargeted ? (a.IsTargeted ? -1 : 1) : a.Distance.CompareTo(b.Distance));
         }
 
         static Color ContactColor(ContactRecord c, Color errColor, Color warnColor, Color frdColor)
