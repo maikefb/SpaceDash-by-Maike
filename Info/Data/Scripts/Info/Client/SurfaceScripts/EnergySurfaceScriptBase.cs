@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.SurfaceScripts.Abstract;
 using LcdMod.Common.Config.Components;
+using Sandbox.Game.GameSystems.TextSurfaceScripts;
 using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI;
 using VRageMath;
@@ -16,6 +17,9 @@ namespace LcdMod.Client.SurfaceScripts
     public abstract class EnergySurfaceScriptBase : SurfaceScriptBase
     {
         EnergyAppBase _app;
+
+        /// <summary>O serviço amostra a cada 50 frames por conta própria; só o gráfico volta a Update10, por causa da animação de EASE_FRAMES.</summary>
+        public override ScriptUpdate NeedsUpdate => ScriptUpdate.Update100;
 
         protected EnergySurfaceScriptBase(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {

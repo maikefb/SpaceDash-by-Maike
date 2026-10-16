@@ -23,11 +23,35 @@ namespace LcdMod.Client.Apps.ViewModel
          Color _gridTextColor;
          Color _gridAmountColor;
          Color _gridIconColor;
+         string _trimSource;
+         string _trimFont;
+         float _trimWidth;
+         float _trimScale;
+         string _trimResult;
 
         public ItemEntry(MyItemType itemType, MyFixedPoint amount)
         {
             ItemType = itemType;
             _amount = amount;
+        }
+
+        internal bool TryGetTrimmedName(string source, float availableWidth, float textScale, string font, out string trimmed)
+        {
+            trimmed = _trimResult;
+            return _trimResult != null &&
+                   ReferenceEquals(source, _trimSource) &&
+                   availableWidth == _trimWidth &&
+                   textScale == _trimScale &&
+                   string.Equals(font, _trimFont, System.StringComparison.Ordinal);
+        }
+
+        internal void StoreTrimmedName(string source, float availableWidth, float textScale, string font, string trimmed)
+        {
+            _trimSource = source;
+            _trimWidth = availableWidth;
+            _trimScale = textScale;
+            _trimFont = font;
+            _trimResult = trimmed;
         }
 
         public MyItemType ItemType { get; private set; }

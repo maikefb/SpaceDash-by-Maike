@@ -32,11 +32,6 @@
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_InGameClockDashboard"/>
-            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_InGameClockDashboard.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_DefenseDashboard"/>
             <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_DefenseDashboard.dds</SpritePath>
             <Selectable>false</Selectable>
@@ -44,11 +39,6 @@
         <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_EnergyChart"/>
             <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_EnergyChart.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_Radar"/>
-            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_Radar.dds</SpritePath>
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
@@ -122,11 +112,6 @@
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_InGameClockDashboard"/>
-            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_InGameClockDashboard.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_DefenseDashboard"/>
             <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_DefenseDashboard.dds</SpritePath>
             <Selectable>false</Selectable>
@@ -134,11 +119,6 @@
         <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_EnergyChart"/>
             <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_EnergyChart.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_Radar"/>
-            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_Radar.dds</SpritePath>
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
@@ -212,11 +192,6 @@
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_InGameClockDashboard"/>
-            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_InGameClockDashboard.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_DefenseDashboard"/>
             <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_DefenseDashboard.dds</SpritePath>
             <Selectable>false</Selectable>
@@ -224,11 +199,6 @@
         <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyChart"/>
             <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyChart.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_Radar"/>
-            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_Radar.dds</SpritePath>
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
         <LCDTextureDefinition>
@@ -269,21 +239,6 @@
         <LCDTextureDefinition>
             <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_EnergyReactors_Tiny"/>
             <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_EnergyReactors_Tiny.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Futuristic_Generic"/>
-            <SpritePath>Textures/Sprites/Frames/Futuristic/LcdInfo_GenericFrame.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Clean_Generic"/>
-            <SpritePath>Textures/Sprites/Frames/Clean/LcdInfo_GenericFrame.dds</SpritePath>
-            <Selectable>false</Selectable>
-        </LCDTextureDefinition>
-        <LCDTextureDefinition>
-            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_Cafe_Generic"/>
-            <SpritePath>Textures/Sprites/Frames/Cafe/LcdInfo_GenericFrame.dds</SpritePath>
             <Selectable>false</Selectable>
         </LCDTextureDefinition>
     </LCDTextures>

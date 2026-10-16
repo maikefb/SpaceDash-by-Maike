@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Helpers;
@@ -19,7 +20,11 @@ namespace LcdMod.Client.Gui.Frames
         // ponytail: fator fixo px CSS → altura de linha do jogo e posição da linha de base; ajustar no jogo se o texto sair do trilho.
         const float LINE_PER_PX = 1.2f;
         const float BASELINE = 0.78f;
-        const float MIN_SCALE_RATIO = 0.6f;
+        const float MIN_SCALE_RATIO = 0.5f;
+        // ponytail: valores ocupam 1,3× a altura da caixa; rótulos sem largura máxima usam a distância à borda (ou 60 % da textura quando centrados).
+        const float VALUE_FILL = 1.3f;
+        const float LABEL_MARGIN = 16f;
+        const float CENTER_MAX_FRACTION = 0.6f;
 
         public readonly FrameLayout Layout;
         readonly IMyTextSurface _surface;
@@ -27,6 +32,8 @@ namespace LcdMod.Client.Gui.Frames
         readonly Vector2 _scale;
         readonly Vector2 _origin;
         readonly float _unitLine;
+        readonly List<MySprite> _static = new List<MySprite>();
+        Color _staticColor;
 
         public FrameRenderer(FrameLayout layout, IMyTextSurface surface, string font)
         {
@@ -50,12 +57,21 @@ namespace LcdMod.Client.Gui.Frames
             return Layout.Slots.TryGetValue(field, out slot) ? ToSurface(slot.Box) : new RectangleF();
         }
 
-        public void Background(List<MySprite> sprites)
+        /// <summary>Fundo e rótulos traduzidos, montados uma vez por layout/idioma/cor e reaproveitados a cada Run.</summary>
+        public void Static(List<MySprite> sprites, Color labelColor)
         {
-            sprites.Add(new MySprite(SpriteType.TEXTURE, Layout.Texture, _surface.TextureSize * 0.5f, _surface.SurfaceSize, Color.White));
+            if (_static.Count == 0 || _staticColor != labelColor)
+            {
+                _static.Clear();
+                _staticColor = labelColor;
+                _static.Add(new MySprite(SpriteType.TEXTURE, Layout.Texture, _surface.TextureSize * 0.5f, _surface.SurfaceSize, Color.White));
+                Labels(_static, labelColor);
+            }
+
+            sprites.AddRange(_static);
         }
 
-        public void Labels(List<MySprite> sprites, Color color)
+        void Labels(List<MySprite> sprites, Color color)
         {
             for (int i = 0; i < Layout.Labels.Count; i++)
             {
@@ -65,11 +81,26 @@ namespace LcdMod.Client.Gui.Frames
                     continue;
                 string font = label.Bold ? FormatingHelper.BoldFont(_font, text) : _font;
                 float requested = Scale(label.FontPx);
+                float maxWidth = (label.MaxWidth > 0f ? label.MaxWidth : DefaultMaxWidth(label)) * _scale.X;
                 float scale;
-                text = FormatingHelper.FitText(_surface, text, font, requested, label.MaxWidth * _scale.X, 0f, requested * MIN_SCALE_RATIO, out scale);
+                text = FormatingHelper.FitText(_surface, text, font, requested, maxWidth, 0f, requested * MIN_SCALE_RATIO, out scale);
                 var anchor = _origin + label.Anchor * _scale;
                 float top = anchor.Y - _unitLine * scale * BASELINE;
                 sprites.Add(new MySprite(SpriteType.TEXT, text, new Vector2(anchor.X, top), null, color, font, label.Align, scale));
+            }
+        }
+
+        float DefaultMaxWidth(FrameLabel label)
+        {
+            float width = Layout.Size.X;
+            switch (label.Align)
+            {
+                case TextAlignment.CENTER:
+                    return Math.Min(width * CENTER_MAX_FRACTION, 2f * Math.Min(label.Anchor.X, width - label.Anchor.X) - 2f * LABEL_MARGIN);
+                case TextAlignment.RIGHT:
+                    return label.Anchor.X - LABEL_MARGIN;
+                default:
+                    return width - label.Anchor.X - LABEL_MARGIN;
             }
         }
 
@@ -91,7 +122,7 @@ namespace LcdMod.Client.Gui.Frames
             }
         }
 
-        /// <summary>Texto centrado na altura da caixa, alinhado como a tabela manda; encolhe até 0,6× e corta quando não cabe.</summary>
+        /// <summary>Texto do tamanho da caixa, centrado nela (cabeçalho e rodapé seguem a tabela); encolhe até 0,5× e corta quando não cabe.</summary>
         public void Text(List<MySprite> sprites, string field, string text, Color color, bool bold = true)
         {
             FrameSlot slot;
@@ -99,12 +130,13 @@ namespace LcdMod.Client.Gui.Frames
                 return;
             string font = bold ? FormatingHelper.BoldFont(_font, text) : _font;
             RectangleF box = ToSurface(slot.Box);
-            float requested = Scale(slot.FontPx);
+            float requested = Scale(Math.Max(slot.FontPx, slot.Box.Height * VALUE_FILL));
             float scale;
             text = FormatingHelper.FitText(_surface, text, font, requested, box.Width, 0f, requested * MIN_SCALE_RATIO, out scale);
-            float x = slot.Align == TextAlignment.RIGHT ? box.Right : slot.Align == TextAlignment.CENTER ? box.Center.X : box.X;
+            TextAlignment align = field.StartsWith("cabecalho.") || field.StartsWith("rodape.") ? slot.Align : TextAlignment.CENTER;
+            float x = align == TextAlignment.RIGHT ? box.Right : align == TextAlignment.CENTER ? box.Center.X : box.X;
             float top = box.Center.Y - _unitLine * scale * 0.5f;
-            sprites.Add(new MySprite(SpriteType.TEXT, text, new Vector2(x, top), null, color, font, slot.Align, scale));
+            sprites.Add(new MySprite(SpriteType.TEXT, text, new Vector2(x, top), null, color, font, align, scale));
         }
 
         /// <summary>Preenchimento da barra entre duas frações (0..1) da largura; o trilho já está na textura.</summary>

@@ -17,14 +17,8 @@ namespace LcdMod.Server
     {
         const string FILE = "LcdMod.survivors.xml";
 
-        readonly object _owner;
         readonly Dictionary<long, SurvivorEntry> _entries = new Dictionary<long, SurvivorEntry>();
         readonly List<IMyIdentity> _identities = new List<IMyIdentity>();
-
-        public SurvivorsServerTracker(object owner)
-        {
-            _owner = owner;
-        }
 
         public void Load()
         {
@@ -52,7 +46,7 @@ namespace LcdMod.Server
             }
             catch (Exception e)
             {
-                ErrorHandlerHelper.LogError(e, _owner);
+                ErrorHandlerHelper.LogError(e, typeof(SurvivorsServerTracker));
             }
         }
 
@@ -65,7 +59,7 @@ namespace LcdMod.Server
             }
             catch (Exception e)
             {
-                ErrorHandlerHelper.LogError(e, _owner);
+                ErrorHandlerHelper.LogError(e, typeof(SurvivorsServerTracker));
             }
         }
 
@@ -79,6 +73,7 @@ namespace LcdMod.Server
 
         const long SEND_COOLDOWN_FRAMES = 600;
         readonly Dictionary<ulong, long> _lastSendFrame = new Dictionary<ulong, long>();
+        readonly List<ulong> _staleSenders = new List<ulong>();
 
         /// <summary>Lista completa a quem pediu, no máximo uma vez a cada 10 s por jogador (o cliente tenta de novo a cada 15 s).</summary>
         public void SendTo(ulong steamId)
@@ -88,10 +83,22 @@ namespace LcdMod.Server
             if (_lastSendFrame.TryGetValue(steamId, out last) && frame - last < SEND_COOLDOWN_FRAMES)
                 return;
             _lastSendFrame[steamId] = frame;
+            if (_lastSendFrame.Count >= 64)
+                PruneSendFrames(frame);
 
             var manager = LcdModSessionComponent.NetworkManager;
             if (manager != null)
                 manager.TransmitToPlayer(new NetworkPackageSurvivors { Entries = Snapshot() }, steamId);
+        }
+
+        void PruneSendFrames(long frame)
+        {
+            _staleSenders.Clear();
+            foreach (var entry in _lastSendFrame)
+                if (frame - entry.Value >= SEND_COOLDOWN_FRAMES)
+                    _staleSenders.Add(entry.Key);
+            foreach (var steamId in _staleSenders)
+                _lastSendFrame.Remove(steamId);
         }
 
         void Read()
@@ -194,7 +201,7 @@ namespace LcdMod.Server
             }
             catch (Exception e)
             {
-                ErrorHandlerHelper.LogError(e, _owner);
+                ErrorHandlerHelper.LogError(e, typeof(SurvivorsServerTracker));
             }
         }
 
@@ -216,7 +223,7 @@ namespace LcdMod.Server
             }
             catch (Exception e)
             {
-                ErrorHandlerHelper.LogError(e, _owner);
+                ErrorHandlerHelper.LogError(e, typeof(SurvivorsServerTracker));
             }
         }
 
@@ -229,7 +236,7 @@ namespace LcdMod.Server
             }
             catch (Exception e)
             {
-                ErrorHandlerHelper.LogError(e, _owner);
+                ErrorHandlerHelper.LogError(e, typeof(SurvivorsServerTracker));
             }
         }
 

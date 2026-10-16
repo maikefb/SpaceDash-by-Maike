@@ -79,9 +79,12 @@ namespace LcdMod.Client.Apps
             MarkDirty();
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             if (Host.Frame != null)
             {
                 DrawFramed(sprites);
@@ -89,7 +92,7 @@ namespace LcdMod.Client.Apps
             }
 
             float scale = Math.Max(0.25f, GeneralComponent.GetScale());
-            float fontScale = Math.Max(0.25f, Host.Surface.FontSize);
+            float fontScale = Math.Max(0.25f, Host.FontScale);
             float titleOffset = Host.TitleVisible ? 40f * scale * fontScale : 0f;
             RectangleF view = Host.ViewBox;
             var content = new RectangleF(
@@ -125,10 +128,17 @@ namespace LcdMod.Client.Apps
                 WeaponAggregate weapon = _sortedWeapons[i];
                 string line = "linha_" + (i + 1);
                 f.Text(sprites, line + ".nome_bloco", weapon.DisplayName, fg, false);
-                f.Text(sprites, line + ".valor", weapon.Ready + " / " + weapon.Total, weapon.Warning + weapon.Unavailable > 0 ? GetWarningColor() : fg);
+                f.Text(sprites, line + ".valor", CountText(weapon.Ready, weapon.Total), weapon.Warning + weapon.Unavailable > 0 ? GetWarningColor() : fg);
             }
 
             ClearDirtyAfterRender();
+        }
+
+        string CountText(int count, int total)
+        {
+            return DefenseComponent.ShowPercent
+                ? FormatingHelper.PercentageToString(count / (float)Math.Max(1, total))
+                : count + " / " + total;
         }
 
         public override void Close()
@@ -317,7 +327,7 @@ namespace LcdMod.Client.Apps
                 }
 
                 control.Bind(weapon.DisplayName, weapon.SpriteName, weapon.Total, weapon.Ready, weapon.Shooting,
-                    weapon.Warning, weapon.Unavailable, _cardColor, _warningColor, _errorColor);
+                    weapon.Warning, weapon.Unavailable, DefenseComponent.ShowPercent, _cardColor, _warningColor, _errorColor);
                 _weaponPanel.AddChild(control);
                 _weaponPanel.MoveChild(control, i);
             }

@@ -25,15 +25,24 @@ namespace LcdMod.Client.Gui.Styling
         const float PERCENT_TEXT_WIDTH = 78f;
         const float CHAMFER_RATIO = 0.18f;
         const float CHAMFER_MAX = 12f;
+        const float FRAME_INSET_RATIO = 24f / 512f;
+        const float SMALL_INSET = 2f;
+        const float SMALL_FONT_BOOST = 1.25f;
+        const float CAFE_FILL_MIX = 0.08f;
 
         public static Color FrameFill(LcdTheme theme, Color background, Color foreground)
         {
-            return theme == LcdTheme.Futuristic ? Color.Lerp(background, foreground, FRAME_FILL_MIX) : background;
+            switch (theme)
+            {
+                case LcdTheme.Futuristic: return Color.Lerp(background, foreground, FRAME_FILL_MIX);
+                case LcdTheme.Cafe: return Color.Lerp(background, foreground, CAFE_FILL_MIX);
+                default: return background;
+            }
         }
 
         public static Color DividerColor(LcdTheme theme, Color foreground)
         {
-            return WithAlpha(foreground, theme == LcdTheme.Clean ? CLEAN_LINE_ALPHA : FUTURISTIC_LINE_ALPHA);
+            return WithAlpha(foreground, theme == LcdTheme.Futuristic ? FUTURISTIC_LINE_ALPHA : CLEAN_LINE_ALPHA);
         }
 
         public static string LabelText(LcdTheme theme, string text)
@@ -46,6 +55,44 @@ namespace LcdMod.Client.Gui.Styling
             return theme == LcdTheme.Futuristic ? FormatingHelper.BoldFont(font, text) : font;
         }
 
+        /// <summary>Small amplia todo o texto dos apps para telas de cockpit.</summary>
+        public static float FontBoost(LcdTheme theme)
+        {
+            return theme == LcdTheme.Small ? SMALL_FONT_BOOST : 1f;
+        }
+
+        /// <summary>Borda reservada à moldura: 9-slice no Default, faixa fina nos temas desenhados, mínima no Small.</summary>
+        public static Vector2 FrameInset(LcdTheme theme, Vector2 surfaceSize, float defaultThickness)
+        {
+            switch (theme)
+            {
+                case LcdTheme.Default: return new Vector2(defaultThickness);
+                case LcdTheme.Small: return new Vector2(SMALL_INSET);
+                default: return surfaceSize * FRAME_INSET_RATIO;
+            }
+        }
+
+        /// <summary>Moldura desenhada por código em volta de <paramref name="outer"/>; false no Default (o chamador desenha o 9-slice).</summary>
+        public static bool DrawFrame(List<MySprite> sprites, LcdTheme theme, RectangleF outer, Color background, Color accent, Color foreground, float scale)
+        {
+            switch (theme)
+            {
+                case LcdTheme.Futuristic:
+                    DrawChamferedBox(sprites, outer, FrameFill(theme, background, foreground), WithAlpha(accent, OUTLINE_ALPHA), accent, scale);
+                    return true;
+                case LcdTheme.Cafe:
+                    sprites.Add(LineRenderer.Rect(outer.Center, outer.Size, FrameFill(theme, background, foreground)));
+                    LineRenderer.DrawRectOutline(sprites, outer, Math.Max(2f, 2f * scale), WithAlpha(accent, OUTLINE_ALPHA));
+                    return true;
+                case LcdTheme.Clean:
+                case LcdTheme.Small:
+                    LineRenderer.DrawRectOutline(sprites, outer, Math.Max(1f, scale), DividerColor(theme, foreground));
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public static bool DrawTitleAccent(List<MySprite> sprites, LcdTheme theme, RectangleF bar, RectangleF screen, Color accent, Color foreground, float scale)
         {
             switch (theme)
@@ -55,6 +102,7 @@ namespace LcdMod.Client.Gui.Styling
                     sprites.Add(LineRenderer.Rect(new Vector2(bar.Center.X, bar.Bottom - thickness * 0.5f), new Vector2(bar.Width, thickness), accent));
                     return true;
                 case LcdTheme.Clean:
+                case LcdTheme.Cafe:
                     DrawDivider(sprites, theme, new Vector2(bar.X, bar.Bottom - 1f), new Vector2(bar.Right, bar.Bottom - 1f), foreground, scale);
                     return true;
                 default:
@@ -69,8 +117,13 @@ namespace LcdMod.Client.Gui.Styling
                 case LcdTheme.Futuristic:
                     DrawChamferedBox(sprites, rect, FrameFill(theme, background, foreground), WithAlpha(accent, OUTLINE_ALPHA), accent, scale);
                     return true;
+                case LcdTheme.Cafe:
+                    sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
+                    goto case LcdTheme.Clean;
                 case LcdTheme.Clean:
                     DrawDivider(sprites, theme, new Vector2(rect.X, rect.Bottom - 1f), new Vector2(rect.Right, rect.Bottom - 1f), foreground, scale);
+                    return true;
+                case LcdTheme.Small:
                     return true;
                 default:
                     return false;
@@ -85,8 +138,13 @@ namespace LcdMod.Client.Gui.Styling
                     sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
                     sprites.Add(LineRenderer.Rect(new Vector2(rect.Center.X, rect.Y + 0.5f), new Vector2(rect.Width, Math.Max(1f, scale)), accent));
                     return true;
+                case LcdTheme.Cafe:
+                    sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
+                    goto case LcdTheme.Clean;
                 case LcdTheme.Clean:
                     DrawDivider(sprites, theme, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), foreground, scale);
+                    return true;
+                case LcdTheme.Small:
                     return true;
                 default:
                     return false;
@@ -126,6 +184,8 @@ namespace LcdMod.Client.Gui.Styling
                     break;
                 }
                 case LcdTheme.Clean:
+                case LcdTheme.Cafe:
+                case LcdTheme.Small:
                 {
                     sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, track));
                     float width = bar.Width * fraction;
@@ -152,6 +212,8 @@ namespace LcdMod.Client.Gui.Styling
                     sprites.Add(LineRenderer.Rect(new Vector2(cell.Right - 0.5f, cell.Center.Y), new Vector2(Math.Max(1f, scale), cell.Height), WithAlpha(accent, OUTLINE_ALPHA)));
                     return true;
                 case LcdTheme.Clean:
+                case LcdTheme.Cafe:
+                case LcdTheme.Small:
                     return true;
                 default:
                     return false;

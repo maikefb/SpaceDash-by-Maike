@@ -27,6 +27,7 @@ namespace LcdMod.Server
         readonly Dictionary<ulong, long> _uploadWindowStart = new Dictionary<ulong, long>();
         readonly Dictionary<ulong, int> _uploadWindowCount = new Dictionary<ulong, int>();
         readonly List<IMyPlayer> _texturePlayers = new List<IMyPlayer>();
+        readonly List<IMyIdentity> _identities = new List<IMyIdentity>();
         readonly List<string> _expiredCooldowns = new List<string>();
         long _nextTextureCleanupFrame;
 
@@ -201,8 +202,8 @@ namespace LcdMod.Server
                 return;
 
             byte[] existing;
-            if (TextureFileHelper.FileLength(key + ".dds") == packet.Data.Length
-                && TextureFileHelper.TryReadFile(key + ".dds", out existing) && SameBytes(existing, packet.Data))
+            bool replacing = TextureFileHelper.TryReadFile(key + ".dds", out existing);
+            if (replacing && SameBytes(existing, packet.Data))
             {
                 _textureCooldowns.Remove("forward|" + key);
                 IndexKey(key, packet.OwnerSteamId);
@@ -215,8 +216,10 @@ namespace LcdMod.Server
             IndexKey(key, packet.OwnerSteamId);
             _textureCooldowns.Remove("forward|" + key);
 
+            // Imagem nova só vai a quem pedir (pacote 4); substituição é empurrada porque os clientes já têm a cópia antiga em cache.
             var broadcast = new NetworkPackageSyncTexture(packet.OwnerSteamId, name, packet.Data, ResolveOwnerName(packet.OwnerSteamId));
-            LcdModSessionComponent.NetworkManager.TransmitToAllPlayers(broadcast, packet.OwnerSteamId);
+            if (replacing)
+                LcdModSessionComponent.NetworkManager.TransmitToAllPlayers(broadcast, packet.OwnerSteamId);
 
             ulong localId = MyAPIGateway.Session?.Player?.SteamUserId ?? 0UL;
             if (localId != 0UL && localId != packet.OwnerSteamId && LcdModSessionComponent.Client != null)
@@ -236,7 +239,6 @@ namespace LcdMod.Server
                     RemoveOldestTexture(ownerSteamId);
                 _textureIndex.Add(key);
             }
-            SaveTextureIndex();
         }
 
         static bool SameBytes(byte[] a, byte[] b)
@@ -310,9 +312,9 @@ namespace LcdMod.Server
                 return cached;
 
             long identityId = MyAPIGateway.Players.TryGetIdentityId(steamId);
-            var identities = new List<IMyIdentity>();
-            MyAPIGateway.Players.GetAllIdentites(identities, identity => identity != null && identity.IdentityId == identityId);
-            cached = identities.Count > 0 ? identities[0].DisplayName : null;
+            _identities.Clear();
+            MyAPIGateway.Players.GetAllIdentites(_identities, identity => identity != null && identity.IdentityId == identityId);
+            cached = _identities.Count > 0 ? _identities[0].DisplayName : null;
             _ownerNames[steamId] = cached;
             return cached;
         }

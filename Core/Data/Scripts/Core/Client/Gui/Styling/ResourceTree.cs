@@ -2,33 +2,13 @@ using System.Collections.Generic;
 
 namespace LcdMod.Client.Gui.Styling
 {
-    interface IResourceValue
-    {
-        ResourceKeyBase Key { get; }
-    }
-
-    sealed class ResourceValue<TValue> : IResourceValue
-    {
-        public ResourceValue(ResourceKey<TValue> key, TValue value)
-        {
-            Key = key;
-            Value = value;
-        }
-
-        public ResourceKey<TValue> Key { get; private set; }
-        public TValue Value { get; private set; }
-
-        ResourceKeyBase IResourceValue.Key => Key;
-    }
-
     public sealed class ResourceTree
     {
-        readonly Dictionary<int, IResourceValue> _values =
-            new Dictionary<int, IResourceValue>();
+        readonly Dictionary<int, object> _values = new Dictionary<int, object>();
 
         public ResourceTree Set<TValue>(ResourceKey<TValue> key, TValue value)
         {
-            _values[key.Id] = new ResourceValue<TValue>(key, value);
+            _values[key.Id] = new LiteralStyleValue<TValue>(value);
             return this;
         }
 
@@ -37,21 +17,17 @@ namespace LcdMod.Client.Gui.Styling
             ResourceKey<TValue> resourceKey;
             if (!ResourceKey.TryGet(key, out resourceKey))
                 resourceKey = ResourceKey.Register<TValue>(key);
-            _values[resourceKey.Id] = new ResourceValue<TValue>(resourceKey, value);
-            return this;
+            return Set(resourceKey, value);
         }
-        
+
         public bool TryGet<TValue>(ResourceKey<TValue> key, out TValue value)
         {
-            IResourceValue raw;
+            object raw;
             if (_values.TryGetValue(key.Id, out raw))
             {
-                ResourceValue<TValue> typed = raw as ResourceValue<TValue>;
+                var typed = raw as LiteralStyleValue<TValue>;
                 if (typed != null)
-                {
-                    value = typed.Value;
-                    return true;
-                }
+                    return typed.TryResolve(null, out value);
             }
 
             value = default(TValue);

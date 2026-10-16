@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Generated;
 using LcdMod.Client.Animation;
 using LcdMod.Client.Apps.Abstract;
@@ -43,7 +42,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
     public abstract class SurfaceScriptBase : MyTSSCommon, IAppHost
     {
         public static SurfaceCollection Instances = new SurfaceCollection();
-        public Dictionary<string, Color> Theme { get; set; }
         readonly List<MySprite> _backgroundGrids = new List<MySprite>();
         readonly Dictionary<long, Vector2> _registeredProxyOffsets = new Dictionary<long, Vector2>();
         readonly List<MySprite> _cachedFrame = new List<MySprite>();
@@ -55,13 +53,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         protected string Icon { get; set; }
         public new IMyCubeBlock Block { get; }
 
-        public virtual bool AsyncRender => false;
-
         protected virtual bool ClipToBounds => _registeredProxyOffsets.Count > 0;
 
         protected long WaitForFrame;
         protected long LastRenderFrame;
-        public long LastRunTick { get; private set; } = long.MinValue;
 
         public Vector2 TextureSize => Surface.TextureSize;
         public Vector2 SurfaceSize => Surface.SurfaceSize;
@@ -124,7 +119,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 : title;
 
         public float ConfiguredScale => GeneralComponent.GetScale();
-        protected float FontScale => _userFontScale <= 0f ? 1f : _userFontScale;
+        public float FontScale => (_userFontScale <= 0f ? 1f : _userFontScale) * ThemeChrome.FontBoost(_userTheme);
         protected float LayoutScale => ConfiguredScale * FontScale;
 
         float _userScale;
@@ -150,7 +145,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         /// <summary>ID da tela na tabela de molduras; null quando a tela não tem moldura dedicada.</summary>
         protected virtual string FrameId => null;
         protected virtual bool FrameTiny => Surface.SurfaceSize.Y / Surface.SurfaceSize.X < 0.375f;
-        string _genericFrame;
         LcdTheme _userTheme;
         public ColorConfigComponent ColorComponent => Config.GetComponent<ColorConfigComponent>();
         /// <summary>Fonte escolhida no terminal, com o padrão do jogo como reserva.</summary>
@@ -166,14 +160,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         bool _indexConflict;
         long _nextIndexConflictCheck;
         bool _disposed;
-        volatile bool _asyncRenderPending;
 
         public AnimationController Animations { get; private set; }
         public ScreenProviderConfig ProviderConfig { get; private set; }
-        protected bool IsScreenReadyToRender { get; private set; }
         public event Action<SurfaceScriptBase> OnRender;
-        public event Action<SurfaceScriptBase> OnUpdateStart;
-        public event Action<SurfaceScriptBase> OnUpdateEnd;
 
         protected SurfaceScriptBase(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block,
             size)
@@ -387,8 +377,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             Instances.Remove(this);
             LcdModSessionComponent.OnLanguageChanged -= LayoutChanged;
             OnRender = null;
-            OnUpdateStart = null;
-            OnUpdateEnd = null;
             base.Dispose();
         }
 
@@ -421,7 +409,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             var padding = (Surface.TextPadding / 100) * Surface.SurfaceSize;
             sizeOffset += padding / 2;
-            Vector2 frameInset = _genericFrame != null ? FrameLayouts.GenericInset(Surface.SurfaceSize) : new Vector2(FrameThickness);
+            Vector2 frameInset = Frame != null ? new Vector2(FrameThickness) : ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness);
 
             ViewBox = ApplyProxyOffsets(new RectangleF(
                 sizeOffset.X + frameInset.X,
@@ -461,8 +449,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             if (currentFrame < WaitForFrame)
                 return;
 
-            LastRunTick = currentFrame;
-
             base.Run();
 
             if (ViewBox.Size == Vector2.Zero)
@@ -480,8 +466,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                     return;
                 }
             }
-
-            IsScreenReadyToRender = false;
 
             if (Config == null)
             {
@@ -526,9 +510,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             ReplaceGridBoundAppIfNeeded(cubeGrid.EntityId);
 
-            IsScreenReadyToRender = true;
-
-            RaiseUpdateStart();
             try
             {
                 SafeRun();
@@ -536,10 +517,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             catch (Exception e)
             {
                 OnException(e);
-            }
-            finally
-            {
-                RaiseUpdateEnd();
             }
         }
 
@@ -695,7 +672,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         {
             const float margin = 0f;
             float headerScale = LayoutScale;
-            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale;
+            bool small = _userTheme == LcdTheme.Small;
+            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale * (small ? 0.6f : 1f);
+            float titleFontSize = small ? 1f : 1.3f;
+            float iconSize = (small ? 24f : 40f) * headerScale;
             Vector2 position = ViewBox.Position;
             position.X += margin;
 
@@ -708,8 +688,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             {
                 Type = SpriteType.TEXTURE,
                 Data = Icon,
-                Position = position + new Vector2(20f) * headerScale,
-                Size = new Vector2(40f * headerScale),
+                Position = position + new Vector2(iconSize * 0.5f),
+                Size = new Vector2(iconSize),
                 Color = GetHeaderColor(),
                 Alignment = TextAlignment.CENTER
             });
@@ -717,19 +697,20 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             frame.Add(MySprite.CreateClipRect(new Rectangle((int)position.X, (int)position.Y,
                 (int)(ViewBox.Width - position.X + ViewBox.X),
-                (int)(40f * headerScale))));
+                (int)titleBarHeight)));
 
-            var availableWidth = ViewBox.Width - position.X + ViewBox.X;
-            var titleText = GetCachedTitleText(availableWidth, 1.3f, true);
+            bool centered = _userTheme != LcdTheme.Default;
+            var availableWidth = centered ? ViewBox.Width * 0.75f : ViewBox.Width - position.X + ViewBox.X;
+            var titleText = GetCachedTitleText(availableWidth, titleFontSize, true);
 
             AddHeaderSprite(frame, new MySprite()
             {
                 Type = SpriteType.TEXT,
                 Data = titleText,
-                Position = position,
-                RotationOrScale = ConfiguredScale * 1.3f * FontScale,
+                Position = centered ? new Vector2(ViewBox.Center.X, position.Y) : position,
+                RotationOrScale = ConfiguredScale * titleFontSize * FontScale,
                 Color = GetHeaderColor(),
-                Alignment = TextAlignment.LEFT,
+                Alignment = centered ? TextAlignment.CENTER : TextAlignment.LEFT,
                 FontId = ThemeChrome.TitleFont(ThemeKind, TextFont, titleText)
             });
 
@@ -757,34 +738,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             _footerRoot.SetDataContext(App);
             _footerRoot.SetRect(bounds);
             _footerRoot.Render(frame);
-        }
-
-        protected static readonly Regex RxGroup = new Regex("\\(\\s*G\\s*:\\s*(.+?)\\s*\\)", RegexOptions.IgnoreCase);
-        protected static readonly Regex RxContainer = new Regex("\\(\\s*(?!G\\s*:)(.+?)\\s*\\)", RegexOptions.IgnoreCase);
-
-        protected static int GetScrollStep(int secondsPerStep)
-        {
-            return GetTimeStep(secondsPerStep);
-        }
-
-        protected static int GetTimeStep(float secondsPerStep)
-        {
-            try
-            {
-                var sess = MyAPIGateway.Session;
-                if (sess == null) return 0;
-                if (secondsPerStep <= 0f) secondsPerStep = 1f / 60f;
-
-                // SE runs at 60 game ticks per second.
-                int ticksPerStep = Math.Max(1, (int)Math.Round(secondsPerStep * 60f));
-                long frameCounter = sess.GameplayFrameCounter;
-                return (int)(frameCounter / ticksPerStep);
-            }
-            catch (Exception ex)
-            {
-                MyLog.Default.WriteLine($"[LcdMod] GetTimeStep error: {ex.Message}");
-                return 0;
-            }
         }
 
         public bool TryGetReferenceWorldMatrix(ReferenceMode mode, out MatrixD world,
@@ -861,16 +814,6 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         }
 
 
-        protected virtual RectangleF GetCellViewBox(float xStart, float xEnd, float yStart, float cellHeight,
-            float cellPadding)
-        {
-            var innerLeft = xStart + cellPadding;
-            var innerRight = xEnd - cellPadding;
-            var innerTop = yStart + cellPadding;
-            var innerBottom = yStart + cellHeight - cellPadding;
-            return new RectangleF(innerLeft, innerTop, innerRight - innerLeft, innerBottom - innerTop);
-        }
-
         public virtual void DrawMessage(List<MySprite> sprites, string message, string icon, Color color,
             float scale = 1f)
         {
@@ -893,12 +836,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Alignment = TextAlignment.CENTER
             };
 
-            var text = new StringBuilder(message ?? string.Empty);
-            TrimText(ref text, ViewBox.Width - 8f * ConfiguredScale);
             var textSprite = new MySprite
             {
                 Type = SpriteType.TEXT,
-                Data = text.ToString(),
+                Data = TextWrappingHelper.TrimToWidth(message, Surface, TextFont, ConfiguredScale * FontScale, ViewBox.Width - 8f * ConfiguredScale),
                 Position = new Vector2(center.X, center.Y + (iconSize / 2)),
                 Color = color,
                 Alignment = TextAlignment.CENTER,
@@ -939,61 +880,15 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             return color.ReadableFor(ColorComponent, BackgroundColor);
         }
 
-        protected static void ParseFilter(IMyTerminalBlock lcd, out string mode, out string token)
-        {
-            mode = null;
-            token = null;
-            if (lcd == null) return;
-            var name = lcd.CustomName ?? string.Empty;
-
-            var mg = RxGroup.Match(name);
-            if (mg.Success)
-            {
-                mode = "group";
-                token = mg.Groups[1].Value.Trim();
-                return;
-            }
-
-            var mc = RxContainer.Match(name);
-            if (mc.Success)
-            {
-                mode = "container";
-                token = mc.Groups[1].Value.Trim();
-            }
-        }
-
         public void TrimText(ref StringBuilder sb, float availableWidth, float fontSize = 1)
         {
-            Vector2 textSize = Surface.MeasureStringInPixels(sb, TextFont, fontSize * ConfiguredScale * FontScale);
+            var source = sb.ToString();
+            var trimmed = TextWrappingHelper.TrimToWidth(source, Surface, TextFont, fontSize * ConfiguredScale * FontScale, availableWidth);
+            if (ReferenceEquals(trimmed, source))
+                return;
 
-            if (textSize.X > availableWidth)
-            {
-                var source = sb.ToString();
-                for (int i = source.Length - 1; i > 0; i--)
-                {
-                    sb.Clear();
-                    sb.Append(FormatingHelper.TrimName(source, i));
-                    textSize = Surface.MeasureStringInPixels(sb, TextFont, fontSize * ConfiguredScale * FontScale);
-
-                    if (textSize.X <= availableWidth)
-                        break;
-                }
-            }
-        }
-
-        protected Vector2 ToScreenMargin(Vector2 absoluteCenterInViewBox)
-        {
-            return new Vector2(absoluteCenterInViewBox.X, 512f - absoluteCenterInViewBox.Y);
-        }
-
-        protected MySprite Text(string s, Vector2 p, float scale)
-        {
-            return new MySprite
-            {
-                Type = SpriteType.TEXT, Data = s, Position = p,
-                Color = Surface.ScriptForegroundColor, Alignment = TextAlignment.LEFT,
-                RotationOrScale = scale * FontScale
-            };
+            sb.Clear();
+            sb.Append(trimmed);
         }
 
         protected virtual void LayoutChanged()
@@ -1135,15 +1030,13 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             _userTheme = ThemeKind;
             var layout = FrameLayouts.Resolve(_userTheme, FrameId, FrameTiny);
             Frame = layout == null ? null : new FrameRenderer(layout, Surface, TextFont);
-            _genericFrame = Frame == null ? FrameLayouts.GenericTexture(_userTheme) : null;
         }
 
         public void AddBackground(List<MySprite> frame, Color? color = null)
         {
             if (Frame != null)
             {
-                Frame.Background(frame);
-                Frame.Labels(frame, GetHeaderColor());
+                Frame.Static(frame, GetHeaderColor());
                 return;
             }
 
@@ -1159,9 +1052,9 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             }
 
             frame.AddRange(_backgroundGrids);
-            if (_genericFrame != null)
-                frame.Add(new MySprite(SpriteType.TEXTURE, _genericFrame, Surface.TextureSize * 0.5f, Surface.SurfaceSize, Color.White));
-            else
+            Vector2 inset = ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness) * 0.5f;
+            var outer = new RectangleF(ViewBox.X - inset.X, ViewBox.Y - inset.Y, ViewBox.Width + inset.X * 2f, ViewBox.Height + inset.Y * 2f);
+            if (!ThemeChrome.DrawFrame(frame, _userTheme, outer, BackgroundColor, GetHeaderColor(), ForegroundColor, LayoutScale))
                 DrawChrome(frame);
         }
 
@@ -1288,7 +1181,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public void RenderSprites(bool force)
         {
             var session = MyAPIGateway.Session;
-            if (session == null || _disposed || _asyncRenderPending)
+            if (session == null || _disposed)
                 return;
 
             var currentFrame = session.GameplayFrameCounter;
@@ -1296,7 +1189,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 return;
             try
             {
-                var spriteList = PrepareSpritesForRender(RenderFrame(GetSprites));
+                var spriteList = PrepareSpritesForRender(RenderFrame(GetSpritesDelegate));
                 CacheFrameForProxies(spriteList);
                 var renderList = ClipToBounds ? ClipSpriteListToSurfaceBounds(spriteList) : spriteList;
                 LastRenderFrame = currentFrame;
@@ -1308,44 +1201,13 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 if (!force && !textureChanged)
                     return;
 
-                if (AsyncRender)
-                {
-                    _asyncBuffer.Clear();
-                    _asyncBuffer.AddRange(renderList);
-                    _asyncRenderPending = true;
-
-                    var surfaceIndex = RotationOrSurfaceIndex;
-                    LcdModClientComponent.Blocker.Add(MyAPIGateway.Parallel.Start(() =>
-                    {
-                        try
-                        {
-                            _renderComp.RenderSpritesToTexture(
-                                surfaceIndex, _asyncBuffer, _textureSize, _aspectRatio,
-                                backgroundColor, renderOpacity);
-                        }
-                        finally
-                        {
-                            OnAsyncRendered();
-                        }
-                    }));
-                }
-                else
-                {
-                    _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, renderList, _textureSize, _aspectRatio,
-                        backgroundColor, renderOpacity);
-                }
-
+                _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, renderList, _textureSize, _aspectRatio,
+                    backgroundColor, renderOpacity);
             }
             catch (Exception e)
             {
                 OnException(e);
             }
-        }
-
-        void OnAsyncRendered()
-        {
-            _asyncBuffer?.Clear();
-            _asyncRenderPending = false;
         }
 
         List<MySprite> ClipSpriteListToSurfaceBounds(List<MySprite> sprites)
@@ -1354,7 +1216,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 return sprites;
 
             var renderBounds = new RectangleF(0f, 0f, _textureSize.X, _textureSize.Y);
-            var renderSprites = new List<MySprite>(sprites.Count);
+            var renderSprites = _clipBuffer;
+            renderSprites.Clear();
             bool skipClippedSprites = false;
 
             for (int i = 0; i < sprites.Count; i++)
@@ -1412,7 +1275,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
 
 
-        readonly List<MySprite> _asyncBuffer = new List<MySprite>();
+        readonly List<MySprite> _clipBuffer = new List<MySprite>();
 
         // Rasterizar a textura é o passo caro do render. Quando a lista de sprites não muda, a textura
         // anterior continua válida; o refresh periódico cobre texturas recriadas pelo jogo.
@@ -1492,36 +1355,17 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
         void NotifyRendered()
         {
-            RaiseSurfaceEvent(OnRender);
-        }
-
-        void RaiseUpdateStart()
-        {
-            RaiseSurfaceEvent(OnUpdateStart);
-        }
-
-        void RaiseUpdateEnd()
-        {
-            RaiseSurfaceEvent(OnUpdateEnd);
-        }
-
-
-        void RaiseSurfaceEvent(Action<SurfaceScriptBase> handlers)
-        {
+            var handlers = OnRender;
             if (handlers == null)
                 return;
 
-            foreach (var @delegate in handlers.GetInvocationList())
+            try
             {
-                var handler = (Action<SurfaceScriptBase>)@delegate;
-                try
-                {
-                    handler(this);
-                }
-                catch (Exception e)
-                {
-                    ErrorHandlerHelper.LogError(e, this);
-                }
+                handlers(this);
+            }
+            catch (Exception e)
+            {
+                ErrorHandlerHelper.LogError(e, this);
             }
         }
 
@@ -1601,12 +1445,12 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             return true;
         }
 
-        static bool IsFinite(Vector2 value)
+        public static bool IsFinite(Vector2 value)
         {
             return IsFinite(value.X) && IsFinite(value.Y);
         }
 
-        static bool IsFinite(float value)
+        public static bool IsFinite(float value)
         {
             return !float.IsNaN(value) && !float.IsInfinity(value);
         }
@@ -1616,6 +1460,9 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         {
             throw new NotImplementedException();
         }
+
+        Func<List<MySprite>> _getSprites;
+        Func<List<MySprite>> GetSpritesDelegate => _getSprites ?? (_getSprites = GetSprites);
 
         protected virtual List<MySprite> RenderFrame(Func<List<MySprite>> sprites)
         {

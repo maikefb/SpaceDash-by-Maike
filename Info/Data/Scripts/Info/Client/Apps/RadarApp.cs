@@ -1,8 +1,6 @@
 using LcdMod.Common.Config.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.Gui;
@@ -10,6 +8,7 @@ using LcdMod.Client.Gui.ControlsTemplates;
 using LcdMod.Client.Gui.ControlsTemplates.Basic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.Styling;
+using LcdMod.Client.SurfaceScripts.Abstract;
 using StackPanelControl = LcdMod.Client.Gui.ControlsTemplates.Panels.StackPanel.StackPanel;
 using LcdMod.Client.Helpers;
 using LcdMod.Common.Helpers;
@@ -35,6 +34,7 @@ namespace LcdMod.Client.Apps
         public MyRelationsBetweenPlayerAndBlock Relationship;
         public string IconTexture;
         public Vector3D WorldPosition;
+        public float Distance;
         public bool IsTargeted;
         public float TargetLockPercent;
         public int MissedFrames;
@@ -57,10 +57,10 @@ namespace LcdMod.Client.Apps
         const float DEFAULT_RANGE = 3000f;
         const string LONG_RANGE_WARNING_KEY = MOD_PREFIX + "Radar_AntennaRangeWarning";
 
-        const float LOCK_ANIM_DISTANCE = 20f;
-
         // Timing intervals (Run() calls; each call ≈ 166 ms at Update10)
-        const int CONTACT_TIMEOUT = 36;
+        // ponytail: varredura de entidades a cada 3 Update10 (≈ 0,5 s); timeout em varreduras (≈ 6 s).
+        const int CONTACT_COLLECT_EVERY = 3;
+        const int CONTACT_TIMEOUT = 12;
 
         const int MAX_CONTACTS = 32;
 
@@ -94,20 +94,26 @@ namespace LcdMod.Client.Apps
         readonly Dictionary<long, ContactRecord> _contacts = new Dictionary<long, ContactRecord>();
         readonly HashSet<long> _seenThisFrame = new HashSet<long>();
         readonly HashSet<long> _processedGroupGridIds = new HashSet<long>();
-        readonly Dictionary<long, string> _factionIconCache = new Dictionary<long, string>();
         readonly List<long> _toRemove = new List<long>();
         readonly List<ContactRecord> _sortedContacts = new List<ContactRecord>();
         readonly List<IMyCubeGrid> _tempGroupGrids = new List<IMyCubeGrid>();
         readonly List<IMySlimBlock> _tempSlimBlocks = new List<IMySlimBlock>();
         readonly Dictionary<long, SignalCacheEntry> _longRangeSignalCache = new Dictionary<long, SignalCacheEntry>();
-        static readonly Dictionary<int, MyRelationsBetweenPlayerAndBlock> RelationCache = new Dictionary<int, MyRelationsBetweenPlayerAndBlock>();
+        readonly IMyEntity[] _lockCandidates = new IMyEntity[6];
+        static readonly Comparison<ContactRecord> ContactOrder = (a, b) =>
+            a.IsTargeted != b.IsTargeted ? (a.IsTargeted ? -1 : 1) : a.Distance.CompareTo(b.Distance);
 
         float _maxRange = DEFAULT_RANGE;
         Vector2 _cameraPanMeters;
         float _cameraZoomScale = CAMERA_DEFAULT_ZOOM_SCALE;
-        long _debugLockedTargetEntityId;
-        float _debugLockedTargetPercent;
-        string _debugLockedTargetName = string.Empty;
+        int _collectTick;
+        RadarLayout _layout;
+        bool _hasLayout;
+        string _longRangeWarningText;
+        string _detectedEntitiesText;
+        string _rangeLabelText;
+        string _footerRangeText;
+        float _footerRangeTextRange = float.NaN;
 
         readonly List<IMyEntity> _tempEntities = new List<IMyEntity>();
         readonly Vector2 _tgtIconSize = new Vector2(20f, 20f);
@@ -118,7 +124,7 @@ namespace LcdMod.Client.Apps
         readonly List<MySprite> _backgroundSprites = new List<MySprite>();
         readonly List<Control> _children = new List<Control>();
         readonly List<ControlTemplate> _footerRows = new List<ControlTemplate>();
-        readonly List<ContactEntryControl> _footerContactControls = new List<ContactEntryControl>();
+        readonly List<IconTextRowControl> _footerContactControls = new List<IconTextRowControl>();
         readonly Panel _cameraControl;
         readonly RadarSceneControl _radarSceneControl;
         readonly RadarFooterControl _footerControl;
@@ -126,8 +132,8 @@ namespace LcdMod.Client.Apps
         readonly IconTextRowControl _footerWarningControl;
         long _cachedCharacterId;
         Sandbox.Game.EntityComponents.MyTargetLockingComponent _cachedCharacterTargetLocking;
-        float _radarProjectionCos;
-        float _radarProjectionSin;
+        static readonly float _radarProjectionCos = (float)Math.Cos(MathHelper.ToRadians(PROJECTION_ANGLE_DEG));
+        static readonly float _radarProjectionSin = (float)Math.Sin(MathHelper.ToRadians(PROJECTION_ANGLE_DEG));
         float _footerHeight;
 
         struct SignalCacheEntry
@@ -144,10 +150,7 @@ namespace LcdMod.Client.Apps
             public RectangleF ViewportBounds;
             public float RadarScale;
             public float ContentScale;
-            public float CappedScale;
             public float WorldRange;
-            public float WorldUnitsPerPixelX;
-            public float WorldUnitsPerPixelY;
         }
 
         sealed class RadarSceneControl : RectangleControl
@@ -359,10 +362,6 @@ namespace LcdMod.Client.Apps
             }
         }
 
-        sealed class ContactEntryControl : IconTextRowControl
-        {
-        }
-
         sealed class FooterHeaderControl : RectangleControl
         {
             readonly TextBlock _title;
@@ -436,10 +435,8 @@ namespace LcdMod.Client.Apps
         IMyCubeBlock Block => _host.Block;
         Sandbox.ModAPI.Ingame.IMyTextSurface Surface => _host.Surface;
         RectangleF ViewBox => _host.ViewBox;
-        /// <summary>Área do radar: o campo da moldura quando há uma, senão a ViewBox.</summary>
-        RectangleF RadarArea => _host.Frame != null ? _host.Frame.Rect("radar.contatos_varredura") : ViewBox;
         float Scale => _host.ConfiguredScale;
-        float FontScale => _host.Surface.FontSize;
+        float FontScale => _host.FontScale;
         float LayoutScale => Scale * FontScale;
         Color ForegroundColor => _host.ForegroundColor;
         Color BackgroundColor => _host.BackgroundColor;
@@ -454,7 +451,8 @@ namespace LcdMod.Client.Apps
             public bool TargetLock;
             public float TargetLockPercent;
             public bool AbovePlane;
-            public Action<List<MySprite>, Vector2, Color, float, float> DrawFunction;
+            public bool OutOfRange;
+            public MyRelationsBetweenPlayerAndBlock Relationship;
         }
 
 
@@ -477,14 +475,18 @@ namespace LcdMod.Client.Apps
 
             _children.Add(_cameraControl);
             _children.Add(_footerControl);
+            RefreshLocTexts();
         }
 
         public override void Update()
         {
             _maxRange = GetConfiguredRange();
             ApplyRadarConfig();
-            CollectContacts();
-            PurgeStaleContacts();
+            if (_collectTick++ % CONTACT_COLLECT_EVERY == 0)
+            {
+                CollectContacts();
+                PurgeStaleContacts();
+            }
             BuildSortedContacts();
             UpdateFooterHeights();
             UpdateFooterControls();
@@ -492,8 +494,20 @@ namespace LcdMod.Client.Apps
 
         public override void LayoutChanged()
         {
+            RefreshLocTexts();
             UpdateCameraControlBounds();
             UpdateFooterControlBounds();
+        }
+
+        void RefreshLocTexts()
+        {
+            _longRangeWarningText = LocHelper.GetLoc(LONG_RANGE_WARNING_KEY);
+            _detectedEntitiesText = LocHelper.GetLoc(MOD_PREFIX + "Radar_DetectedEntities");
+            _rangeLabelText = string.Format(
+                FormatingHelper.Culture,
+                LocHelper.GetLoc(MOD_PREFIX + "Common_Label_WithColon"),
+                MyTexts.GetString("BlockPropertyTitle_OreDetectorRange")) + " ";
+            _footerRangeTextRange = float.NaN;
         }
 
         public override List<MySprite> GetSprites()
@@ -503,39 +517,7 @@ namespace LcdMod.Client.Apps
             UpdateFooterControlBounds();
             _cameraControl.Render(_backgroundSprites);
             _footerControl.Render(_backgroundSprites);
-            DrawFramedCounts();
             return _backgroundSprites;
-        }
-
-        /// <summary>Com moldura, o rodapé de contatos vira três contagens por relação.</summary>
-        void DrawFramedCounts()
-        {
-            var f = _host.Frame;
-            if (f == null)
-                return;
-            int allies = 0, neutrals = 0, hostiles = 0;
-            for (int i = 0; i < _sortedContacts.Count; i++)
-            {
-                switch (_sortedContacts[i].Relationship)
-                {
-                    case MyRelationsBetweenPlayerAndBlock.Owner:
-                    case MyRelationsBetweenPlayerAndBlock.FactionShare:
-                        allies++;
-                        break;
-                    case MyRelationsBetweenPlayerAndBlock.Enemies:
-                        hostiles++;
-                        break;
-                    default:
-                        neutrals++;
-                        break;
-                }
-            }
-
-            Color fg = GetForegroundColor();
-            f.Header(_backgroundSprites, Block, 0, GetHeaderColor());
-            f.Text(_backgroundSprites, "aliados.valor", allies.ToString(), fg);
-            f.Text(_backgroundSprites, "neutros.valor", neutrals.ToString(), fg);
-            f.Text(_backgroundSprites, "hostis.valor", hostiles.ToString(), fg);
         }
 
         void CollectContacts()
@@ -572,9 +554,6 @@ namespace LcdMod.Client.Apps
                 float lockedTargetPercent;
                 long lockedTargetGridId = GetLockedTargetGridId(out lockedTargetEntityId, out lockedTargetPercent);
                 var normalizedLockPercent = NormalizeLockPercent(lockedTargetPercent);
-                _debugLockedTargetEntityId = lockedTargetEntityId;
-                _debugLockedTargetPercent = normalizedLockPercent;
-                _debugLockedTargetName = ResolveGridName(lockedTargetGridId);
 
                 _tempEntities.Clear();
                 var sphere = new BoundingSphereD(shipPos, range);
@@ -662,9 +641,10 @@ namespace LcdMod.Client.Apps
                         _contacts[entityId] = rec;
                     }
 
+                    long selectedOwnerId = GetPrimaryGridOwner(selectedGrid);
                     rec.Name = selectedGrid.DisplayName ?? string.Empty;
-                    rec.Relationship = GetGridRelationship(selectedGrid, ownGridOwnerId);
-                    rec.IconTexture = GetFactionIconForOwner(GetPrimaryGridOwner(selectedGrid));
+                    rec.Relationship = GetOwnerRelationship(selectedOwnerId, ownGridOwnerId);
+                    rec.IconTexture = GetFactionIconForOwner(selectedOwnerId);
                     rec.WorldPosition = pos;
                     rec.IsTargeted = groupHasLockedTarget;
                     rec.TargetLockPercent = groupHasLockedTarget ? normalizedLockPercent : 0f;
@@ -709,7 +689,7 @@ namespace LcdMod.Client.Apps
 
             long ownerId = signalGrid != null
                 ? GetPrimaryGridOwner(signalGrid)
-                : GetPrimaryBlockOwner(block as IMyTerminalBlock);
+                : (block as IMyTerminalBlock)?.OwnerId ?? 0L;
 
             ContactRecord rec;
             if (!_contacts.TryGetValue(entityId, out rec))
@@ -747,11 +727,6 @@ namespace LcdMod.Client.Apps
                 return signalGrid.DisplayName;
 
             return entity.DisplayName ?? string.Empty;
-        }
-
-        static long GetPrimaryBlockOwner(IMyTerminalBlock block)
-        {
-            return block?.OwnerId ?? 0L;
         }
 
         static bool IsLongRangeSignalEntityInRange(
@@ -796,7 +771,7 @@ namespace LcdMod.Client.Apps
 
         static float ClampCameraZoomScale(float zoomScale)
         {
-            if (!IsFinite(zoomScale) || zoomScale <= 0f)
+            if (!SurfaceScriptBase.IsFinite(zoomScale) || zoomScale <= 0f)
                 zoomScale = CAMERA_DEFAULT_ZOOM_SCALE;
 
             return MathHelper.Clamp(zoomScale, CAMERA_MIN_ZOOM_SCALE, CAMERA_MAX_ZOOM_SCALE);
@@ -809,7 +784,7 @@ namespace LcdMod.Client.Apps
 
         float GetWorldRange()
         {
-            return IsFinite(_maxRange) && _maxRange > 0f ? _maxRange : DEFAULT_RANGE;
+            return SurfaceScriptBase.IsFinite(_maxRange) && _maxRange > 0f ? _maxRange : DEFAULT_RANGE;
         }
 
         // Varrer todos os blocos de um grid distante é caro; o resultado vale por 2 s por grupo.
@@ -837,7 +812,7 @@ namespace LcdMod.Client.Apps
             {
                 _tempSlimBlocks.Clear();
                 grid.GetBlocks(_tempSlimBlocks,
-                    slimBlock => IsLongRangeSignalBlockInRange(slimBlock, receiverPosition, receiverGrid));
+                    slimBlock => IsLongRangeSignalEntityInRange(slimBlock?.FatBlock, receiverPosition, receiverGrid));
                 return _tempSlimBlocks.Count > 0;
             }
             catch (Exception e)
@@ -849,34 +824,6 @@ namespace LcdMod.Client.Apps
             {
                 _tempSlimBlocks.Clear();
             }
-        }
-
-        static bool IsLongRangeSignalBlockInRange(
-            IMySlimBlock slimBlock,
-            Vector3D receiverPosition,
-            IMyCubeGrid receiverGrid)
-        {
-            var block = slimBlock?.FatBlock;
-            var functional = block as IMyFunctionalBlock;
-            if (functional == null || !functional.IsFunctional || !functional.Enabled)
-                return false;
-
-            var radio = block as IMyRadioAntenna;
-            if (radio != null)
-                return radio.IsBroadcasting && BroadcastRangeReaches(radio.WorldMatrix.Translation, radio.Radius,
-                    receiverPosition);
-
-            var beacon = block as IMyBeacon;
-            if (beacon != null)
-                return BroadcastRangeReaches(beacon.WorldMatrix.Translation, beacon.Radius, receiverPosition);
-
-            var laser = block as IMyLaserAntenna;
-            if (laser == null || laser.Other == null || receiverGrid == null)
-                return false;
-
-            return laser.Other.CubeGrid != null &&
-                   laser.Other.CubeGrid.EntityId == receiverGrid.EntityId &&
-                   laser.IsInRange(laser.Other);
         }
 
         static bool BroadcastRangeReaches(Vector3D broadcastPosition, float radius, Vector3D receiverPosition)
@@ -925,69 +872,28 @@ namespace LcdMod.Client.Apps
             if (lockedGridId != 0)
                 return lockedGridId;
 
-            var playerCharacter = player?.Character;
-            lockedGridId = GetLockedTargetGridIdFromEntity(playerCharacter, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0)
-            {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
-            }
-
-            if (lockedGridId != 0)
-                return lockedGridId;
-
-            var controlledEntity = player?.Controller?.ControlledEntity?.Entity;
-            lockedGridId = GetLockedTargetGridIdFromEntity(controlledEntity, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0)
-            {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
-            }
-
-            if (lockedGridId != 0)
-                return lockedGridId;
-
-            var cameraEntity = MyAPIGateway.Session?.CameraController?.Entity;
-            lockedGridId = GetLockedTargetGridIdFromEntity(cameraEntity, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0 && targetEntityId == 0)
-            {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
-            }
-
-            if (lockedGridId != 0)
-                return lockedGridId;
-
-            var cockpit = Block as IMyCockpit;
-            lockedGridId = GetLockedTargetGridIdFromEntity(cockpit, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0)
-            {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
-            }
-
-            if (lockedGridId != 0)
-                return lockedGridId;
-
             var myGrid = Block.CubeGrid as Sandbox.Game.Entities.MyCubeGrid;
-            var mainCockpit = myGrid?.MainCockpit as IMyCockpit;
-            lockedGridId = GetLockedTargetGridIdFromEntity(mainCockpit, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0 && targetEntityId == 0)
+            _lockCandidates[0] = player?.Character;
+            _lockCandidates[1] = player?.Controller?.ControlledEntity?.Entity;
+            _lockCandidates[2] = MyAPIGateway.Session?.CameraController?.Entity;
+            _lockCandidates[3] = Block as IMyCockpit;
+            _lockCandidates[4] = myGrid?.MainCockpit as IMyCockpit;
+            _lockCandidates[5] = myGrid;
+
+            for (int i = 0; i < _lockCandidates.Length; i++)
             {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
+                lockedGridId = GetLockedTargetGridIdFromEntity(_lockCandidates[i], out lockedEntityId, out lockedPercent);
+                if (lockedEntityId != 0 && targetEntityId == 0)
+                {
+                    targetEntityId = lockedEntityId;
+                    targetLockPercent = lockedPercent;
+                }
+
+                if (lockedGridId != 0)
+                    break;
             }
 
-            if (lockedGridId != 0)
-                return lockedGridId;
-
-            lockedGridId = GetLockedTargetGridIdFromEntity(myGrid, out lockedEntityId, out lockedPercent);
-            if (lockedEntityId != 0 && targetEntityId == 0)
-            {
-                targetEntityId = lockedEntityId;
-                targetLockPercent = lockedPercent;
-            }
-
+            Array.Clear(_lockCandidates, 0, _lockCandidates.Length);
             return lockedGridId;
         }
 
@@ -1026,19 +932,19 @@ namespace LcdMod.Client.Apps
                 }
             }
 
-            var targetLocking = entity.Components.Get<Sandbox.Game.EntityComponents.MyTargetLockingComponent>();
-            if (targetLocking == null)
-                return 0;
+            long lockedEntityId;
+            float lockedPercent;
+            long lockedGridId = GetLockedTargetGridIdFromTargetLockingComponent(
+                entity.Components.Get<Sandbox.Game.EntityComponents.MyTargetLockingComponent>(),
+                out lockedEntityId,
+                out lockedPercent);
+            if (lockedEntityId != 0)
+            {
+                targetEntityId = lockedEntityId;
+                targetLockPercent = lockedPercent;
+            }
 
-
-            var targetEntity = targetLocking.TargetEntity;
-            if (targetEntity == null)
-                return 0;
-
-            targetEntityId = targetEntity.EntityId;
-            targetLockPercent = targetLocking.LockingProgressPercent;
-            var targetGrid = targetEntity as IMyCubeGrid;
-            return targetGrid?.EntityId ?? 0;
+            return lockedGridId;
         }
 
         static long GetLockedTargetGridIdFromTargetLockingComponent(
@@ -1068,26 +974,7 @@ namespace LcdMod.Client.Apps
             return MathHelper.Clamp(rawPercent, 0f, 1f);
         }
 
-        static string ResolveGridName(long gridEntityId)
-        {
-            if (gridEntityId == 0)
-                return string.Empty;
-
-            IMyEntity entity;
-            if (!MyAPIGateway.Entities.TryGetEntityById(gridEntityId, out entity))
-                return string.Empty;
-
-            var grid = entity as IMyCubeGrid;
-            return grid?.DisplayName ?? string.Empty;
-        }
-
-        MyRelationsBetweenPlayerAndBlock GetGridRelationship(IMyCubeGrid grid, long ownGridOwnerId)
-        {
-            long ownerId = GetPrimaryGridOwner(grid);
-            return GetOwnerRelationship(ownerId, ownGridOwnerId);
-        }
-
-        MyRelationsBetweenPlayerAndBlock GetOwnerRelationship(long ownerId, long ownGridOwnerId)
+        static MyRelationsBetweenPlayerAndBlock GetOwnerRelationship(long ownerId, long ownGridOwnerId)
         {
             if (ownerId == 0)
                 return MyRelationsBetweenPlayerAndBlock.Neutral;
@@ -1098,43 +985,24 @@ namespace LcdMod.Client.Apps
             if (ownGridOwnerId == 0)
                 return MyRelationsBetweenPlayerAndBlock.Neutral;
 
-            var relation = Sandbox.Game.Entities.MyIDModule.GetRelationPlayerPlayer(ownGridOwnerId, ownerId);
-            MyRelationsBetweenPlayerAndBlock mapped;
-            if (RelationCache.TryGetValue((int)relation, out mapped))
-                return mapped;
-
-            var relationName = relation.ToString();
-            mapped = relationName == "Enemies"
-                ? MyRelationsBetweenPlayerAndBlock.Enemies
-                : relationName == "Allies" || relationName == "Friends"
-                    ? MyRelationsBetweenPlayerAndBlock.FactionShare
-                    : MyRelationsBetweenPlayerAndBlock.Neutral;
-            RelationCache[(int)relation] = mapped;
-            return mapped;
+            switch (Sandbox.Game.Entities.MyIDModule.GetRelationPlayerPlayer(ownGridOwnerId, ownerId))
+            {
+                case VRage.Game.Entity.MyRelationsBetweenPlayers.Enemies:
+                    return MyRelationsBetweenPlayerAndBlock.Enemies;
+                case VRage.Game.Entity.MyRelationsBetweenPlayers.Allies:
+                    return MyRelationsBetweenPlayerAndBlock.FactionShare;
+                default:
+                    return MyRelationsBetweenPlayerAndBlock.Neutral;
+            }
         }
 
-        string GetFactionIconForOwner(long ownerId)
+        static string GetFactionIconForOwner(long ownerId)
         {
             if (ownerId == 0)
                 return null;
 
-            var faction = MyAPIGateway.Session?.Factions?.TryGetPlayerFaction(ownerId);
-            if (faction == null)
-                return null;
-
-            var icon = faction.FactionIcon?.ToString();
-            if (string.IsNullOrEmpty(icon))
-                return null;
-
-            string cachedIcon;
-            if (!_factionIconCache.TryGetValue(faction.FactionId, out cachedIcon) ||
-                !string.Equals(cachedIcon, icon, StringComparison.Ordinal))
-            {
-                _factionIconCache[faction.FactionId] = icon;
-                cachedIcon = icon;
-            }
-
-            return cachedIcon;
+            var icon = MyAPIGateway.Session?.Factions?.TryGetPlayerFaction(ownerId)?.FactionIcon?.ToString();
+            return string.IsNullOrEmpty(icon) ? null : icon;
         }
 
 
@@ -1161,9 +1029,6 @@ namespace LcdMod.Client.Apps
         }
 
 
-        const long SWEEP_PERIOD_FRAMES = 720;
-        const float SWEEP_ALPHA = 0.7f;
-
         void RenderRadar(List<MySprite> sprites)
         {
             var lineColor = ForegroundColor;
@@ -1173,13 +1038,13 @@ namespace LcdMod.Client.Apps
             var allyColor = GetHeaderColor();
             var planeColor = new Color(ForegroundColor, 0.12f);
 
-            RadarLayout layout;
-            if (!TryCalculateRadarLayout(out layout))
+            if (!_hasLayout)
             {
                 _cameraControl.SetVisible(false);
                 return;
             }
 
+            var layout = _layout;
             sprites.Add(MySprite.CreateClipRect(ToClipRectangle(layout.ViewportBounds)));
 
             DrawRadarPlaneBackground(
@@ -1191,14 +1056,6 @@ namespace LcdMod.Client.Apps
                 lineColor,
                 backColor,
                 planeColor);
-            if (Theme != LcdTheme.Default)
-            {
-                long sweepFrame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
-                float sweepAngle = (sweepFrame % SWEEP_PERIOD_FRAMES) / (float)SWEEP_PERIOD_FRAMES * MathHelper.TwoPi;
-                float sweepRadius = Math.Min(layout.PlaneSize.X, layout.PlaneSize.Y) * 0.5f;
-                Vector2 sweepTip = layout.ContentCenter + new Vector2((float)Math.Sin(sweepAngle), -(float)Math.Cos(sweepAngle)) * sweepRadius;
-                LineRenderer.DrawLine(sprites, layout.ContentCenter, sweepTip, Math.Max(1f, QUADRANT_LINE_WIDTH * layout.ContentScale), new Color(lineColor, SWEEP_ALPHA));
-            }
             DrawRadarPlane(sprites, layout.ContentCenter, layout.PlaneSize, layout.ContentScale, lineColor);
 
             BuildTargetLayers(errColor, warnColor, allyColor, layout.WorldRange);
@@ -1209,41 +1066,18 @@ namespace LcdMod.Client.Apps
                 DrawTargetIcon(sprites, layout.ContentCenter, layout.PlaneSize, t, layout.ContentScale);
 
             sprites.Add(MySprite.CreateClearClipRect());
-
-            if (_debugLockedTargetEntityId != 0)
-            {
-                var debugText = "TARGET: "+ (string.IsNullOrWhiteSpace(_debugLockedTargetName)
-                                               ? "Unknown"                                               : _debugLockedTargetName)
-                                           + " ("+ (_debugLockedTargetPercent * 100f).ToString("F0") + "%)";
-                float debugScale = 0.5f * layout.RadarScale * FontScale;
-                float debugOffsetY =
-                    Surface.MeasureStringInPixels(new StringBuilder(debugText), TextFont, debugScale).Y * 0.5f;
-                var debugColor = _debugLockedTargetPercent >= 0.99f ? GetErrorColor() : GetWarningColor();
-                sprites.Add(new MySprite(
-                    SpriteType.TEXT,
-                    debugText,
-                    layout.ViewCenter + new Vector2(0f, layout.PlaneSize.Y * 0.5f + 12f * layout.RadarScale + debugOffsetY),
-                    null,
-                    new Color(debugColor, 0.85f),
-                    TextFont,
-                    TextAlignment.CENTER,
-                    debugScale));
-            }
         }
 
         bool TryCalculateRadarLayout(out RadarLayout layout)
         {
             layout = default(RadarLayout);
-            UpdateProjectionAngle();
 
             float radarScale = Scale;
             float cameraZoomScale = ClampCameraZoomScale(_cameraZoomScale);
-            float cappedScale;
-            float cappedLayoutScale;
-            GetRadarCappedScales(out cappedScale, out cappedLayoutScale);
+            float cappedScale = GetRadarCappedScale();
             float margin = RADAR_MARGIN_PX * cappedScale;
             float worldRange = GetWorldRange();
-            RectangleF area = RadarArea;
+            RectangleF area = ViewBox;
             float areaTop = area.Y + margin;
             float areaBottom = area.Bottom - margin;
             float areaHeight = areaBottom - areaTop;
@@ -1268,14 +1102,6 @@ namespace LcdMod.Client.Apps
             if (planeSize.X <= 0f || planeSize.Y <= 0f)
                 return false;
 
-            float halfPlaneWidth = planeSize.X * 0.5f;
-            float worldUnitsPerPixelX = worldRange > 0f && halfPlaneWidth > 0f
-                ? worldRange / halfPlaneWidth
-                : 0f;
-            float worldUnitsPerPixelY = worldRange > 0f && halfPlaneWidth > 0f && _radarProjectionCos > 0.0001f
-                ? worldRange / (halfPlaneWidth * _radarProjectionCos)
-                : 0f;
-
             Vector2 cameraOffsetPixels = ProjectCameraPanToScreen(planeSize, worldRange);
 
             layout.ViewCenter = viewCenter;
@@ -1288,10 +1114,7 @@ namespace LcdMod.Client.Apps
                 Math.Max(1f, area.Height));
             layout.RadarScale = radarScale;
             layout.ContentScale = radarScale * cameraZoomScale;
-            layout.CappedScale = cappedScale;
             layout.WorldRange = worldRange;
-            layout.WorldUnitsPerPixelX = worldUnitsPerPixelX;
-            layout.WorldUnitsPerPixelY = worldUnitsPerPixelY;
             return true;
         }
 
@@ -1308,30 +1131,18 @@ namespace LcdMod.Client.Apps
 
         void UpdateCameraControlBounds()
         {
-            RadarLayout layout;
-            if (TryCalculateRadarLayout(out layout))
-                ApplyCameraControlBounds();
-            else
-                _cameraControl.SetVisible(false);
-        }
+            _hasLayout = TryCalculateRadarLayout(out _layout);
+            _cameraControl.SetVisible(_hasLayout);
+            if (!_hasLayout)
+                return;
 
-        void ApplyCameraControlBounds()
-        {
-            _cameraControl.SetVisible(true);
-            _cameraControl.SetRect(RadarArea);
+            _cameraControl.SetRect(ViewBox);
             _radarSceneControl.SetRect(ViewBox);
         }
 
         bool ShouldShowLongRangeWarning()
         {
             return _maxRange > DEFAULT_RANGE + 0.5f;
-        }
-
-        void UpdateProjectionAngle()
-        {
-            float rads = MathHelper.ToRadians(PROJECTION_ANGLE_DEG);
-            _radarProjectionCos = (float)Math.Cos(rads);
-            _radarProjectionSin = (float)Math.Sin(rads);
         }
 
         void BuildTargetLayers(Color errColor, Color warnColor, Color allyColor, float worldRange)
@@ -1343,46 +1154,14 @@ namespace LcdMod.Client.Apps
             if (!TryGetReferenceWorldMatrix(out gridMatrix))
                 gridMatrix = Block.WorldMatrix;
             int shown = Math.Min(_sortedContacts.Count, MAX_CONTACTS);
-            bool hasLockedTarget = false;
             for (int i = 0; i < shown; i++)
             {
                 TargetInfo info;
                 if (!TryBuildTargetInfo(_sortedContacts[i], gridMatrix, errColor, warnColor, allyColor, worldRange, out info))
                     continue;
 
-                if (info.TargetLock)
-                    hasLockedTarget = true;
-
                 if (info.AbovePlane) _targetsAbovePlane.Add(info);
                 else _targetsBelowPlane.Add(info);
-            }
-
-            var colorMultiplier = 1 - 0.5f * _debugLockedTargetPercent;
-
-            if (hasLockedTarget)
-            {
-                for (int i = 0; i < _targetsBelowPlane.Count; i++)
-                {
-                    var info = _targetsBelowPlane[i];
-                    if (!info.TargetLock)
-                    {
-                        info.IconColor = info.IconColor.MulSaturation(colorMultiplier).MulValue(colorMultiplier);
-                        info.ElevationColor =
-                            info.ElevationColor.MulSaturation(colorMultiplier).MulValue(colorMultiplier);
-                        _targetsBelowPlane[i] = info;
-                    }
-                }
-
-                for (int i = 0; i < _targetsAbovePlane.Count; i++)
-                {
-                    var info = _targetsAbovePlane[i];
-                    if (!info.TargetLock)
-                    {
-                        info.IconColor = info.IconColor.MulSaturation(0.5f).MulValue(0.5f);
-                        info.ElevationColor = info.ElevationColor.MulSaturation(0.5f).MulValue(0.5f);
-                        _targetsAbovePlane[i] = info;
-                    }
-                }
             }
 
             _targetsBelowPlane.Sort((a, b) => a.Position.Y.CompareTo(b.Position.Y));
@@ -1412,12 +1191,10 @@ namespace LcdMod.Client.Apps
 
             bool inRange = position.X * position.X + position.Y * position.Y < worldRange * worldRange;
             bool above = position.Z >= 0f;
-            Action<List<MySprite>, Vector2, Color, float, float> drawFunction;
 
             if (inRange)
             {
                 position /= worldRange;
-                drawFunction = ContactDrawFunction(contact);
             }
             else
             {
@@ -1430,7 +1207,6 @@ namespace LcdMod.Client.Apps
                 }
 
                 position = Vector3.Normalize(directionFlat);
-                drawFunction = DrawOutOfRangeIcon;
             }
 
             Color iconColor = ContactColor(contact, errColor, warnColor, allyColor);
@@ -1443,7 +1219,8 @@ namespace LcdMod.Client.Apps
                 TargetLock = contact.IsTargeted,
                 TargetLockPercent = contact.TargetLockPercent,
                 AbovePlane = above,
-                DrawFunction = drawFunction
+                OutOfRange = !inRange,
+                Relationship = contact.Relationship
             };
             return true;
         }
@@ -1506,8 +1283,7 @@ namespace LcdMod.Client.Apps
             float angleTextSize = QUADRANT_LABEL_TEXT_SIZE * scale * FontScale;
             float labelMargin = QUADRANT_LABEL_MARGIN_PX * scale;
             Color angleColor = new Color(ForegroundColor, 0.72f);
-            float angleLabelHalfHeight =
-                Surface.MeasureStringInPixels(new StringBuilder("180"), "Debug", angleTextSize).Y * 0.5f;
+            float angleLabelHalfHeight = FormatingHelper.GetSizeInPixel("180", "Debug", angleTextSize, Surface).Y * 0.5f;
             Vector2 angleLabelOffset = new Vector2(0f, -angleLabelHalfHeight);
             float sideLabelInwardOffset = labelMargin * 0.5f;
             sprites.Add(new MySprite(
@@ -1561,11 +1337,13 @@ namespace LcdMod.Client.Apps
             RoundVector2(ref iconPos);
             RoundVector2(ref targetPosPlane);
 
+            // ponytail: profundidade pela altura no plano; fundo fica a 0,75× da frente.
+            scale *= 0.875f + 0.125f * MathHelper.Clamp(targetInfo.Position.Y, -1f, 1f);
             float elevationLineWidth = Math.Max(1f, TGT_ELEVATION_LINE_WIDTH * scale);
             var elevationSprite = new MySprite(SpriteType.TEXTURE, "SquareSimple",
                 screenCenter + (iconPos + targetPosPlane) * 0.5f,
                 new Vector2(elevationLineWidth, Math.Abs(targetPosPixels.Z)),
-                ScaleColorAlpha(targetInfo.ElevationColor, 1f));
+                targetInfo.ElevationColor);
             RoundVector2(ref elevationSprite.Position);
             RoundVector2(ref elevationSprite.Size);
 
@@ -1578,7 +1356,7 @@ namespace LcdMod.Client.Apps
             Vector2 iconSize = _tgtIconSize * scale;
             iconSize.Y *= _radarProjectionCos;
             var projectedIconSprite = new MySprite(SpriteType.TEXTURE, "Circle",
-                screenCenter + targetPosPlane, iconSize, ScaleColorAlpha(targetInfo.ElevationColor, 1f));
+                screenCenter + targetPosPlane, iconSize, targetInfo.ElevationColor);
             RoundVector2(ref projectedIconSprite.Position);
 
             bool showProjectedElevation = Math.Abs(iconPos.Y - targetPosPlane.Y) > iconSize.Y;
@@ -1601,9 +1379,7 @@ namespace LcdMod.Client.Apps
 
             if (targetInfo.TargetLock)
             {
-                float lockOffsetPx = (1f - MathHelper.Clamp(targetInfo.TargetLockPercent, 0f, 1f)) *
-                                     LOCK_ANIM_DISTANCE * scale;
-                Vector2 targetBoxSize = (_tgtIconSize + 20f) * scale + new Vector2(lockOffsetPx * 2f);
+                Vector2 targetBoxSize = (_tgtIconSize + 20f) * scale;
                 if (targetInfo.TargetLockPercent >= 0.999f)
                     DrawRotatedSquareOutline(sprites, iconDrawPos, (_tgtIconSize.X + 8f) * scale, 2f * scale,
                         targetInfo.IconColor, MathHelper.PiOver4);
@@ -1691,14 +1467,25 @@ namespace LcdMod.Client.Apps
                 return;
             }
 
-            targetInfo.DrawFunction(sprites, position, targetInfo.IconColor, scale, rotation);
-        }
+            if (targetInfo.OutOfRange)
+            {
+                DrawOutOfRangeIcon(sprites, position, targetInfo.IconColor, scale, rotation);
+                return;
+            }
 
-        static Color ScaleColorAlpha(Color color, float scale)
-        {
-            if (scale > 0.999f) return color;
-            color.A = (byte)Math.Round(color.A * scale);
-            return color;
+            switch (targetInfo.Relationship)
+            {
+                case MyRelationsBetweenPlayerAndBlock.Owner:
+                case MyRelationsBetweenPlayerAndBlock.FactionShare:
+                    DrawSquare(sprites, position, targetInfo.IconColor, scale, rotation);
+                    break;
+                case MyRelationsBetweenPlayerAndBlock.Enemies:
+                    DrawCircle(sprites, position, targetInfo.IconColor, scale, rotation);
+                    break;
+                default:
+                    DrawTriangle(sprites, position, targetInfo.IconColor, scale, rotation);
+                    break;
+            }
         }
 
         static void DrawSquare(List<MySprite> frame, Vector2 centerPos, Color color, float scale,
@@ -1757,7 +1544,7 @@ namespace LcdMod.Client.Apps
 
         Vector2 ClampCameraPan(Vector2 pan)
         {
-            if (!IsFinite(pan))
+            if (!SurfaceScriptBase.IsFinite(pan))
                 return Vector2.Zero;
 
             float maxPan = Math.Max(0f, _maxRange) * CAMERA_MAX_PAN_RANGE_RATIO;
@@ -1770,19 +1557,6 @@ namespace LcdMod.Client.Apps
                 return pan;
 
             return pan * (maxPan / (float)Math.Sqrt(lengthSq));
-        }
-
-        static bool IsFinite(Vector2 value)
-        {
-            return !float.IsNaN(value.X) &&
-                   !float.IsNaN(value.Y) &&
-                   !float.IsInfinity(value.X) &&
-                   !float.IsInfinity(value.Y);
-        }
-
-        static bool IsFinite(float value)
-        {
-            return !float.IsNaN(value) && !float.IsInfinity(value);
         }
 
         static Rectangle ToClipRectangle(RectangleF bounds)
@@ -1806,7 +1580,7 @@ namespace LcdMod.Client.Apps
         void UpdateFooterHeights()
         {
             int entries = _sortedContacts.Count;
-            _footerHeight = _host.Frame != null ? 0f : CalculateFooterHeight(entries, LayoutScale);
+            _footerHeight = CalculateFooterHeight(entries, LayoutScale);
         }
 
         void UpdateFooterControls()
@@ -1831,7 +1605,7 @@ namespace LcdMod.Client.Apps
                 Color warningColor = new Color(GetWarningColor(), 0.9f);
                 _footerWarningControl.SetContent(
 "Warning",
-                    LocHelper.GetLoc(LONG_RANGE_WARNING_KEY),
+                    _longRangeWarningText,
                     warningColor,
                     warningColor,
                     FOOTER_WARNING_TEXT_SIZE,
@@ -1843,7 +1617,7 @@ namespace LcdMod.Client.Apps
             {
                 Color headerColor = new Color(ForegroundColor, 0.75f);
                 _footerHeaderControl.SetHeader(
-                    LocHelper.GetLoc(MOD_PREFIX + "Radar_DetectedEntities"),
+                    _detectedEntitiesText,
                     GetFooterRangeText(),
                     headerColor);
                 _footerRows.Add(_footerHeaderControl);
@@ -1853,7 +1627,6 @@ namespace LcdMod.Client.Apps
                 if (_sortedContacts.Count > visibleEntries)
                     startIndex = GetScrollStep(FOOTER_SCROLL_STEP_SECONDS) % _sortedContacts.Count;
 
-                var shipPos = Block.WorldMatrix.Translation;
                 var errColor = GetErrorColor();
                 var warnColor = GetWarningColor();
                 var allyColor = GetHeaderColor();
@@ -1861,10 +1634,10 @@ namespace LcdMod.Client.Apps
                 {
                     ContactRecord contact = _sortedContacts[(startIndex + i) % _sortedContacts.Count];
                     Color iconColor = ContactColor(contact, errColor, warnColor, allyColor);
-                    ContactEntryControl control = GetFooterContactControl(i);
+                    IconTextRowControl control = GetFooterContactControl(i);
                     control.SetContent(
                         FooterIconTexture(contact),
-                        GetFooterContactText(contact, shipPos),
+                        GetFooterContactText(contact),
                         iconColor,
                         ForegroundColor,
                         0.5f,
@@ -1924,28 +1697,28 @@ namespace LcdMod.Client.Apps
             return Math.Max(1f, FOOTER_ROW_HEIGHT_PX * layoutScale);
         }
 
-        ContactEntryControl GetFooterContactControl(int index)
+        IconTextRowControl GetFooterContactControl(int index)
         {
             while (_footerContactControls.Count <= index)
-                _footerContactControls.Add(new ContactEntryControl());
+                _footerContactControls.Add(new IconTextRowControl());
 
             return _footerContactControls[index];
         }
 
         string GetFooterRangeText()
         {
-            return string.Format(
-                       FormatingHelper.Culture,
-                       LocHelper.GetLoc(MOD_PREFIX + "Common_Label_WithColon"),
-                       MyTexts.GetString("BlockPropertyTitle_OreDetectorRange")) +
-" "+
-                   FormatingHelper.DistanceToString(_maxRange);
+            if (_footerRangeTextRange != _maxRange)
+            {
+                _footerRangeTextRange = _maxRange;
+                _footerRangeText = _rangeLabelText + FormatingHelper.DistanceToString(_maxRange);
+            }
+
+            return _footerRangeText;
         }
 
-        static string GetFooterContactText(ContactRecord contact, Vector3D shipPos)
+        static string GetFooterContactText(ContactRecord contact)
         {
-            string distance = FormatingHelper.DistanceToString(
-                (float)Vector3D.Distance(contact.WorldPosition, shipPos));
+            string distance = FormatingHelper.DistanceToString(contact.Distance);
             string name = string.IsNullOrWhiteSpace(contact.Name) ? "Unknown": contact.Name;
             if (contact.IsTargeted)
                 name = "[L] "+ name;
@@ -1953,13 +1726,11 @@ namespace LcdMod.Client.Apps
             return distance + "  "+ name;
         }
 
-        void GetRadarCappedScales(out float cappedScale, out float cappedLayoutScale)
+        float GetRadarCappedScale()
         {
             float configScale = Math.Max(GeneralComponent.GetScale(), 0.0001f);
             float autoScale = Scale / configScale;
-            float cappedUserScale = Math.Min(configScale, 1f);
-            cappedScale = autoScale * cappedUserScale;
-            cappedLayoutScale = cappedScale * FontScale;
+            return autoScale * Math.Min(configScale, 1f);
         }
 
         void BuildSortedContacts()
@@ -1971,21 +1742,14 @@ namespace LcdMod.Client.Apps
             foreach (var kv in _contacts)
             {
                 var c = kv.Value;
-                if ((float)Vector3D.Distance(c.WorldPosition, shipPos) > _maxRange)
+                c.Distance = (float)Vector3D.Distance(c.WorldPosition, shipPos);
+                if (c.Distance > _maxRange)
                     continue;
                 _sortedContacts.Add(c);
             }
 
             // Targeted contacts first, then closest-first
-            _sortedContacts.Sort((a, b) =>
-            {
-                if (a.IsTargeted != b.IsTargeted)
-                    return a.IsTargeted ? -1 : 1;
-                var pos = Block.WorldMatrix.Translation;
-                float da = (float)Vector3D.Distance(a.WorldPosition, pos);
-                float db = (float)Vector3D.Distance(b.WorldPosition, pos);
-                return da.CompareTo(db);
-            });
+            _sortedContacts.Sort(ContactOrder);
         }
 
         static Color ContactColor(ContactRecord c, Color errColor, Color warnColor, Color frdColor)
@@ -1999,20 +1763,6 @@ namespace LcdMod.Client.Apps
                     return frdColor;
                 default:
                     return warnColor;
-            }
-        }
-
-        static Action<List<MySprite>, Vector2, Color, float, float> ContactDrawFunction(ContactRecord contact)
-        {
-            switch (contact.Relationship)
-            {
-                case MyRelationsBetweenPlayerAndBlock.Owner:
-                case MyRelationsBetweenPlayerAndBlock.FactionShare:
-                    return DrawSquare;
-                case MyRelationsBetweenPlayerAndBlock.Enemies:
-                    return DrawCircle;
-                default:
-                    return DrawTriangle;
             }
         }
 

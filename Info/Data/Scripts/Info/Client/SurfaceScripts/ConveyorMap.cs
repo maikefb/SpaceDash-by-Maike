@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using LcdMod.Client.Apps;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.SurfaceScripts.Abstract;
+using LcdMod.Client.Terminal.Controls;
 using LcdMod.Common.Config.Generation;
 using Sandbox.Game.GameSystems.TextSurfaceScripts;
 using VRage.Game.GUI.TextPanel;
@@ -14,7 +15,7 @@ namespace LcdMod.Client.SurfaceScripts
 {
     
     [MyTextSurfaceScript(ID, TITLE)]
-    public partial class ConveyorMapSurfaceScript : SurfaceScriptBase
+    public partial class ConveyorMapSurfaceScript : SurfaceScriptBase, IReferenceBlockSelection
     {
         public const string ID = ID_PREFIX + "ConveyorMap";
         public const string TITLE = MOD_PREFIX + "ConveyorMap";
@@ -27,6 +28,18 @@ namespace LcdMod.Client.SurfaceScripts
         public ConveyorMapSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size)
             : base((Sandbox.ModAPI.IMyTextSurface)surface, block, size)
         {
+        }
+
+        public bool IsReferenceBlockCandidate(Sandbox.ModAPI.IMyTerminalBlock block)
+        {
+            return _app != null && _app.IsConveyorBlock(block);
+        }
+
+        public bool TryGetReferenceBlockCandidates(List<Sandbox.ModAPI.IMyTerminalBlock> blocks)
+        {
+            if (_app != null)
+                blocks.AddRange(_app.NetworkAnchors);
+            return true;
         }
 
         protected override IApp DetachGridBoundApp()

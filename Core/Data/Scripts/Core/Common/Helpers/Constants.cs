@@ -11,7 +11,6 @@ namespace LcdMod.Common.Helpers
     public static partial class Constants
     {
         public static Version Version => Generated.Constants.Version;
-        public static string BuildConfiguration => Generated.Constants.BuildConfiguration;
         public static string VersionName => Generated.Constants.VersionName;
 
         public const string MOD_PREFIX = "LcdMod_";
@@ -78,7 +77,7 @@ namespace LcdMod.Common.Helpers
         public const string PROJECTOR_REFERENCE = "reference.projector";
         public const string DOCKABLE_REFERENCE = "reference.dockable";
         public const string RENDER_PROXY_REFERENCE = "reference.render-proxy-source";
+        public const string CONVEYOR_REFERENCE = "reference.conveyor";
 
-        public static Color ColorCorrection { get; set; } = new Color(175,185,200);
     }
 }

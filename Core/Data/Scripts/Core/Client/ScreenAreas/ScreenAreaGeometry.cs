@@ -52,24 +52,7 @@ namespace LcdMod.Client.ScreenAreas
         public static bool TryGetScreenLocalMatrix(SurfaceScriptBase screen, out Matrix localMatrix)
         {
             localMatrix = Matrix.Identity;
-            if (screen == null || screen.Block == null)
-                return false;
-
-            var localKey = BuildLocalMatrixCacheKey(screen.Block, screen.RotationOrSurfaceIndex);
-            if (!string.IsNullOrEmpty(localKey) && LocalMatrixCache.TryGetValue(localKey, out localMatrix))
-                return true;
-
-            MinimalMwmScreenAreaGeometry geometry;
-            if (!TryGetScreenAreaGeometry(screen, out geometry))
-                return false;
-
-            if (!TryGetScreenLocalMatrix(screen.Block.Model, geometry, out localMatrix))
-                return false;
-
-            if (!string.IsNullOrEmpty(localKey))
-                LocalMatrixCache[localKey] = localMatrix;
-
-            return true;
+            return screen != null && TryGetScreenLocalMatrix(screen.Block, screen.RotationOrSurfaceIndex, out localMatrix);
         }
 
         public static bool TryGetScreenWorldMatrix(SurfaceScriptBase screen, out MatrixD worldMatrix)
@@ -489,39 +472,29 @@ namespace LcdMod.Client.ScreenAreas
             return Vector2.DistanceSquared(point, closest);
         }
 
-        static bool TryGetScreenAreaGeometry(SurfaceScriptBase screen, out MinimalMwmScreenAreaGeometry geometry)
+        static bool TryGetScreenAreaGeometry(IMyCubeBlock block, int surfaceIndex, out MinimalMwmScreenAreaGeometry geometry)
         {
             geometry = null;
-            if (screen == null || screen.Block == null)
+            if (block == null)
                 return false;
 
-            var block = screen.Block;
-            var surfaceIndex = screen.RotationOrSurfaceIndex;
             if (TryGetBlockCachedGeometry(block.EntityId, surfaceIndex, out geometry))
                 return geometry != null;
 
-            var found = TryGetScreenAreaGeometry(block, surfaceIndex, screen.Description(), out geometry);
+            var found = TryGetScreenAreaGeometryUncached(block, surfaceIndex, out geometry);
             StoreBlockCachedGeometry(block.EntityId, surfaceIndex, found ? geometry : null);
             return found;
         }
 
-        static bool TryGetScreenAreaGeometry(IMyCubeBlock block, int surfaceIndex, out MinimalMwmScreenAreaGeometry geometry)
-        {
-            return TryGetScreenAreaGeometry(block, surfaceIndex, block?.ToString() ?? "<null>", out geometry);
-        }
-
-        static bool TryGetScreenAreaGeometry(
+        static bool TryGetScreenAreaGeometryUncached(
             IMyCubeBlock block,
             int surfaceIndex,
-            string description,
             out MinimalMwmScreenAreaGeometry geometry)
         {
             geometry = null;
             try
             {
-                if (block == null)
-                    return false;
-
+                var description = block.ToString();
                 var blockEntity = (IMyEntity)block;
                 if (blockEntity.Model == null)
                 {
@@ -539,8 +512,8 @@ namespace LcdMod.Client.ScreenAreas
                     return false;
                 }
 
-                var materials = ResolveMaterialCandidates(block, surfaceIndex);
-                if (materials.Count == 0)
+                var material = ResolveMaterial(block, surfaceIndex);
+                if (string.IsNullOrWhiteSpace(material))
                 {
                     LogHelper.LogOnce("skip:no-materials:"+ block.EntityId,
 "no material candidates: "+ description);
@@ -548,18 +521,14 @@ namespace LcdMod.Client.ScreenAreas
                 }
 
                 if (LogHelper.TryMarkLoggedOnce("try:"+ block.EntityId + ":"+ surfaceIndex + ":"+ assetName))
-                    LogHelper.LogInfo("trying "+ description + ", asset="+ assetName + ", materials="+
-                                      string.Join(", ", materials.ToArray()));
+                    LogHelper.LogInfo("trying "+ description + ", asset="+ assetName + ", material="+ material);
 
-                for (int i = 0; i < materials.Count; i++)
-                {
-                    if (TryGetScreenAreaGeometry(assetName, materials[i], out geometry))
-                        return true;
-                }
+                if (TryGetScreenAreaGeometry(assetName, material, out geometry))
+                    return true;
 
                 if (LogHelper.TryMarkLoggedOnce("skip:no-match:"+ block.EntityId + ":"+ surfaceIndex + ":"+ assetName))
                     LogHelper.LogInfo("no matching screen geometry for "+ description +
-                                      ", asset="+ assetName + ", materials="+ string.Join(", ", materials.ToArray()));
+                                      ", asset="+ assetName + ", material="+ material);
                 return false;
             }
             catch (Exception e)
@@ -570,16 +539,15 @@ namespace LcdMod.Client.ScreenAreas
             return false;
         }
 
-        static List<string> ResolveMaterialCandidates(IMyCubeBlock block, int surfaceIndex)
+        static string ResolveMaterial(IMyCubeBlock block, int surfaceIndex)
         {
-            var result = new List<string>();
             var definition = block?.SlimBlock?.BlockDefinition as MyFunctionalBlockDefinition;
 
             if (definition == null)
             {
                 LogHelper.LogOnce("skip:invalid-definition:"+ block?.EntityId,
                     $"no matching MyFunctionalBlockDefinition for block {block?.BlockDefinition}");
-                return result;
+                return null;
             }
 
             if (LogHelper.TryMarkLoggedOnce("offset:"+ block.BlockDefinition))
@@ -590,18 +558,17 @@ namespace LcdMod.Client.ScreenAreas
             {
                 LogHelper.LogOnce("skip:no-screen-areas:"+ block.EntityId,
                     $"no screen areas defined for block {block.BlockDefinition}");
-                return result;
+                return null;
             }
 
             if (surfaceIndex < 0 || surfaceIndex >= screenAreas.Count)
             {
                 LogHelper.LogOnce("skip:index-out-of-range:"+ block.EntityId + ":"+ surfaceIndex,
                     $"no matching surface {surfaceIndex} for block {block.BlockDefinition}, (range from 0 to {screenAreas.Count - 1})");
-                return result;
+                return null;
             }
 
-            AddMaterialCandidate(result, screenAreas[surfaceIndex].Name);
-            return result;
+            return screenAreas[surfaceIndex].Name;
         }
 
         public static bool IsTransparentScreenArea(IMyCubeBlock block, int surfaceIndex)
@@ -615,18 +582,6 @@ namespace LcdMod.Client.ScreenAreas
             var material = screenAreas[surfaceIndex].Name;
             return !string.IsNullOrEmpty(material) &&
                    material.IndexOf("TransparentScreenArea", StringComparison.Ordinal) >= 0;
-        }
-
-        static void AddMaterialCandidate(List<string> materials, string material)
-        {
-            if (materials == null || string.IsNullOrWhiteSpace(material))
-                return;
-
-            for (int i = 0; i < materials.Count; i++)
-                if (string.Equals(materials[i], material, StringComparison.OrdinalIgnoreCase))
-                    return;
-
-            materials.Add(material);
         }
 
         static string BuildLocalMatrixCacheKey(IMyCubeBlock block, int surfaceIndex)
@@ -871,14 +826,7 @@ namespace LcdMod.Client.ScreenAreas
                 path = path.Substring(path.IndexOf("/", StringComparison.Ordinal) + 1); // skip mod id;
             }
 
-            if (!path.EndsWith(".mwm", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            var extensionIndex = path.LastIndexOf(".mwm", StringComparison.OrdinalIgnoreCase);
-            if (extensionIndex < 0)
-                return null;
-
-            return path.Substring(0, extensionIndex) + path.Substring(extensionIndex);
+            return path.EndsWith(".mwm", StringComparison.OrdinalIgnoreCase) ? path : null;
         }
 
         class CachedScreenArea

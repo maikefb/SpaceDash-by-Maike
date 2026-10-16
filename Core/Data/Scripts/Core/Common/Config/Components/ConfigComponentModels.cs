@@ -22,21 +22,12 @@ namespace LcdMod.Common.Config.Components
     [ProtoInclude(107, typeof(BlockReferenceConfigComponent))]
     [ProtoInclude(108, typeof(PowerConfigComponent))]
     [ProtoInclude(109, typeof(RadarConfigComponent))]
-    [ProtoInclude(110, typeof(StarMapConfigComponent))]
-    [ProtoInclude(111, typeof(DiagnosticConfigComponent))]
-    [ProtoInclude(112, typeof(RaycastConfigComponent))]
     [ProtoInclude(113, typeof(RenderProxyConfigComponent))]
-    [ProtoInclude(114, typeof(MarkdownConfigComponent))]
-    [ProtoInclude(115, typeof(ButtonPanelConfigComponent))]
     [ProtoInclude(116, typeof(DigitalPictureFramesConfigComponent))]
-    [ProtoInclude(117, typeof(CargoActionsConfigComponent))]
-    [ProtoInclude(118, typeof(NpcMarketConfigComponent))]
     [ProtoInclude(119, typeof(ClockDashboardConfigComponent))]
-    [ProtoInclude(120, typeof(VisibleTreeDebugConfigComponent))]
-    [ProtoInclude(121, typeof(TabContainerConfigComponent))]
-    [ProtoInclude(122, typeof(MediaPlayerConfigComponent))]
-    [ProtoInclude(123, typeof(PlanetaryMapConfigComponent))]
     [ProtoInclude(124, typeof(ItemDisplayConfigComponent))]
+    [ProtoInclude(125, typeof(DefenseDashboardConfigComponent))]
+    // Tags 110-112, 114, 115, 117, 118 e 120-123 ficaram reservadas: componentes removidos que este mod nunca gravou.
     [XmlInclude(typeof(GeneralConfigComponent))]
     [XmlInclude(typeof(ColorConfigComponent))]
     [XmlInclude(typeof(InteractiveConfigComponent))]
@@ -46,20 +37,10 @@ namespace LcdMod.Common.Config.Components
     [XmlInclude(typeof(BlockReferenceConfigComponent))]
     [XmlInclude(typeof(PowerConfigComponent))]
     [XmlInclude(typeof(RadarConfigComponent))]
-    [XmlInclude(typeof(StarMapConfigComponent))]
-    [XmlInclude(typeof(DiagnosticConfigComponent))]
-    [XmlInclude(typeof(RaycastConfigComponent))]
     [XmlInclude(typeof(RenderProxyConfigComponent))]
-    [XmlInclude(typeof(MarkdownConfigComponent))]
-    [XmlInclude(typeof(ButtonPanelConfigComponent))]
     [XmlInclude(typeof(DigitalPictureFramesConfigComponent))]
-    [XmlInclude(typeof(CargoActionsConfigComponent))]
-    [XmlInclude(typeof(NpcMarketConfigComponent))]
     [XmlInclude(typeof(ClockDashboardConfigComponent))]
-    [XmlInclude(typeof(VisibleTreeDebugConfigComponent))]
-    [XmlInclude(typeof(TabContainerConfigComponent))]
-    [XmlInclude(typeof(MediaPlayerConfigComponent))]
-    [XmlInclude(typeof(PlanetaryMapConfigComponent))]
+    [XmlInclude(typeof(DefenseDashboardConfigComponent))]
     [XmlInclude(typeof(ItemDisplayConfigComponent))]
     public abstract class ConfigComponent
     {
@@ -238,15 +219,6 @@ namespace LcdMod.Common.Config.Components
                 AppTypeId = AppTypeId,
                 Components = this.CloneComponents()
             };
-        }
-    }
-
-    [ProtoContract]
-    public sealed class TabContainerConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new TabContainerConfigComponent();
         }
     }
 
@@ -441,42 +413,6 @@ namespace LcdMod.Common.Config.Components
     }
 
     [ProtoContract]
-    public sealed class StarMapConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new StarMapConfigComponent();
-        }
-    }
-
-    [ProtoContract]
-    public sealed class PlanetaryMapConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new PlanetaryMapConfigComponent();
-        }
-    }
-
-    [ProtoContract]
-    public sealed class DiagnosticConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new DiagnosticConfigComponent();
-        }
-    }
-
-    [ProtoContract]
-    public sealed class RaycastConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new RaycastConfigComponent();
-        }
-    }
-
-    [ProtoContract]
     public sealed class RenderProxyConfigComponent : ConfigComponent
     {
         [ProtoMember(1)]
@@ -494,24 +430,6 @@ namespace LcdMod.Common.Config.Components
                 YAxisOffset = YAxisOffset,
                 EnableAutoAdjust = EnableAutoAdjust
             };
-        }
-    }
-
-    [ProtoContract]
-    public sealed class MarkdownConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new MarkdownConfigComponent();
-        }
-    }
-
-    [ProtoContract]
-    public sealed class ButtonPanelConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new ButtonPanelConfigComponent();
         }
     }
 
@@ -536,24 +454,6 @@ namespace LcdMod.Common.Config.Components
     }
 
     [ProtoContract]
-    public sealed class CargoActionsConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new CargoActionsConfigComponent();
-        }
-    }
-
-    [ProtoContract]
-    public sealed class NpcMarketConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new NpcMarketConfigComponent();
-        }
-    }
-
-    [ProtoContract]
     public sealed class ClockDashboardConfigComponent : ConfigComponent
     {
         [ProtoMember(1)]
@@ -572,21 +472,13 @@ namespace LcdMod.Common.Config.Components
     }
 
     [ProtoContract]
-    public sealed class VisibleTreeDebugConfigComponent : ConfigComponent
+    public sealed class DefenseDashboardConfigComponent : ConfigComponent
     {
+        [ProtoMember(1)] public bool ShowPercent { get; set; }
+
         public override ConfigComponent Clone()
         {
-            return new VisibleTreeDebugConfigComponent();
-        }
-    }
-
-
-    [ProtoContract]
-    public sealed class MediaPlayerConfigComponent : ConfigComponent
-    {
-        public override ConfigComponent Clone()
-        {
-            return new MediaPlayerConfigComponent();
+            return new DefenseDashboardConfigComponent { ShowPercent = ShowPercent };
         }
     }
 

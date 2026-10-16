@@ -24,7 +24,6 @@ Um mod de LCD para Space Engineers, `SpaceDash`, derivado do "Arthur's LCD Mod" 
 | SpaceDash | Inventário | `LcdInfo_InventoryCharts` | exibição de itens, ocultar vazios, ordenação, filtros de blocos e itens, tipo de vínculo, passo da rolagem |
 | SpaceDash | Projetor | `LcdInfo_ProjectorCharts` | exibição de itens, projetor de referência, **Fabricar componentes faltantes**, filtro de blocos, tipo de vínculo |
 | SpaceDash | Relógio do jogo | `LcdInfo_InGameClockDashboard` | formato 24 horas, unidade de temperatura |
-| SpaceDash | Propulsão | `LcdInfo_Thrust` | só os comuns |
 | SpaceDash | Capacidade de Elevação | `LcdInfo_LiftCapacity` | só os comuns |
 | SpaceDash | Alinhamento de acoplagem | `LcdInfo_DockingAlignment` | modo de exibição, bloco de referência |
 | SpaceDash | Radar | `LcdInfo_Radar` | magnificação, referência |

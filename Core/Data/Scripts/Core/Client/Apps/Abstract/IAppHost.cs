@@ -26,6 +26,9 @@ namespace LcdMod.Client.Apps.Abstract
         IComponentContainer Config { get; }
         int SurfaceIndex { get; }
         float ConfiguredScale { get; }
+
+        /// <summary>Fonte do usuário vezes o reforço do tema (Small amplia).</summary>
+        float FontScale { get; }
         LcdTheme ThemeKind { get; }
         FrameRenderer Frame { get; }
         GridLogic GridLogic { get; }

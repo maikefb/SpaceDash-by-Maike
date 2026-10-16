@@ -74,8 +74,8 @@ namespace LcdMod.Client.Apps
         const float DOCKING_ILLUSTRATION_ASPECT = 1024f / 504f;
         const float DOCKING_ILLUSTRATION_CIRCLE = 0.86f;
         readonly List<MySprite> _staticSprites = new List<MySprite>();
-        readonly string[] _footerLabels = new string[8];
-        readonly int[] _footerQuantized = new int[8];
+        readonly string[] _footerLabels = new string[12];
+        readonly int[] _footerQuantized = new int[12];
         readonly TrimmedLabel[] _referenceLabels = { new TrimmedLabel(), new TrimmedLabel() };
         string _referenceName;
         string _targetName;
@@ -107,7 +107,7 @@ namespace LcdMod.Client.Apps
         Sandbox.ModAPI.Ingame.IMyTextSurface Surface => Host.Surface;
         RectangleF ViewBox => Host.ViewBox;
         float Scale => GeneralComponent.GetScale();
-        float FontScale => Host.Surface.FontSize;
+        float FontScale => Host.FontScale;
         float LayoutScale => Scale * FontScale;
         Color BackgroundColor => Host.BackgroundColor;
         const float FOOTER_HEIGHT = 0f;
@@ -663,25 +663,29 @@ namespace LcdMod.Client.Apps
                 new Vector2(_layout.MarkerSize * VELOCITY_SCALE * GetVectorTextureScale(velocityOffset.Z)),
                 statusColor.Alpha(velocityOpacity), 0);
 
+            UpdateFooterLabel(8, rotationOffset.X, 10d, "{0:0.0}°");
+            UpdateFooterLabel(9, rotationOffset.Y, 10d, "{0:0.0}°");
+            UpdateFooterLabel(10, rotationOffset.Z, 10d, "{0:0.0}°");
+            var yawValue = _footerLabels[9];
+
             if (Host.Frame != null)
             {
                 var f = Host.Frame;
-                f.Text(_sprites, "distancia.valor", string.Format(FormatingHelper.Culture, "{0:0.##} m", positionOffset.Length()), foreground);
-                f.Text(_sprites, "pitch.valor", $"{rotationOffset.X:0.0}°", foreground);
-                f.Text(_sprites, "yaw.valor", $"{rotationOffset.Y:0.0}°", foreground);
-                f.Text(_sprites, "roll.valor", $"{rotationOffset.Z:0.0}°", foreground);
+                UpdateFooterLabel(11, positionOffset.Length(), 100d, "{0:0.##} m");
+                f.Text(_sprites, "distancia.valor", _footerLabels[11], foreground);
+                f.Text(_sprites, "pitch.valor", _footerLabels[8], foreground);
+                f.Text(_sprites, "yaw.valor", yawValue, foreground);
+                f.Text(_sprites, "roll.valor", _footerLabels[10], foreground);
                 return;
             }
 
-            AddText(_sprites, $"{rotationOffset.X:0.0}°", NormalizedToSquare(_layout.Square, 0.39f, -0.02f),
+            AddText(_sprites, _footerLabels[8], NormalizedToSquare(_layout.Square, 0.39f, -0.02f),
                 _layout.Font, foreground, TextAlignment.LEFT);
-
-            var yawValue = $"{rotationOffset.Y:0.0}°";
 
             AddText(_sprites, yawValue, new Vector2(_layout.Square.Center.X, _layout.BottomY), _layout.Font,
                 foreground, TextAlignment.CENTER);
 
-            AddText(_sprites, $"{rotationOffset.Z:0.0}°",
+            AddText(_sprites, _footerLabels[10],
                 new Vector2(_layout.RollArcLeftX, _layout.PitchLineTop), _layout.Font, foreground,
                 TextAlignment.RIGHT);
 

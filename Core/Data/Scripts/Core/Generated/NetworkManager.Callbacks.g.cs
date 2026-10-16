@@ -26,7 +26,6 @@ namespace Generated
                 case 2:
                 {
                     isKnown = true;
-                    var survivors = args.UnWrap<global::LcdMod.Common.Survivors.NetworkPackageSurvivors>();
                     if (!args.IsFromServer && global::Sandbox.ModAPI.MyAPIGateway.Session.IsServer)
                     {
                         var server = global::LcdMod.Server.LcdModServerComponent.Instance;
@@ -35,6 +34,7 @@ namespace Generated
                         return;
                     }
 
+                    var survivors = args.UnWrap<global::LcdMod.Common.Survivors.NetworkPackageSurvivors>();
                     if (args.IsFromServer && survivors != null)
                         global::LcdMod.Client.Modules.Survivors.SurvivorsClient.Apply(survivors.Entries);
                     return;

@@ -1,7 +1,6 @@
 // ReSharper disable RedundantUsingDirective
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Serialization;
 using Generated;
 using LcdMod.Common.Config.Components;
@@ -189,9 +188,11 @@ namespace LcdMod.Common.Config.Models
 
             Parent = other.Parent;
             SchemaVersion = other.SchemaVersion;
-            Surfaces = other.Surfaces == null
-                ? new List<SurfaceConfig>()
-                : other.Surfaces.Where(surface => surface != null).Select(surface => surface.Clone()).ToList();
+            Surfaces = new List<SurfaceConfig>();
+            if (other.Surfaces != null)
+                for (int i = 0; i < other.Surfaces.Count; i++)
+                    if (other.Surfaces[i] != null)
+                        Surfaces.Add(other.Surfaces[i].Clone());
             NormalizeComponentSchema();
             return this;
         }

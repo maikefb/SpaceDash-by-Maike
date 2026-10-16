@@ -49,9 +49,6 @@
     <value>Crítico: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Carga de gravedad</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">
@@ -483,9 +480,6 @@ Esperaremos un momento y luego la reiniciaremos por ti.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Proyector</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Empuje</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energía: baterías</value>

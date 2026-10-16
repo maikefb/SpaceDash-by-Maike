@@ -49,9 +49,6 @@
     <value>Kritikus: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Gravitációs terhelés</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">
@@ -483,9 +480,6 @@ Várunk egy kicsit, majd újraindítjuk helyetted.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projektor</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Tolóerő</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energia: akkumulátorok</value>

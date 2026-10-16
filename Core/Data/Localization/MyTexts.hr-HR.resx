@@ -49,9 +49,6 @@
     <value>Kritično: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Gravitacijsko opterećenje</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">
@@ -483,9 +480,6 @@ Pričekat ćemo neko vrijeme, a zatim je ponovno pokrenuti za vas.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projektor</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Potisak</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energija: baterije</value>

@@ -20,6 +20,7 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "GasDashboard";
         protected override string DefaultTitle => TITLE;
         protected override string FrameId => ID;
+        public override ScriptUpdate NeedsUpdate => ScriptUpdate.Update100;
 
         public override IApp App => _app;
         GasApp _app;

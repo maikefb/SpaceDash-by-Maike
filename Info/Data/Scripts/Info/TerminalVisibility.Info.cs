@@ -62,6 +62,7 @@ namespace LcdMod.Client.Terminal.Controls.Generic
             {
                 case DockingAlignment.ID:
                 case RenderProxySurfaceScript.ID:
+                case ConveyorMapSurfaceScript.ID:
                     return true;
                 default:
                     return false;
@@ -450,8 +451,6 @@ namespace LcdMod.Client.Terminal.Controls.Generic
         {
             switch (script)
             {
-                case LcdMod.Client.SurfaceScripts.DefenseDashboardSurfaceScript.ID:
-                case LcdMod.Client.SurfaceScripts.ThrustSurfaceScript.ID:
                 case LcdMod.Client.SurfaceScripts.LiftCapacitySurfaceScript.ID:
                     return false;
                 default:

@@ -108,7 +108,7 @@ namespace LcdMod.Client.Apps
         RectangleF ViewBox => Host.ViewBox;
         Color ForegroundColor => Host.ForegroundColor;
         Color BackgroundColor => Host.BackgroundColor;
-        float LayoutScale => Math.Max(0.25f, GeneralComponent.GetScale()) * Math.Max(0.25f, Host.Surface.FontSize);
+        float LayoutScale => Math.Max(0.25f, GeneralComponent.GetScale()) * Math.Max(0.25f, Host.FontScale);
 
         public GasApp(IAppHost host) : base(host)
         {
@@ -305,9 +305,19 @@ namespace LcdMod.Client.Apps
             f.Text(sprites, "sistema.estado", status, Status == STATUS_CRITICAL ? error : Status == STATUS_ATTENTION ? warn : accent);
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+        readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
+
+        public override void LayoutChanged()
+        {
+            base.LayoutChanged();
+            _loc.Clear();
+        }
+
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             if (Host.Frame != null)
             {
                 DrawFramed(sprites);
@@ -440,9 +450,12 @@ namespace LcdMod.Client.Apps
             return total > 0d ? (float)(part / total) : 0f;
         }
 
-        static string Loc(string key)
+        string Loc(string key)
         {
-            return LocHelper.GetLoc(MOD_PREFIX + "Gas_" + key);
+            string text;
+            if (!_loc.TryGetValue(key, out text))
+                _loc[key] = text = LocHelper.GetLoc(MOD_PREFIX + "Gas_" + key);
+            return text;
         }
 
         void DrawCard(List<MySprite> sprites, RectangleF rect, string icon, string title, bool oneLine, Color fg, Color accent, float ls)

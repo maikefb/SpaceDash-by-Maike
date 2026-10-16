@@ -11,11 +11,6 @@ namespace LcdMod.Common.Helpers
         const float MIN_READABLE_VALUE = 0.6f;
         const string DEFAULT_ICON = "Textures\\FactionLogo\\Others\\OtherIcon_18.dds";
 
-        public static string GetIcon(IMyTerminalBlock block)
-        {
-            return block != null ? GetIcon(GetOwnerFaction(block)) : DEFAULT_ICON;
-        }
-
         public static string GetIcon(IMyFaction faction)
         {
             return faction?.FactionIcon?.ToString() ?? DEFAULT_ICON;
@@ -75,11 +70,6 @@ namespace LcdMod.Common.Helpers
             return hsv.HSVtoColor();
         }
 
-
-        public static Color GetIconColor(IMyTerminalBlock block)
-        {
-            return block != null ? GetIconColor(GetOwnerFaction(block)) : DefaultColor;
-        }
 
     }
 }

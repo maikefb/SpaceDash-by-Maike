@@ -11,6 +11,8 @@ import xml.etree.ElementTree as ET
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 THEMES = ("Futuristic", "Clean", "Cafe")
 ID_PREFIX = "LcdInfo_"
+# Telas que voltaram ao chrome desenhado por código: o .md do designer continua com elas, o mod não.
+SKIP = {"LcdInfo_InGameClockDashboard", "LcdInfo_Radar"}
 
 # Texto de referência (PT) -> chave resx. "=texto" é literal, "@Chave" é chave do jogo (não validada no resx do mod).
 LABEL_KEYS = {
@@ -45,11 +47,7 @@ LABEL_KEYS = {
     "Saída atual": "LcdMod_Frame_CurrentOutput",
     "Saída máxima": "LcdMod_Energy_MaxOutput",
     "Utilização": "LcdMod_Energy_Load",
-    "Relógio do jogo": "LcdMod_InGameClockDashboard",
-    "Ciclo do planeta e tempo de sessão": "LcdMod_Frame_ClockSubtitle",
-    "Hora local": "LcdMod_Frame_LocalTime",
     "Tempo de jogo": "LcdMod_ClockDashboard_PlayTime",
-    "Nascer / pôr": "LcdMod_Frame_SunriseSunset",
     "Uptime": "LcdMod_ClockDashboard_ServerUptime",
     "Painel de defesa": "LcdMod_DefenseDashboard",
     "Escudo e armamento": "LcdMod_Frame_DefenseSubtitle",
@@ -61,11 +59,6 @@ LABEL_KEYS = {
     "Consumo": "LcdMod_Frame_Consumption",
     "Pico 1 h": "LcdMod_Frame_Peak1h",
     "Autonomia": "LcdMod_Frame_Autonomy",
-    "Radar": "LcdMod_Radar",
-    "Contatos em alcance": "LcdMod_Frame_RadarSubtitle",
-    "Aliados": "LcdMod_Frame_Allies",
-    "Neutros": "LcdMod_Frame_Neutrals",
-    "Hostis": "LcdMod_Frame_Hostiles",
     "Alinhamento de acoplagem": "LcdMod_DockingAlignment",
     "Conector de referência": "LcdMod_Frame_DockingSubtitle",
     "Distância": "LcdMod_Frame_Distance",
@@ -122,6 +115,9 @@ def parse(md_path, theme):
     mode = None
     for line in md_path.read_text(encoding="utf-8").splitlines():
         m = re.match(r"^## (LcdInfo_\w+)", line)
+        if m and m.group(1) in SKIP:
+            screen = None
+            continue
         if m:
             screen = {"theme": theme, "id": m.group(1), "size": None, "slots": [], "labels": []}
             screens.append(screen)
@@ -134,7 +130,7 @@ def parse(md_path, theme):
         if m and screen and screen["size"] is None:
             screen["size"] = (int(m.group(1)), int(m.group(2)))
             continue
-        if not line.startswith("|") or line.startswith("|---") or line.startswith("| Campo") or line.startswith("| Chave"):
+        if screen is None or not line.startswith("|") or line.startswith("|---") or line.startswith("| Campo") or line.startswith("| Chave"):
             continue
         c = cells(line)
         if mode == "slot":
@@ -191,12 +187,6 @@ def emit_sbc(screens):
                 f"            <SpritePath>Textures/Sprites/Frames/{s['theme']}/{s['id']}.dds</SpritePath>",
                 "            <Selectable>false</Selectable>",
                 "        </LCDTextureDefinition>"]
-    for theme in THEMES:
-        out += ["        <LCDTextureDefinition>",
-                f'            <Id Type="LCDTextureDefinition" Subtype="SD_Frame_{theme}_Generic"/>',
-                f"            <SpritePath>Textures/Sprites/Frames/{theme}/LcdInfo_GenericFrame.dds</SpritePath>",
-                "            <Selectable>false</Selectable>",
-                "        </LCDTextureDefinition>"]
     out += ["    </LCDTextures>", "</Definitions>", ""]
     return "\n".join(out)
 
@@ -212,7 +202,7 @@ def validate(screens):
         assert s["size"], s["id"]
         dds = ROOT / "Core/Textures/Sprites/Frames" / s["theme"] / f"{s['id']}.dds"
         assert dds.is_file(), dds
-    assert all(len(v) == 18 for v in by_theme.values()), {k: len(v) for k, v in by_theme.items()}
+    assert all(len(v) == 16 for v in by_theme.values()), {k: len(v) for k, v in by_theme.items()}
     for lcd_id, ref in by_theme["Futuristic"].items():
         ref_fields = {x[0] for x in ref["slots"]}
         for theme in ("Clean", "Cafe"):
@@ -228,6 +218,15 @@ def validate(screens):
     return sum(len(s["slots"]) for s in screens), sum(len(s["labels"]) for s in screens)
 
 
+def default_max_width(width, x, align):
+    """Espelho de FrameRenderer.DefaultMaxWidth."""
+    if align == "C":
+        return min(width * 0.6, 2 * min(x, width - x) - 32)
+    if align == "R":
+        return x - 16
+    return width - x - 16
+
+
 def check_langs(screens):
     """Estimativa grosseira (largura ≈ chars × px × 0.55) dos rótulos com largura máxima que estouram por idioma."""
     loc_dir = ROOT / "Core/Data/Localization"
@@ -239,9 +238,11 @@ def check_langs(screens):
         for s in screens:
             if s["theme"] != "Futuristic":
                 continue
-            for key, _, _, _, px, _, maxw, ref in s["labels"]:
-                if maxw <= 0 or key[0] in "=@":
+            for key, x, _, align, px, _, maxw, ref in s["labels"]:
+                if key[0] in "=@":
                     continue
+                if maxw <= 0:
+                    maxw = default_max_width(s["size"][0], x, align)
                 text = values.get(key) or en.get(key, "")
                 width = len(text) * px * 0.55
                 if width > maxw and (culture, s["id"], key) not in seen:

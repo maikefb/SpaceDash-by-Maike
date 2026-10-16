@@ -102,6 +102,7 @@ namespace LcdMod.Client.Gui.Styling.DataTemplates
             var nameWidth = Math.Max(0f, contentRight - textLeft - amountWidth);
             var displayName = TrimText(
                 control,
+                item,
                 string.IsNullOrEmpty(item.DisplayName) ? ResolveItemName(item.ItemType) : item.DisplayName,
                 nameWidth,
                 textScale);
@@ -174,6 +175,7 @@ namespace LcdMod.Client.Gui.Styling.DataTemplates
             var lineHeight = Math.Max(1f, inner.Height * 0.5f);
             var displayName = TrimText(
                 control,
+                item,
                 string.IsNullOrEmpty(item.DisplayName) ? ResolveItemName(item.ItemType) : item.DisplayName,
                 textWidth,
                 textScale);
@@ -448,6 +450,22 @@ namespace LcdMod.Client.Gui.Styling.DataTemplates
 
             AddToCache(ItemNames, itemType, displayName);
             return displayName;
+        }
+
+        static string TrimText(
+            ControlTemplate control,
+            ItemEntry item,
+            string text,
+            float availableWidth,
+            float textScale)
+        {
+            string trimmed;
+            if (item.TryGetTrimmedName(text, availableWidth, textScale, control.TextFont, out trimmed))
+                return trimmed;
+
+            trimmed = TrimText(control, text, availableWidth, textScale);
+            item.StoreTrimmedName(text, availableWidth, textScale, control.TextFont, trimmed);
+            return trimmed;
         }
 
         static string TrimText(

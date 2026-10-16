@@ -82,7 +82,7 @@ namespace LcdMod.Client.Extensions
 
             // Material-style palette families using OKLCH chroma. Keep chroma tied
             // to the seed so deliberately muted faction/header colors stay muted.
-            double seedChroma = ClampDouble(seedOklch.C, 0.0, 0.32);
+            double seedChroma = MathHelper.Clamp(seedOklch.C, 0.0, 0.32);
             TonalPalette primary = new TonalPalette(
                 hue,
                 seedChroma,
@@ -113,7 +113,7 @@ namespace LcdMod.Client.Extensions
 
         static double ScaledSeedChroma(double seedChroma, double multiplier, double maxChroma)
         {
-            return ClampDouble(seedChroma * multiplier, 0.0, maxChroma);
+            return MathHelper.Clamp(seedChroma * multiplier, 0.0, maxChroma);
         }
 
         public static Color DeriveAccentColor(
@@ -394,7 +394,7 @@ namespace LcdMod.Client.Extensions
 
             public Color Tone(int tone)
             {
-                tone = ClampInt(tone, 0, 100);
+                tone = MathHelper.Clamp(tone, 0, 100);
 
                 Color cached;
                 if (_cache.TryGetValue(tone, out cached))
@@ -550,28 +550,6 @@ namespace LcdMod.Client.Extensions
         static Color WithAlpha(Color color, byte alpha)
         {
             return new Color(color.R, color.G, color.B, alpha);
-        }
-
-        static int ClampInt(int value, int min, int max)
-        {
-            if (value < min)
-                return min;
-
-            if (value > max)
-                return max;
-
-            return value;
-        }
-
-        static double ClampDouble(double value, double min, double max)
-        {
-            if (value < min)
-                return min;
-
-            if (value > max)
-                return max;
-
-            return value;
         }
 
         static double WrapRadians(double radians)

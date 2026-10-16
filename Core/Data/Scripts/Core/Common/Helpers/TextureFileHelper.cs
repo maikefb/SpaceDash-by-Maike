@@ -105,23 +105,6 @@ namespace LcdMod.Common.Helpers
                    && MyAPIGateway.Utilities.FileExistsInLocalStorage(fileName, typeof(TextureFileHelper));
         }
 
-        public static long FileLength(string fileName)
-        {
-            if (!FileExists(fileName))
-                return -1L;
-
-            try
-            {
-                using (var reader = MyAPIGateway.Utilities.ReadBinaryFileInLocalStorage(fileName, typeof(TextureFileHelper)))
-                    return reader.BaseStream.Length;
-            }
-            catch (Exception e)
-            {
-                ErrorHandlerHelper.LogError(e, typeof(TextureFileHelper));
-                return -1L;
-            }
-        }
-
         public static bool TryReadFile(string fileName, out byte[] bytes)
         {
             bytes = null;

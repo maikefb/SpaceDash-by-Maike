@@ -84,10 +84,13 @@ namespace LcdMod.Client.Apps
             _entries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+
         public override List<MySprite> GetSprites()
         {
             ClearInteractiveTree();
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
 
             switch (GeneralComponent.DisplayMode)
             {
@@ -417,7 +420,7 @@ namespace LcdMod.Client.Apps
             if (!Host.TitleVisible)
                 return Host.ViewBox.Y;
 
-            float layoutScale = GeneralComponent.GetScale() * Host.Surface.FontSize;
+            float layoutScale = GeneralComponent.GetScale() * Host.FontScale;
             return Host.ViewBox.Y + (40f * layoutScale);
         }
 
@@ -487,12 +490,12 @@ namespace LcdMod.Client.Apps
             var titleSb = _titleBuilder;
             titleSb.Clear();
             titleSb.Append(entry.Name ?? string.Empty);
-            TrimText(titleSb, Math.Max(0f, numberRect.Width - (4f * GeneralComponent.GetScale())), 1.1f);
+            Host.TrimText(ref titleSb, Math.Max(0f, numberRect.Width - (4f * GeneralComponent.GetScale())), 1.1f);
             var titlePos = numberRect.Center;
             titlePos.X = numberRect.Right;
             titlePos.Y -= numberRect.Height * 0.5f;
             sprites.Add(new MySprite(SpriteType.TEXT, titleSb.ToString(), titlePos, null, foreground, TextFont,
-                TextAlignment.RIGHT, 1.1f * GeneralComponent.GetScale() * Host.Surface.FontSize));
+                TextAlignment.RIGHT, 1.1f * GeneralComponent.GetScale() * Host.FontScale));
 
             var info = _infoBuilder;
             info.Clear();
@@ -503,7 +506,7 @@ namespace LcdMod.Client.Apps
                 var lineSb = _lineBuilder;
                 lineSb.Clear();
                 lineSb.Append(lines[i].TrimEnd('\r'));
-                TrimText(lineSb, infoTrimWidth, 0.9f);
+                Host.TrimText(ref lineSb, infoTrimWidth, 0.9f);
                 info.AppendLine(lineSb.ToString());
             }
 
@@ -511,7 +514,7 @@ namespace LcdMod.Client.Apps
             infoPos.X = nameRect.Right;
             infoPos.Y -= nameRect.Height * 0.4f;
             sprites.Add(new MySprite(SpriteType.TEXT, info.ToString(), infoPos, null, foreground, TextFont,
-                TextAlignment.RIGHT, .9f * GeneralComponent.GetScale() * Host.Surface.FontSize));
+                TextAlignment.RIGHT, .9f * GeneralComponent.GetScale() * Host.FontScale));
         }
 
         void RenderAntennaEntryControl(ControlTemplate control, List<MySprite> sprites)
@@ -529,23 +532,6 @@ namespace LcdMod.Client.Apps
                 bounds.Y,
                 bounds.Height,
                 entry.DrawAsLines);
-        }
-
-        void TrimText(StringBuilder sb, float availableWidth, float fontSize = 1f)
-        {
-            var textSize = Host.Surface.MeasureStringInPixels(sb, TextFont, fontSize * GeneralComponent.GetScale() * Host.Surface.FontSize);
-            if (textSize.X <= availableWidth)
-                return;
-
-            var source = sb.ToString();
-            for (int i = source.Length - 1; i > 0; i--)
-            {
-                sb.Clear();
-                sb.Append(FormatingHelper.TrimName(source, i));
-                textSize = Host.Surface.MeasureStringInPixels(sb, TextFont, fontSize * GeneralComponent.GetScale() * Host.Surface.FontSize);
-                if (textSize.X <= availableWidth)
-                    break;
-            }
         }
     }
 }

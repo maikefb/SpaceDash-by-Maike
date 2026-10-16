@@ -88,9 +88,12 @@ namespace LcdMod.Client.Apps
             _rootGrid.InvalidateLayout();
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             var bounds = GetContentBounds();
             if (bounds.Width <= 5f || bounds.Height <= 5f)
                 return sprites;
@@ -111,7 +114,7 @@ namespace LcdMod.Client.Apps
         RectangleF GetContentBounds()
         {
             RectangleF view = Host.ViewBox;
-            float topInset = Host.TitleVisible ? 40f * GeneralComponent.GetScale() * Host.Surface.FontSize : 0f;
+            float topInset = Host.TitleVisible ? 40f * GeneralComponent.GetScale() * Host.FontScale : 0f;
             float top = view.Y + topInset;
             float height = Math.Max(MIN_CONTENT_HEIGHT, view.Bottom - top);
             return new RectangleF(view.X, top, view.Width, height);

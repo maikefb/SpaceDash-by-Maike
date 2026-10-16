@@ -205,10 +205,15 @@ namespace LcdMod.Client.Apps
             return _entryById.TryGetValue(entryId, out entry) ? entry : null;
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+        readonly Dictionary<long, bool> _desiredEntryIds = new Dictionary<long, bool>();
+        readonly List<Control> _desiredEntryControls = new List<Control>();
+
         public override List<MySprite> GetSprites()
         {
             BeginFarmEntryControlFrame();
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             DrawFarmPlots(_surfaceHost, sprites);
             ClearDirtyAfterRender();
             return sprites;
@@ -423,8 +428,10 @@ namespace LcdMod.Client.Apps
             if (panel == null)
                 return;
 
-            var desiredIds = new Dictionary<long, bool>();
-            var desired = new List<Control>(_entries.Count);
+            var desiredIds = _desiredEntryIds;
+            var desired = _desiredEntryControls;
+            desiredIds.Clear();
+            desired.Clear();
             for (int i = 0; i < _entries.Count; i++)
             {
                 var entry = _entries[i];
@@ -532,7 +539,7 @@ namespace LcdMod.Client.Apps
 
         float GetContentTop(IAppHost owner)
         {
-            return owner.TitleVisible ? owner.ViewBox.Y + (40f * owner.ConfiguredScale * owner.Surface.FontSize) : owner.ViewBox.Y;
+            return owner.TitleVisible ? owner.ViewBox.Y + (40f * owner.ConfiguredScale * owner.FontScale) : owner.ViewBox.Y;
         }
 
         string GetRemainingText(FarmPlotEntry plot, float growthPercent, float ratio, string percentText)

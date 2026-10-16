@@ -49,9 +49,6 @@
     <value>重大: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>重力負荷</value>
-  </data>
 
 
 

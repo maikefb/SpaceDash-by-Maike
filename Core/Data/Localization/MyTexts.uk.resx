@@ -49,9 +49,6 @@
     <value>Критично: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Гравітаційне навантаження</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">
@@ -483,9 +480,6 @@
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Проектор</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Тяга</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Енергія: батареї</value>

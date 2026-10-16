@@ -18,7 +18,7 @@ namespace LcdMod.Server
     /// Lado servidor: persiste a configuração sincronizada pelos clientes e mantém o remapeamento
     /// de blocos selecionados quando grids são colados, projetados, divididos ou juntados.
     /// </summary>
-    public partial class LcdModServerComponent : ISingleton<LcdModServerComponent>
+    public partial class LcdModServerComponent
     {
         const int REMAP_FLUSH_DELAY_FRAMES = 60;
 
@@ -139,6 +139,15 @@ namespace LcdMod.Server
             var surfaceCount = block is IMyTextPanel ? 1 : (provider != null ? provider.SurfaceCount : 0);
             if (surfaceCount <= 0 || (packet.Config.Surfaces != null && packet.Config.Surfaces.Count > surfaceCount))
                 return false;
+
+            packet.Config.Parent = block.CubeGrid.EntityId;
+            if (packet.Config.Surfaces != null)
+                for (int i = 0; i < packet.Config.Surfaces.Count; i++)
+                {
+                    var surface = packet.Config.Surfaces[i];
+                    if (surface != null && (surface.SurfaceIndex < 0 || surface.SurfaceIndex >= surfaceCount))
+                        return false;
+                }
 
             PinAccessibleBlocks(packet.Config, identityId);
             return ScreenProviderConfigStorage.Save(block, packet.Config);

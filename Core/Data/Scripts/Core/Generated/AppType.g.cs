@@ -13,7 +13,7 @@ namespace Generated
         DigitalPictureFrames = 16,
         Projector = 17,
         ClockDashboard = 20,
-        Thrust = 22,
+        Thrust = 22, // reservado: app removido, valor pode existir em configuração salva
         RenderProxy = 25,
         DefenseDashboard = 30,
         Survivors = 31,

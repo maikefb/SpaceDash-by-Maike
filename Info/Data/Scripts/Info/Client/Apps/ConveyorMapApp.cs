@@ -76,6 +76,8 @@ namespace LcdMod.Client.Apps
         readonly List<int> _layoutEdges = new List<int>();
         readonly List<int> _markerNode = new List<int>();
         readonly List<int> _markerFace = new List<int>();
+        readonly List<IMyTerminalBlock> _networkAnchors = new List<IMyTerminalBlock>();
+        int[] _anchorOfRoot = new int[0];
         readonly Color[] _networkColors = new Color[NetworkHueShifts.Length];
         int[] _unionFind = new int[0];
         int[] _networkOfRoot = new int[0];
@@ -83,6 +85,8 @@ namespace LcdMod.Client.Apps
 
         int _lastBlockCount = -1;
         long _lastBuildFrame;
+        long _lastAnchorId;
+        int _filteredOut;
         bool _tooLarge;
         int _networkCount;
         int _bottlenecks;
@@ -90,13 +94,21 @@ namespace LcdMod.Client.Apps
 
         RectangleF ViewBox => Host.ViewBox;
         float Scale => GeneralComponent.GetScale();
-        float FontScale => Host.Surface.FontSize;
+        float FontScale => Host.FontScale;
         float LayoutScale => Scale * FontScale;
         Color BackgroundColor => Host.BackgroundColor;
         float ContentTop => Host.TitleVisible ? ViewBox.Y + 40f * LayoutScale : ViewBox.Y;
         float FooterHeight => LEGEND_HEIGHT_BASE * LayoutScale;
 
         public bool HasData { get; private set; }
+
+        /// <summary>Um bloco de terminal por rede (o de menor EntityId): é o que o jogador escolhe no terminal.</summary>
+        public IReadOnlyList<IMyTerminalBlock> NetworkAnchors => _networkAnchors;
+
+        public bool IsConveyorBlock(IMyTerminalBlock block)
+        {
+            return _blocks.Contains(block);
+        }
 
         public ConveyorMapApp(IAppHost host)
             : base(host)
@@ -115,9 +127,11 @@ namespace LcdMod.Client.Apps
 
                 var all = gridLogic.Blocks.All;
                 long frame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
-                if (all.Count != _lastBlockCount || frame - _lastBuildFrame >= REBUILD_TICKS)
+                long anchorId = ConveyorReferenceComponent.EntityId;
+                if (all.Count != _lastBlockCount || anchorId != _lastAnchorId || frame - _lastBuildFrame >= REBUILD_TICKS)
                 {
                     _lastBlockCount = all.Count;
+                    _lastAnchorId = anchorId;
                     _lastBuildFrame = frame;
                     Rebuild(gridLogic.Grid, all);
                 }
@@ -134,6 +148,8 @@ namespace LcdMod.Client.Apps
         public override void LayoutChanged()
         {
             _lastBlockCount = -1;
+            _footerSummary = null;
+            _footerLegend = null;
         }
 
         void Rebuild(IMyCubeGrid grid, IList<IMyCubeBlock> all)
@@ -141,7 +157,11 @@ namespace LcdMod.Client.Apps
             CollectPorts(grid, all);
             LinkPorts();
             ContractPassThroughs();
-            BuildNodes(grid.GridSizeEnum == MyCubeSize.Large);
+            bool largeGrid = grid.GridSizeEnum == MyCubeSize.Large;
+            BuildNodes(largeGrid);
+            CollectAnchors();
+            if (FilterToNetwork(ConveyorReferenceComponent.EntityId))
+                BuildNodes(largeGrid);
 
             _tooLarge = _nodes.Count > MAX_NODES;
             if (_tooLarge || _nodes.Count == 0)
@@ -423,6 +443,60 @@ namespace LcdMod.Client.Apps
             }
         }
 
+        void CollectAnchors()
+        {
+            _networkAnchors.Clear();
+            int n = _nodes.Count;
+            if (_anchorOfRoot.Length < n) _anchorOfRoot = new int[n * 2];
+            for (int i = 0; i < n; i++)
+                _anchorOfRoot[i] = -1;
+
+            for (int b = 0; b < _blocks.Count; b++)
+            {
+                if (_removed[b] || !(_blocks[b] is IMyTerminalBlock))
+                    continue;
+                int root = Find(_nodeOfBlock[b]);
+                if (_networkOfRoot[root] < 0)
+                    continue;
+                int current = _anchorOfRoot[root];
+                if (current < 0 || _blocks[b].EntityId < _blocks[current].EntityId)
+                    _anchorOfRoot[root] = b;
+            }
+
+            for (int i = 0; i < n; i++)
+                if (_anchorOfRoot[i] >= 0)
+                    _networkAnchors.Add((IMyTerminalBlock)_blocks[_anchorOfRoot[i]]);
+        }
+
+        /// <summary>Marca como removidos os blocos fora da rede do bloco âncora; âncora ausente mantém todas as redes.</summary>
+        bool FilterToNetwork(long anchorId)
+        {
+            _filteredOut = 0;
+            if (anchorId == 0L)
+                return false;
+
+            int anchor = -1;
+            for (int b = 0; b < _blocks.Count && anchor < 0; b++)
+                if (!_removed[b] && _blocks[b].EntityId == anchorId)
+                    anchor = b;
+            if (anchor < 0)
+                return false;
+
+            int root = Find(_nodeOfBlock[anchor]);
+            for (int b = 0; b < _blocks.Count; b++)
+            {
+                if (_removed[b] || Find(_nodeOfBlock[b]) == root)
+                    continue;
+                _removed[b] = true;
+                _filteredOut++;
+            }
+
+            for (int e = 0; e < _edgeU.Count; e++)
+                if (_edgeAlive[e] && (_removed[_edgeU[e]] || _removed[_edgeV[e]]))
+                    _edgeAlive[e] = false;
+            return true;
+        }
+
         int Find(int i)
         {
             while (_unionFind[i] != i)
@@ -462,9 +536,14 @@ namespace LcdMod.Client.Apps
             return functional != null && (!functional.Enabled || !functional.IsWorking);
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+        string[] _footerSummary;
+        string[] _footerLegend;
+
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             var area = GetMapArea();
             UpdateNetworkColors();
             float messageScale = 0.6f * LayoutScale;
@@ -590,17 +669,17 @@ namespace LcdMod.Client.Apps
                     new Color(BackgroundColor.MulValue(0.8f), 0.5f)));
             }
 
-            var summary = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Footer").Split('|');
+            var summary = _footerSummary ?? (_footerSummary = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Footer").Split('|'));
             var position = new Vector2(left, top + textY);
             for (int i = 0; i < summary.Length; i++)
             {
                 if (i > 0)
                     position.X += AddText(sprites, "|", position, textScale, TextAlignment.LEFT, foreground);
-                string part = string.Format(summary[i], _networkCount, _blocks.Count, _markerNode.Count, _bottlenecks, _alerts);
+                string part = string.Format(summary[i], _networkCount, _blocks.Count - _filteredOut, _markerNode.Count, _bottlenecks, _alerts);
                 position.X += AddText(sprites, part, position, textScale, TextAlignment.LEFT, SummaryColor(summary[i], foreground));
             }
 
-            var legend = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Legend").Split('|');
+            var legend = _footerLegend ?? (_footerLegend = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Legend").Split('|'));
             float swatch = lineHeight * 0.5f;
             position = new Vector2(left, top + rowHeight + textY);
             for (int i = 0; i < legend.Length; i++)

@@ -69,11 +69,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
                 radiusScale: LayoutScale);
         }
 
-        protected void DrawBar(List<MySprite> sprites, RectangleF rect, float fraction, Color fill)
-        {
-            ThemeChrome.DrawBar(sprites, ResolveTheme(), rect, fraction, fill, Foreground, LayoutScale);
-        }
-
         protected void DrawIcon(List<MySprite> sprites, string spriteName, RectangleF rect)
         {
             if (rect.Width <= 0f || rect.Height <= 0f)
@@ -121,7 +116,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
                 return;
 
             string renderFont = string.IsNullOrEmpty(fontId) ? TextFont : fontId;
-            float textScale = FitText(text, renderFont, requestedScale, rect.Width, rect.Height);
+            float textScale;
+            FormatingHelper.FitText(TextSurface, text, renderFont, requestedScale, rect.Width, rect.Height, 0.01f, out textScale);
             Vector2 size = MeasureText(text, renderFont, textScale);
             float x = alignment == TextAlignment.LEFT
                 ? rect.X
@@ -140,22 +136,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             });
         }
 
-        float FitText(
-            string text,
-            string fontId,
-            float requestedScale,
-            float availableWidth,
-            float availableHeight)
-        {
-            float safeScale = Math.Max(0.01f, requestedScale);
-            Vector2 size = MeasureText(text ?? string.Empty, fontId, safeScale);
-            if (size.X <= 0f || size.Y <= 0f)
-                return safeScale;
-
-            float ratio = Math.Min(1f,
-                Math.Min(Math.Max(0.01f, availableWidth) / size.X, Math.Max(0.01f, availableHeight) / size.Y));
-            return Math.Max(0.01f, safeScale * ratio);
-        }
     }
 
     /// <summary>A stable tile bound to one shield provider.</summary>
@@ -407,6 +387,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
         int _shooting;
         int _warning;
         int _unavailable;
+        bool _showPercent;
 
         public WeaponStatus(string subtypeId)
         {
@@ -424,6 +405,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             int shooting,
             int warning,
             int unavailable,
+            bool showPercent,
             Color cardColor,
             Color warningColor,
             Color errorColor)
@@ -435,7 +417,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             bool changed = !string.Equals(_displayName, nextName, StringComparison.Ordinal) ||
                            !string.Equals(_spriteName, nextSprite, StringComparison.Ordinal) ||
                            _total != total || _ready != ready || _shooting != shooting ||
-                           _warning != warning || _unavailable != unavailable;
+                           _warning != warning || _unavailable != unavailable || _showPercent != showPercent;
             _displayName = nextName;
             _spriteName = nextSprite;
             _total = Math.Max(0, total);
@@ -443,6 +425,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             _shooting = Math.Max(0, shooting);
             _warning = Math.Max(0, warning);
             _unavailable = Math.Max(0, unavailable);
+            _showPercent = showPercent;
             if (changed)
                 MarkDirty();
         }
@@ -540,9 +523,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom
             });
 
             float textX = rect.X + dotSize + gap;
+            string countText = _showPercent ? FormatingHelper.PercentageToString(count / (float)Math.Max(1, _total)) : count.ToString();
             DrawText(
                 sprites,
-"("+ count + ") "+ label,
+                "(" + countText + ") " + label,
                 new RectangleF(textX, rect.Y, Math.Max(1f, rect.Right - textX), rect.Height),
                 0.50f * textScale,
                 Foreground,

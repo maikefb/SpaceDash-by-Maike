@@ -5,9 +5,9 @@ using ProtoBuf;
 namespace LcdMod.Common.Networking
 {
     [ProtoContract]
-    
-    internal partial class NetworkPackageSyncComponentConfig
+    internal sealed class NetworkPackageSyncComponentConfig : NetworkPackage
     {
+        public override int Id => 1;
         [ProtoMember(1)] public long BlockId { get; set; }
         [ProtoMember(2)] public ScreenProviderConfig Config { get; set; }
 
@@ -16,9 +16,9 @@ namespace LcdMod.Common.Networking
         {
         }
 
-        public NetworkPackageSyncComponentConfig(long senderId, ScreenProviderConfig config)
+        public NetworkPackageSyncComponentConfig(long blockId, ScreenProviderConfig config)
         {
-            BlockId = senderId;
+            BlockId = blockId;
             Config = config;
         }
     }

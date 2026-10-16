@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
@@ -12,11 +13,6 @@ using IMyTextSurface = Sandbox.ModAPI.Ingame.IMyTextSurface;
 namespace LcdMod.Client.Gui.ControlsTemplates
 {
     public delegate void InteractiveRenderHandler(ControlTemplate entry, List<MySprite> sprites);
-
-    public interface ITextSurfaceProvider
-    {
-        IMyTextSurface TextSurface { get; }
-    }
 
     public abstract partial class ControlTemplate : Control, ITextStyleProvider
     {
@@ -104,16 +100,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates
             return this;
         }
 
-        public ControlTemplate SetResources(ResourceTree resources)
-        {
-            if (ReferenceEquals(Resources, resources))
-                return this;
-
-            Resources = resources;
-            MarkSubtreeDirty();
-            return this;
-        }
-
         public void InvalidateLayout()
         {
             _isLayoutDirty = true;
@@ -183,28 +169,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates
             child.MarkSubtreeDirty();
             child.AttachDataContextEventsTree();
             OnChildrenChanged();
-        }
-
-        public virtual void AddChildren(IEnumerable<ControlTemplate> children)
-        {
-            if (children == null)
-                return;
-
-            foreach (var child in children)
-                AddChild(child);
-        }
-
-        public virtual void AddOverlayEntries(List<Control> entries)
-        {
-            if (!Visible || entries == null)
-                return;
-
-            for (int i = 0; i < _children.Count; i++)
-            {
-                var child = _children[i] as ControlTemplate;
-                if (child != null)
-                    child.AddOverlayEntries(entries);
-            }
         }
 
         public virtual bool RemoveChild(Control child)
@@ -507,12 +471,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates
             throw new KeyNotFoundException("Resource key not found: " + property.OwnerType.Name + "." + property.Name + " in " + typeof(TValue).Name);
         }
 
-        public Color GetResourceColor(ResourceKey<Color> key, Color fallback)
-        {
-            Color value;
-            return ScopedResourceResolver.TryResolve(this, key, out value) ? value : fallback;
-        }
-
         public Color ResolveColor(ResourceKey<Color> key)
         {
             Color value;
@@ -728,9 +686,9 @@ namespace LcdMod.Client.Gui.ControlsTemplates
             int guard = 0;
             for (IVisualStyleScope scope = this; scope != null && guard++ < 128;)
             {
-                var provider = scope as ITextSurfaceProvider;
-                if (provider != null && provider.TextSurface != null)
-                    return provider.TextSurface;
+                var app = scope as App;
+                if (app != null && app.TextSurface != null)
+                    return app.TextSurface;
 
                 IVisualStyleScope next = scope.StyleParent;
                 if (ReferenceEquals(next, scope))

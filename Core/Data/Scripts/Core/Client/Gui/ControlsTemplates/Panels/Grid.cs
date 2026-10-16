@@ -84,7 +84,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
             int columnCount = GetSegmentCount(Columns);
             int rowCount = GetSegmentCount(Rows);
             int totalCells = Math.Max(1, columnCount * rowCount);
-            int index = Clamp(childIndex, 0, totalCells - 1);
+            int index = MathHelper.Clamp(childIndex, 0, totalCells - 1);
             int row = index / columnCount;
             int column = index % columnCount;
 
@@ -100,10 +100,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
         {
             int columnCount = GetSegmentCount(Columns);
             int rowCount = GetSegmentCount(Rows);
-            int safeColumn = Clamp(column, 0, columnCount - 1);
-            int safeRow = Clamp(row, 0, rowCount - 1);
-            int endColumn = Clamp(safeColumn + Math.Max(1, columnSpan) - 1, safeColumn, columnCount - 1);
-            int endRow = Clamp(safeRow + Math.Max(1, rowSpan) - 1, safeRow, rowCount - 1);
+            int safeColumn = MathHelper.Clamp(column, 0, columnCount - 1);
+            int safeRow = MathHelper.Clamp(row, 0, rowCount - 1);
+            int endColumn = MathHelper.Clamp(safeColumn + Math.Max(1, columnSpan) - 1, safeColumn, columnCount - 1);
+            int endRow = MathHelper.Clamp(safeRow + Math.Max(1, rowSpan) - 1, safeRow, rowCount - 1);
 
             float x = GetSegmentStart(Rect.X, Rect.Width, Columns, safeColumn, columnCount);
             float y = GetSegmentStart(Rect.Y, Rect.Height, Rows, safeRow, rowCount);
@@ -161,9 +161,11 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
             return true;
         }
 
-        public bool RemoveChild(ControlTemplate child)
+        public override bool RemoveChild(Control child)
         {
-            _placements.Remove(child);
+            var template = child as ControlTemplate;
+            if (template != null)
+                _placements.Remove(template);
             return base.RemoveChild(child);
         }
 
@@ -309,15 +311,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
                 total += Math.Max(0f, segments[i]);
 
             return total;
-        }
-
-        static int Clamp(int value, int min, int max)
-        {
-            if (value < min)
-                return min;
-            if (value > max)
-                return max;
-            return value;
         }
     }
 }

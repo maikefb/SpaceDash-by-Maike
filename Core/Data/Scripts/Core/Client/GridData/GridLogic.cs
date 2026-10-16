@@ -84,10 +84,6 @@ namespace LcdMod.Client.GridData
         public bool HasBlockNeed => _blockNeedCount > 0;
         public bool HasItemNeed => _itemNeedCount > 0;
         public bool HasInventoryTopologyNeed => _inventoryTopologyNeedCount > 0;
-        public int BlockNeedCount => _blockNeedCount;
-        public int ItemNeedCount => _itemNeedCount;
-        public int InventoryTopologyNeedCount => _inventoryTopologyNeedCount;
-        public int TrackedBlockCount => _blocks?.Count ?? 0;
         public int TrackedItemCount => _items?.Count ?? 0;
         public int TrackedInventoryCount => _items?.InventoryCount ?? 0;
 
@@ -342,25 +338,35 @@ namespace LcdMod.Client.GridData
                 : null;
         }
 
-        void BindParentGroup(IMyGridGroupData group)
+        static void BindGroup(
+            ref IMyGridGroupData current,
+            IMyGridGroupData group,
+            Action<IMyGridGroupData, IMyCubeGrid, IMyGridGroupData> onGridAdded,
+            Action<IMyGridGroupData, IMyCubeGrid, IMyGridGroupData> onGridRemoved,
+            Action<IMyGridGroupData> onReleased)
         {
-            if (ReferenceEquals(_parentGroup, group))
+            if (ReferenceEquals(current, group))
                 return;
 
-            if (_parentGroup != null)
+            if (current != null)
             {
-                _parentGroup.OnGridAdded -= OnParentGridAdded;
-                _parentGroup.OnGridRemoved -= OnParentGridRemoved;
-                _parentGroup.OnReleased -= OnParentGroupReleased;
+                current.OnGridAdded -= onGridAdded;
+                current.OnGridRemoved -= onGridRemoved;
+                current.OnReleased -= onReleased;
             }
 
-            _parentGroup = group;
-            if (_parentGroup != null)
+            current = group;
+            if (group != null)
             {
-                _parentGroup.OnGridAdded += OnParentGridAdded;
-                _parentGroup.OnGridRemoved += OnParentGridRemoved;
-                _parentGroup.OnReleased += OnParentGroupReleased;
+                group.OnGridAdded += onGridAdded;
+                group.OnGridRemoved += onGridRemoved;
+                group.OnReleased += onReleased;
             }
+        }
+
+        void BindParentGroup(IMyGridGroupData group)
+        {
+            BindGroup(ref _parentGroup, group, OnParentGridAdded, OnParentGridRemoved, OnParentGroupReleased);
         }
 
         void OnParentGridAdded(IMyGridGroupData group, IMyCubeGrid grid, IMyGridGroupData previousGroup)
@@ -446,26 +452,9 @@ namespace LcdMod.Client.GridData
         void BindWatchedLinkGroup(GridLinkTypeEnum linkType, IMyGridGroupData group)
         {
             IMyGridGroupData previous;
-            if (_watchedLinkGroups.TryGetValue(linkType, out previous))
-            {
-                if (ReferenceEquals(previous, group))
-                    return;
-
-                if (previous != null)
-                {
-                    previous.OnGridAdded -= OnWatchedLinkGridAdded;
-                    previous.OnGridRemoved -= OnWatchedLinkGridRemoved;
-                    previous.OnReleased -= OnWatchedLinkGroupReleased;
-                }
-            }
-
+            _watchedLinkGroups.TryGetValue(linkType, out previous);
+            BindGroup(ref previous, group, OnWatchedLinkGridAdded, OnWatchedLinkGridRemoved, OnWatchedLinkGroupReleased);
             _watchedLinkGroups[linkType] = group;
-            if (group != null)
-            {
-                group.OnGridAdded += OnWatchedLinkGridAdded;
-                group.OnGridRemoved += OnWatchedLinkGridRemoved;
-                group.OnReleased += OnWatchedLinkGroupReleased;
-            }
         }
 
         void UnbindWatchedLinkGroups()
@@ -548,23 +537,7 @@ namespace LcdMod.Client.GridData
 
         void BindTerminalParentGroup(IMyGridGroupData group)
         {
-            if (ReferenceEquals(_terminalParentGroup, group))
-                return;
-
-            if (_terminalParentGroup != null)
-            {
-                _terminalParentGroup.OnGridAdded -= OnTerminalParentGridAdded;
-                _terminalParentGroup.OnGridRemoved -= OnTerminalParentGridRemoved;
-                _terminalParentGroup.OnReleased -= OnTerminalParentGroupReleased;
-            }
-
-            _terminalParentGroup = group;
-            if (_terminalParentGroup != null)
-            {
-                _terminalParentGroup.OnGridAdded += OnTerminalParentGridAdded;
-                _terminalParentGroup.OnGridRemoved += OnTerminalParentGridRemoved;
-                _terminalParentGroup.OnReleased += OnTerminalParentGroupReleased;
-            }
+            BindGroup(ref _terminalParentGroup, group, OnTerminalParentGridAdded, OnTerminalParentGridRemoved, OnTerminalParentGroupReleased);
         }
 
         void BindTerminalSystem(IMyGridTerminalSystem terminalSystem)
@@ -724,7 +697,8 @@ namespace LcdMod.Client.GridData
             if (block == null)
                 return;
 
-            var currentInventories = new List<MyInventoryBase>();
+            var currentInventories = _currentInventoriesBuffer;
+            currentInventories.Clear();
             if (block.HasInventory)
             {
                 for (var inventoryIndex = 0; inventoryIndex < block.InventoryCount; inventoryIndex++)
@@ -887,11 +861,18 @@ namespace LcdMod.Client.GridData
             }
         }
 
+        readonly List<MyInventoryBase> _currentInventoriesBuffer = new List<MyInventoryBase>();
+        readonly List<IMySlimBlock> _slimBlocksBuffer = new List<IMySlimBlock>();
+        readonly HashSet<IMyCubeBlock> _currentBlocksBuffer = new HashSet<IMyCubeBlock>();
+        readonly List<IMyCubeBlock> _removedBlocksBuffer = new List<IMyCubeBlock>();
+
         void RefreshInventoryTopologyCore()
         {
-            var blocks = new List<IMySlimBlock>();
+            var blocks = _slimBlocksBuffer;
+            blocks.Clear();
             Grid.GetBlocks(blocks);
-            var currentBlocks = new HashSet<IMyCubeBlock>();
+            var currentBlocks = _currentBlocksBuffer;
+            currentBlocks.Clear();
             foreach (var block in blocks)
             {
                 var fatBlock = block.FatBlock;
@@ -909,22 +890,27 @@ namespace LcdMod.Client.GridData
                     RefreshBlockInventories(fatBlock);
             }
 
+            var removed = _removedBlocksBuffer;
             if (_items != null)
             {
-                var removedInventoryBlocks = _inventoriesByBlock.Keys
-                    .Where(block => !currentBlocks.Contains(block))
-                    .ToList();
-                foreach (var block in removedInventoryBlocks)
-                    RemoveBlockInventories(block);
+                removed.Clear();
+                foreach (var block in _inventoriesByBlock.Keys)
+                    if (!currentBlocks.Contains(block))
+                        removed.Add(block);
+                for (int i = 0; i < removed.Count; i++)
+                    RemoveBlockInventories(removed[i]);
             }
 
             if (_blocks != null)
             {
-                var removedBlocks = _blocks.All
-                    .Where(block => !currentBlocks.Contains(block))
-                    .ToList();
-                foreach (var block in removedBlocks)
+                removed.Clear();
+                var all = _blocks.All;
+                for (int i = 0; i < all.Count; i++)
+                    if (!currentBlocks.Contains(all[i]))
+                        removed.Add(all[i]);
+                for (int i = 0; i < removed.Count; i++)
                 {
+                    var block = removed[i];
                     if (_items != null)
                         RemoveBlockInventories(block);
                     RemoveFarmPlot(block);
@@ -932,32 +918,15 @@ namespace LcdMod.Client.GridData
                     _blocks.Remove(block);
                 }
             }
+
+            removed.Clear();
         }
 
         void RaiseInventoryTopologyChanged()
         {
             var handlers = InventoryTopologyChanged;
-            if (handlers == null)
-                return;
-
-            Exception firstError = null;
-            var args = new InventoryTopologyChangedArgs();
-            foreach (var @delegate in handlers.GetInvocationList())
-            {
-                var handler = (InventoryTopologyChanged)@delegate;
-                try
-                {
-                    handler(this, args);
-                }
-                catch (Exception e)
-                {
-                    if (firstError == null)
-                        firstError = e;
-                }
-            }
-
-            if (firstError != null)
-                throw firstError;
+            if (handlers != null)
+                handlers(this, new InventoryTopologyChangedArgs());
         }
 
     }

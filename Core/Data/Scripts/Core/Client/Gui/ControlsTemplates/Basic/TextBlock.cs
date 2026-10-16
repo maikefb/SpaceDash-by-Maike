@@ -139,7 +139,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Basic
             if (string.IsNullOrEmpty(text) || maxWidth <= 0f)
                 return string.Empty;
 
-            string suffix = FormatingHelper.ELLIPSIS.ToString();
+            string suffix = FormatingHelper.ELLIPSIS_TEXT;
             if (MeasureTextSafe(suffix, fontId, scale).X > maxWidth)
                 return TrimToWidth(text, fontId, scale, maxWidth);
 

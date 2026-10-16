@@ -12,12 +12,51 @@ namespace LcdMod.Client.Helpers
 {
     internal static class FormatingHelper
     {
-        static readonly Dictionary<string, Vector2> FontSizeCache = new Dictionary<string, Vector2>();
+        struct FontSizeKey : IEquatable<FontSizeKey>
+        {
+            public readonly string Text;
+            public readonly string Font;
+            public readonly float FontSize;
+
+            public FontSizeKey(string text, string font, float fontSize)
+            {
+                Text = text;
+                Font = font;
+                FontSize = fontSize;
+            }
+
+            public bool Equals(FontSizeKey other) =>
+                FontSize == other.FontSize &&
+                string.Equals(Text, other.Text, StringComparison.Ordinal) &&
+                string.Equals(Font, other.Font, StringComparison.Ordinal);
+
+            public override bool Equals(object obj) => obj is FontSizeKey && Equals((FontSizeKey)obj);
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = Text != null ? Text.GetHashCode() : 0;
+                    hash = hash * 31 + (Font != null ? Font.GetHashCode() : 0);
+                    return hash * 31 + FontSize.GetHashCode();
+                }
+            }
+        }
+
+        sealed class FontSizeKeyComparer : IEqualityComparer<FontSizeKey>
+        {
+            public bool Equals(FontSizeKey x, FontSizeKey y) => x.Equals(y);
+            public int GetHashCode(FontSizeKey key) => key.GetHashCode();
+        }
+
+        static readonly Dictionary<FontSizeKey, Vector2> FontSizeCache =
+            new Dictionary<FontSizeKey, Vector2>(new FontSizeKeyComparer());
         static readonly StringBuilder StringBuilderBuffer = new StringBuilder();
 
         const int FONT_SIZE_CACHE_LIMIT = 4096;
 
         public const char ELLIPSIS = '…';
+        public const string ELLIPSIS_TEXT = "…";
         const char FIRST_CJK_CHAR = '\u2E80';
 
         public static void ClearCache() => FontSizeCache.Clear();
@@ -27,7 +66,7 @@ namespace LcdMod.Client.Helpers
             IMyTextSurface surface)
         {
             Vector2 size;
-            var key = text + font + fontSize;
+            var key = new FontSizeKey(text, font, fontSize);
             if (FontSizeCache.TryGetValue(key, out size)) return size;
             StringBuilderBuffer.Clear();
             StringBuilderBuffer.Append(text);

@@ -102,6 +102,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
                 true);
         }
 
+        static readonly List<int> EndStepsBuffer = new List<int>();
+
         public static void DrawSegmentedDonut(
             List<MySprite> sprites,
             Vector2 center,
@@ -127,7 +129,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
             float midRadius = (innerRadius + outerRadius) * 0.5f;
             float segmentWidth = Math.Max(1f,
                 2f * outerRadius * (float)Math.Sin(actualStep * 0.5f) + 0.5f);
-            var endSteps = new int[segments.Count];
+            var endSteps = EndStepsBuffer;
+            endSteps.Clear();
+            for (int i = 0; i < segments.Count; i++)
+                endSteps.Add(0);
             float cumulativeFraction = 0f;
 
             for (int i = 0; i < segments.Count; i++)
@@ -170,13 +175,13 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
             if (segments.Count == 0 || gapPixels <= 0f || !gapColor.HasValue)
                 return;
 
-            int filledSteps = endSteps[endSteps.Length - 1];
+            int filledSteps = endSteps[endSteps.Count - 1];
             if (filledSteps <= 0)
                 return;
 
             int visibleSegments = 0;
             int previousEnd = 0;
-            for (int i = 0; i < endSteps.Length; i++)
+            for (int i = 0; i < endSteps.Count; i++)
             {
                 if (endSteps[i] > previousEnd)
                     visibleSegments++;
@@ -188,7 +193,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
                     sprites, center, midRadius, thickness, startAngle, gapPixels, gapColor.Value);
 
             previousEnd = 0;
-            for (int i = 0; i < endSteps.Length; i++)
+            for (int i = 0; i < endSteps.Count; i++)
             {
                 int endStep = endSteps[i];
                 if (endStep > previousEnd && endStep < filledSteps)
@@ -280,42 +285,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
                 Alignment = TextAlignment.CENTER,
                 RotationOrScale = attachmentTheta +
                                   (pointsForward ? MathHelper.PiOver2 : -MathHelper.PiOver2)
-            });
-        }
-
-        public static void DrawCenterPercentage(
-            List<MySprite> sprites,
-            IMyTextSurface surface,
-            Vector2 center,
-            float innerRadius,
-            float value,
-            Color color,
-            string fontId,
-            float requestedScale)
-        {
-            if (sprites == null || surface == null || innerRadius <= 0f || requestedScale <= 0f)
-                return;
-
-            string text = FormatingHelper.PercentageToString(MathHelper.Clamp(value, 0f, 1f));
-            string resolvedFont = string.IsNullOrEmpty(fontId) ? "White": fontId;
-            float availableSize = innerRadius * 1.6f;
-            var textBuilder = new StringBuilder(text);
-            Vector2 measured = surface.MeasureStringInPixels(textBuilder, resolvedFont, requestedScale);
-            if (measured.X <= 0f || measured.Y <= 0f)
-                return;
-
-            float fit = Math.Min(1f, Math.Min(availableSize / measured.X, availableSize / measured.Y));
-            float scale = Math.Max(0.01f, requestedScale * fit);
-            measured *= scale / requestedScale;
-            sprites.Add(new MySprite
-            {
-                Type = SpriteType.TEXT,
-                Data = text,
-                Position = new Vector2(center.X, center.Y - measured.Y * 0.5f),
-                RotationOrScale = scale,
-                Color = color,
-                Alignment = TextAlignment.CENTER,
-                FontId = resolvedFont
             });
         }
 

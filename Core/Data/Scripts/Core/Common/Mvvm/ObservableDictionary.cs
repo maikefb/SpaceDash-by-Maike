@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LcdMod.Common.Mvvm
 {
-    public class ObservableDictionary<TKey, TValue> : ObservableObject, IObservableDictionary<TKey, TValue>
+    public class ObservableDictionary<TKey, TValue> : ObservableObject, IObservableCollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
     { public Dictionary<TKey, TValue> Items { get; } = new Dictionary<TKey, TValue>();
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => Items.GetEnumerator();

@@ -49,9 +49,6 @@
     <value>严重: {0}</value>
   </data>
 
-  <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>重力负载</value>
-  </data>
 
 
   <data name="LcdMod_DockingAlignment" xml:space="preserve">

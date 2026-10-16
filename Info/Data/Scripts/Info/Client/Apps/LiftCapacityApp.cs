@@ -50,7 +50,7 @@ namespace LcdMod.Client.Apps
         RectangleF ViewBox => Host.ViewBox;
         Color ForegroundColor => Host.ForegroundColor;
         Color BackgroundColor => Host.BackgroundColor;
-        float LayoutScale => Math.Max(0.25f, GeneralComponent.GetScale()) * Math.Max(0.25f, Host.Surface.FontSize);
+        float LayoutScale => Math.Max(0.25f, GeneralComponent.GetScale()) * Math.Max(0.25f, Host.FontScale);
 
         public LiftCapacityApp(IAppHost host) : base(host)
         {
@@ -114,9 +114,19 @@ namespace LcdMod.Client.Apps
             f.Text(sprites, "carga.estado", !HasGravity ? Loc("NoGravity") : State == STATE_CRIT ? Loc("Crit") : State == STATE_WARN ? Loc("Warn") : Loc("Safe"), stateColor);
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+        readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
+
+        public override void LayoutChanged()
+        {
+            base.LayoutChanged();
+            _loc.Clear();
+        }
+
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             if (Host.Frame != null)
             {
                 DrawFramed(sprites);
@@ -179,9 +189,12 @@ namespace LcdMod.Client.Apps
             return new RectangleF(area.X, area.Y + index * (rowHeight + gap), area.Width, rowHeight);
         }
 
-        static string Loc(string key)
+        string Loc(string key)
         {
-            return LocHelper.GetLoc(MOD_PREFIX + "Lift_" + key);
+            string text;
+            if (!_loc.TryGetValue(key, out text))
+                _loc[key] = text = LocHelper.GetLoc(MOD_PREFIX + "Lift_" + key);
+            return text;
         }
 
         void DrawFrame(List<MySprite> sprites, RectangleF rect, Color fg, Color accent, float ls)

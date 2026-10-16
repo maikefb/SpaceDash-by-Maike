@@ -44,11 +44,11 @@ namespace LcdMod.Client.Config
         {
             try
             {
-                foreach (var group in SurfaceScriptBase.Instances
-                             .Where(screen => screen?.Block != null && screen.ProviderConfig != null)
-                             .GroupBy(screen => screen.Block.EntityId))
+                var savedBlocks = new HashSet<long>();
+                foreach (var screen in SurfaceScriptBase.Instances)
                 {
-                    var screen = group.First();
+                    if (screen?.Block == null || screen.ProviderConfig == null || !savedBlocks.Add(screen.Block.EntityId))
+                        continue;
                     Save(screen.Block, screen.ProviderConfig);
                 }
             }
@@ -82,10 +82,9 @@ namespace LcdMod.Client.Config
                 return;
 
             var block = storageEntity as IMyTerminalBlock;
-            var apps = GetAppsForBlock(block).ToArray();
-            foreach (var app in apps)
+            foreach (var app in GetAppsForBlock(block))
                 app.UseProviderConfig(providerConfig);
-            foreach (var app in apps)
+            foreach (var app in GetAppsForBlock(block))
                 app.RequestRedraw();
 
             Save(storageEntity, providerConfig);

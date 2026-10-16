@@ -49,9 +49,6 @@
     <value>Kriittinen: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Painovoimakuorma</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">
@@ -483,9 +480,6 @@ Odotamme hetken ja käynnistämme sen sitten uudelleen puolestasi.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projektori</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Työntövoima</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energia: akut</value>

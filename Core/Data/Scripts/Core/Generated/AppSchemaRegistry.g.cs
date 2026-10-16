@@ -42,9 +42,11 @@ namespace Generated
         static readonly Slot ProjectorReference = Define<BlockReferenceConfigComponent>("reference.projector");
         static readonly Slot DockableReference = Define<BlockReferenceConfigComponent>("reference.dockable");
         static readonly Slot ClockSettings = Define<ClockDashboardConfigComponent>("app.settings");
+        static readonly Slot DefenseSettings = Define<DefenseDashboardConfigComponent>("app.settings");
         static readonly Slot PictureFramesSettings = Define<DigitalPictureFramesConfigComponent>("app.settings");
         static readonly Slot RenderProxySettings = Define<RenderProxyConfigComponent>("app.settings");
         static readonly Slot RenderProxyReference = Define<BlockReferenceConfigComponent>("reference.render-proxy-source");
+        static readonly Slot ConveyorReference = Define<BlockReferenceConfigComponent>("reference.conveyor");
 
         static readonly Dictionary<AppType, Slot[]> Schemas = new Dictionary<AppType, Slot[]>
         {
@@ -56,10 +58,9 @@ namespace Generated
             { AppType.DockingAlignment, new[] { General, Colors, Interaction, DockableReference } },
             { AppType.Radar, new[] { General, Colors, Interaction, RadarSettings } },
             { AppType.Projector, new[] { General, Colors, Interaction, Filters, Blocks, Items, ProjectorReference, ItemDisplay } },
-            { AppType.Thrust, new[] { General, Colors, Interaction } },
-            { AppType.DefenseDashboard, new[] { General, Colors, Interaction } },
+            { AppType.DefenseDashboard, new[] { General, Colors, Interaction, DefenseSettings } },
             { AppType.RenderProxy, new[] { General, Colors, Interaction, RenderProxySettings, RenderProxyReference } },
-            { AppType.ConveyorMap, new[] { General, Colors, Interaction } },
+            { AppType.ConveyorMap, new[] { General, Colors, Interaction, ConveyorReference } },
             { AppType.LiftCapacity, new[] { General, Colors, Interaction } },
             { AppType.ClockDashboard, new[] { General, Colors, Interaction, ClockSettings } },
             { AppType.Survivors, new[] { General, Colors, Interaction } },
@@ -76,7 +77,7 @@ namespace Generated
         static readonly HashSet<string> RegisteredSlots = new HashSet<string>
         {
             "app.settings", "core.colors", "core.general", "core.interaction", "data.blocks", "data.filters",
-            "data.items", "reference.dockable", "reference.projector", "reference.render-proxy-source", "view.items"
+            "data.items", "reference.conveyor", "reference.dockable", "reference.projector", "reference.render-proxy-source", "view.items"
         };
 
         public static readonly AppType[] AllAppTypes = new List<AppType>(Schemas.Keys).ToArray();
@@ -89,16 +90,8 @@ namespace Generated
 
         public static bool TryNormalizeAppType(int appTypeId, out AppType appType)
         {
-            foreach (var known in Schemas.Keys)
-            {
-                if ((int)known != appTypeId)
-                    continue;
-                appType = known;
-                return true;
-            }
-
-            appType = default(AppType);
-            return false;
+            appType = (AppType)appTypeId;
+            return Schemas.ContainsKey(appType);
         }
 
         public static AppType NormalizeAppType(int appTypeId)

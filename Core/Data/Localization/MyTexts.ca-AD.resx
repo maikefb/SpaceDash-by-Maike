@@ -49,9 +49,6 @@
     <value>Crític: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Càrrega gravitatòria</value>
-  </data>
 
 
 
@@ -484,9 +481,6 @@ Esperarem una estona i després la reiniciarem per tu.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projector</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Empenta</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energia: bateries</value>

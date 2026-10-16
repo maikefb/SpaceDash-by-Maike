@@ -45,12 +45,6 @@ namespace LcdMod.Client.GridData
         public int InventoryCount => _inventories.Count;
         public event Action<MyInventoryBase> InventoryChanged;
 
-        public MyFixedPoint GetAmount(MyItemType itemType)
-        {
-            MyFixedPoint amount;
-            return BySubtype.TryGetValue(itemType, out amount) ? amount : MyFixedPoint.Zero;
-        }
-
         public void AddInventory(MyInventoryBase inventory)
         {
             if (inventory == null || !_inventories.Add(inventory))
@@ -298,16 +292,13 @@ namespace LcdMod.Client.GridData
             if (handlers == null)
                 return;
 
-            foreach (Action<MyInventoryBase> handler in handlers.GetInvocationList())
+            try
             {
-                try
-                {
-                    handler(inventory);
-                }
-                catch (Exception error)
-                {
-                    LogRecalculationError(inventory, error);
-                }
+                handlers(inventory);
+            }
+            catch (Exception error)
+            {
+                LogRecalculationError(inventory, error);
             }
         }
 

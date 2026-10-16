@@ -28,9 +28,6 @@
     <value>[SD] Energie gefüllt %</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Gravitationslast</value>
-  </data>
 
 
     <data name="LcdMod_Warning" xml:space="preserve">
@@ -484,9 +481,6 @@ Wir warten einen Moment und starten sie dann für dich neu.</value>
   </data>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projektor</value>
-  </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Schub</value>
   </data>
   <data name="LcdMod_EnergyBatteries" xml:space="preserve">
     <value>[SD] Energie: Batterien</value>

@@ -40,6 +40,7 @@ namespace LcdMod.Client.Apps.Abstract
         protected virtual SortMethod SortMethod => (SortMethod)FilterComponent.SortMethod;
 
         public static Dictionary<MyItemType, string> SpriteCache = new Dictionary<MyItemType, string>();
+        readonly List<MySprite> _sprites = new List<MySprite>();
         readonly List<MySprite> _contentSpriteCache = new List<MySprite>();
         readonly List<MySprite> _footerSpriteCache = new List<MySprite>();
         readonly ObservableList<ItemEntry> _displayItems = new ObservableList<ItemEntry>();
@@ -76,7 +77,7 @@ namespace LcdMod.Client.Apps.Abstract
         protected Sandbox.ModAPI.Ingame.IMyTextSurface Surface => Host.Surface;
         protected RectangleF ViewBox => Host.ViewBox;
         protected float Scale => GeneralComponent.GetScale();
-        protected float FontScale => Host.Surface.FontSize;
+        protected float FontScale => Host.FontScale;
         protected float LayoutScale => Scale * FontScale;
         protected Color ForegroundColor => Host.ForegroundColor;
         protected Color BackgroundColor => Host.BackgroundColor;
@@ -290,7 +291,8 @@ namespace LcdMod.Client.Apps.Abstract
 
         public override List<MySprite> GetSprites()
         {
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             CaptureDirtyControlSections();
 
             if (_contentSpritesDirty)
@@ -855,21 +857,7 @@ namespace LcdMod.Client.Apps.Abstract
 
         protected void TrimText(ref StringBuilder sb, float availableWidth, float fontSize = 1)
         {
-            Vector2 textSize = Surface.MeasureStringInPixels(sb, TextFont, fontSize * Scale * FontScale);
-
-            if (textSize.X <= availableWidth)
-                return;
-
-            var source = sb.ToString();
-            for (int i = source.Length - 1; i > 0; i--)
-            {
-                sb.Clear();
-                sb.Append(FormatingHelper.TrimName(source, i));
-                textSize = Surface.MeasureStringInPixels(sb, TextFont, fontSize * Scale * FontScale);
-
-                if (textSize.X <= availableWidth)
-                    break;
-            }
+            Host.TrimText(ref sb, availableWidth, fontSize);
         }
 
         protected string TrimText(string text, float availableWidth, float fontSize = 1)

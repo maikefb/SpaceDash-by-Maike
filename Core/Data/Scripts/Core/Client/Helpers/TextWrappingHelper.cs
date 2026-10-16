@@ -178,16 +178,22 @@ namespace LcdMod.Client.Helpers
             if (MeasureText(surface, input, fontId, scale).X <= maxWidth)
                 return input;
 
-            var sb = new StringBuilder(input);
-            while (sb.Length > 0)
+            int low = 1, high = input.Length - 1, best = 0;
+            while (low <= high)
             {
-                sb.Length--;
-                string candidate = sb.ToString();
-                if (MeasureText(surface, candidate, fontId, scale).X <= maxWidth)
-                    return candidate;
+                int mid = (low + high) / 2;
+                if (MeasureText(surface, input.Substring(0, mid), fontId, scale).X <= maxWidth)
+                {
+                    best = mid;
+                    low = mid + 1;
+                }
+                else
+                {
+                    high = mid - 1;
+                }
             }
 
-            return string.Empty;
+            return best <= 0 ? string.Empty : input.Substring(0, best);
         }
 
         public static string EnsureEllipsis(
@@ -197,7 +203,7 @@ namespace LcdMod.Client.Helpers
             float scale,
             float maxWidth)
         {
-            string suffix = FormatingHelper.ELLIPSIS.ToString();
+            string suffix = FormatingHelper.ELLIPSIS_TEXT;
             if (surface == null || maxWidth <= 0f)
                 return string.Empty;
 

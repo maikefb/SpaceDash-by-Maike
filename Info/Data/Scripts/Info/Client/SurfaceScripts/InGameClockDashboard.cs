@@ -25,7 +25,6 @@ namespace LcdMod.Client.SurfaceScripts
 
         InGameClockDashboardApp _app;
         protected override string DefaultTitle => TITLE;
-        protected override string FrameId => ID;
         public override IApp App => _app;
 
         public InGameClockDashboardSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size)

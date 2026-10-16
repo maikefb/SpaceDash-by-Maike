@@ -48,10 +48,6 @@ namespace LcdMod.Client.Animation
             _tickAction = Tick;
         }
 
-        public int ActiveCount => _animations.Count;
-
-        public bool IsDisposed => _disposed;
-
         /// <summary>
         /// Runs all steps in sequence. Unnamed animations are allowed to run in
         /// parallel with other animations owned by the same object.
@@ -93,7 +89,11 @@ namespace LcdMod.Client.Animation
             if (steps == null)
                 throw new ArgumentNullException(nameof(steps));
 
-            IAnimationStep[] sequence = CopyAndValidateSteps(steps);
+            for (int i = 0; i < steps.Length; i++)
+                if (steps[i] == null)
+                    throw new ArgumentException("Animation steps cannot contain null values.", nameof(steps));
+
+            IAnimationStep[] sequence = steps;
 
             if (!string.IsNullOrEmpty(channel) && conflict != AnimationConflict.Allow)
             {
@@ -126,25 +126,6 @@ namespace LcdMod.Client.Animation
 
             QueueTick();
             return handle;
-        }
-
-        public bool HasAnimations(object owner)
-        {
-            if (owner == null)
-                return false;
-
-            for (int i = 0; i < _animations.Count; i++)
-            {
-                if (ReferenceEquals(_animations[i].Owner, owner))
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool HasAnimation(object owner, string channel)
-        {
-            return owner != null && Find(owner, channel) != null;
         }
 
         public void Cancel(AnimationHandle handle)
@@ -389,21 +370,6 @@ namespace LcdMod.Client.Animation
             }
 
             return null;
-        }
-
-        static IAnimationStep[] CopyAndValidateSteps(IAnimationStep[] steps)
-        {
-            var copy = new IAnimationStep[steps.Length];
-            for (int i = 0; i < steps.Length; i++)
-            {
-                IAnimationStep step = steps[i];
-                if (step == null)
-                    throw new ArgumentException("Animation steps cannot contain null values.", nameof(steps));
-
-                copy[i] = step;
-            }
-
-            return copy;
         }
 
         void ThrowIfDisposed()

@@ -152,11 +152,6 @@
     <value>[SD] Energia Preenchida %</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Carga gravitacional</value>
-  </data>
-
-
     <data name="LcdMod_Warning" xml:space="preserve">
     <value>Aviso: {0}</value>
   </data>
@@ -515,6 +510,12 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Projector_CraftMissing_Tooltip" xml:space="preserve">
     <value>Enfileira nas montadoras deste grid os componentes que ainda faltam para a projeção.</value>
   </data>
+  <data name="LcdMod_DefenseDashboard_Control_ShowPercent" xml:space="preserve">
+    <value>Defesa: mostrar porcentagens</value>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Control_ShowPercent_Tooltip" xml:space="preserve">
+    <value>Mostra as armas prontas como porcentagem do total em vez de prontas / total.</value>
+  </data>
   <data name="LcdMod_ClockDashboard_Control_24Hour" xml:space="preserve">
     <value>Relógio: formato de 24 horas</value>
   </data>
@@ -667,6 +668,9 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   </data>
   <data name="LcdMod_Theme_Cafe" xml:space="preserve">
     <value>Café</value>
+  </data>
+  <data name="LcdMod_Theme_Small" xml:space="preserve">
+    <value>Compacto</value>
   </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Desenha a barra de título. Desativado automaticamente em telas muito largas.</value>
@@ -857,9 +861,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Projector" xml:space="preserve">
     <value>[SD] Projetor</value>
   </data>
-  <data name="LcdMod_Thrust" xml:space="preserve">
-    <value>[SD] Propulsão</value>
-  </data>
   <data name="LcdMod_RenderProxy" xml:space="preserve">
     <value>[SD] Proxy de renderização</value>
   </data>
@@ -926,15 +927,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Frame_CurrentOutput" xml:space="preserve">
     <value>Saída atual</value>
   </data>
-  <data name="LcdMod_Frame_ClockSubtitle" xml:space="preserve">
-    <value>Ciclo do planeta e tempo de sessão</value>
-  </data>
-  <data name="LcdMod_Frame_LocalTime" xml:space="preserve">
-    <value>Hora local</value>
-  </data>
-  <data name="LcdMod_Frame_SunriseSunset" xml:space="preserve">
-    <value>Nascer / pôr</value>
-  </data>
   <data name="LcdMod_Frame_DefenseSubtitle" xml:space="preserve">
     <value>Escudo e armamento</value>
   </data>
@@ -952,18 +944,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   </data>
   <data name="LcdMod_Frame_Autonomy" xml:space="preserve">
     <value>Autonomia</value>
-  </data>
-  <data name="LcdMod_Frame_RadarSubtitle" xml:space="preserve">
-    <value>Contatos em alcance</value>
-  </data>
-  <data name="LcdMod_Frame_Allies" xml:space="preserve">
-    <value>Aliados</value>
-  </data>
-  <data name="LcdMod_Frame_Neutrals" xml:space="preserve">
-    <value>Neutros</value>
-  </data>
-  <data name="LcdMod_Frame_Hostiles" xml:space="preserve">
-    <value>Hostis</value>
   </data>
   <data name="LcdMod_Frame_DockingSubtitle" xml:space="preserve">
     <value>Conector de referência</value>

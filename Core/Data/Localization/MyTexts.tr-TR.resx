@@ -49,9 +49,6 @@
     <value>Kritik: {0}</value>
   </data>
 
-    <data name="LcdMod_Thrust_GravityLoad" xml:space="preserve">
-    <value>Yerçekimi yükü</value>
-  </data>
 
 
     <data name="LcdMod_DockingAlignment" xml:space="preserve">

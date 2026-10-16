@@ -9,55 +9,27 @@ using VRage.Utils;
 
 namespace Generated
 {
-    public sealed class NetworkParameters
-    {
-        public ushort Port { get; private set; }
-        public int MaxWirePacketBytes { get; private set; }
-        public int MaxFragmentedPacketBytes { get; private set; }
-        public int MaxFragmentChunks { get; private set; }
-
-        public NetworkParameters(
-            ushort port,
-            int maxWirePacketBytes,
-            int maxFragmentedPacketBytes,
-            int maxFragmentChunks)
-        {
-            if (maxWirePacketBytes <= 0)
-                throw new ArgumentException(nameof(maxWirePacketBytes));
-            if (maxFragmentedPacketBytes <= 0)
-                throw new ArgumentException(nameof(maxFragmentedPacketBytes));
-            if (maxFragmentChunks <= 0)
-                throw new ArgumentException(nameof(maxFragmentChunks));
-
-            Port = port;
-            MaxWirePacketBytes = maxWirePacketBytes;
-            MaxFragmentedPacketBytes = maxFragmentedPacketBytes;
-            MaxFragmentChunks = maxFragmentChunks;
-        }
-    }
-
-    public partial class NetworkManager : IDisposable, ISingleton<NetworkManager>
+    public partial class NetworkManager : IDisposable
     {
         const int NETWORK_FRAGMENT_ID = 127;
+        const int MAX_WIRE_PACKET_BYTES = 96 * 1024;
+        const int MAX_FRAGMENTED_PACKET_BYTES = 6 * 1024 * 1024;
+        const int MAX_FRAGMENT_CHUNKS = 64;
         static readonly long FragmentAssemblyExpiryTicks = TimeSpan.TicksPerSecond * 15;
 
         public static NetworkManager Instance { get; private set; }
-        public NetworkParameters Parameters { get; private set; }
 
         readonly ushort _channelId;
         int _nextFragmentTransferId;
         readonly Dictionary<string, FragmentAssembly> _fragmentAssemblies =
             new Dictionary<string, FragmentAssembly>();
 
-        public NetworkManager(NetworkParameters parameters)
+        public NetworkManager(ushort port)
         {
-            if (parameters == null)
-                throw new ArgumentNullException(nameof(parameters));
             if (Instance != null)
                 throw new InvalidOperationException("A NetworkManager instance is already registered");
 
-            Parameters = parameters;
-            _channelId = parameters.Port;
+            _channelId = port;
             Instance = this;
         }
 
@@ -85,7 +57,7 @@ namespace Generated
 
         public void TransmitToServer(
             NetworkPackage data,
-            bool sendToAllPlayers = true,
+            bool sendToAllPlayers = false,
             bool sendToSender = false)
         {
             var packet = new PacketBase(data.Id, sendToAllPlayers, sendToSender);
@@ -123,7 +95,7 @@ namespace Generated
                     packet = MyAPIGateway.Utilities.SerializeFromBinary<PacketBase>(raw);
                 }
 
-                HandlePacket(packet, id, isFromServer);
+                HandlePacket(packet, raw, id, isFromServer);
             }
             catch (Exception e)
             {
@@ -140,14 +112,13 @@ namespace Generated
             }
         }
 
-        void HandlePacket(PacketBase packet, ulong id, bool isFromServer)
+        void HandlePacket(PacketBase packet, byte[] raw, ulong id, bool isFromServer)
         {
             var receivedPacketEventArgs = new ReceivedPacketEventArgs(
                 packet.Id,
                 packet.Data,
                 id,
-                isFromServer,
-                NetworkDeserializer.Instance);
+                isFromServer);
 
             bool isServer = MyAPIGateway.Session.IsServer;
             if ((!isFromServer && isServer) || (isFromServer && (!isServer || packet.SendToSender)))
@@ -162,7 +133,7 @@ namespace Generated
             }
 
             if (packet.SendToAllPlayers && isServer && receivedPacketEventArgs.IsResolved)
-                SendRawToAllPlayers(MyAPIGateway.Utilities.SerializeToBinary(packet), packet.Id, id, packet.SendToSender);
+                SendRawToAllPlayers(raw, packet.Id, id, packet.SendToSender);
         }
 
         /// <summary>Envio originado no servidor para todos os jogadores, exceto <paramref name="exceptPlayerId"/>.</summary>
@@ -208,7 +179,7 @@ namespace Generated
             if (raw == null)
                 return false;
 
-            if (raw.Length <= Parameters.MaxWirePacketBytes)
+            if (raw.Length <= MAX_WIRE_PACKET_BYTES)
                 return MyAPIGateway.Multiplayer.SendMessageToServer(_channelId, raw);
 
             return SendFragments(raw, null);
@@ -219,7 +190,7 @@ namespace Generated
             if (raw == null)
                 return false;
 
-            if (raw.Length <= Parameters.MaxWirePacketBytes)
+            if (raw.Length <= MAX_WIRE_PACKET_BYTES)
                 return MyAPIGateway.Multiplayer.SendMessageTo(_channelId, raw, playerId);
 
             return SendFragments(raw, playerId);
@@ -228,16 +199,16 @@ namespace Generated
         bool SendFragments(byte[] raw, ulong? playerId)
         {
             var transferId = ++_nextFragmentTransferId;
-            var totalChunks = (raw.Length + Parameters.MaxWirePacketBytes - 1) /
-                              Parameters.MaxWirePacketBytes;
+            var totalChunks = (raw.Length + MAX_WIRE_PACKET_BYTES - 1) /
+                              MAX_WIRE_PACKET_BYTES;
             MyLog.Default.WriteLineAndConsole(
                 $"[ADK.Network] Sending fragmented packet {transferId} " +
                 $"({raw.Length} bytes, {totalChunks} chunks)");
 
             for (var chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++)
             {
-                var offset = chunkIndex * Parameters.MaxWirePacketBytes;
-                var size = Math.Min(Parameters.MaxWirePacketBytes, raw.Length - offset);
+                var offset = chunkIndex * MAX_WIRE_PACKET_BYTES;
+                var size = Math.Min(MAX_WIRE_PACKET_BYTES, raw.Length - offset);
                 var chunkData = new byte[size];
                 Array.Copy(raw, offset, chunkData, 0, size);
 
@@ -269,18 +240,16 @@ namespace Generated
             out byte[] raw)
         {
             raw = null;
-            ExpireFragmentAssemblies();
-
             var fragment = MyAPIGateway.Utilities.SerializeFromBinary<PacketFragment>(packet.Data);
             if (fragment == null ||
                 fragment.Data == null ||
                 fragment.TotalChunks <= 0 ||
-                fragment.TotalChunks > Parameters.MaxFragmentChunks ||
+                fragment.TotalChunks > MAX_FRAGMENT_CHUNKS ||
                 fragment.ChunkIndex < 0 ||
                 fragment.ChunkIndex >= fragment.TotalChunks ||
                 fragment.TotalLength <= 0 ||
-                fragment.TotalLength > Parameters.MaxFragmentedPacketBytes ||
-                fragment.Data.Length > Parameters.MaxWirePacketBytes)
+                fragment.TotalLength > MAX_FRAGMENTED_PACKET_BYTES ||
+                fragment.Data.Length > MAX_WIRE_PACKET_BYTES)
             {
                 return false;
             }
@@ -314,13 +283,16 @@ namespace Generated
             return raw != null;
         }
 
+        readonly List<string> _expiredAssemblies = new List<string>();
+
         public void ExpireFragmentAssemblies()
         {
             if (_fragmentAssemblies.Count == 0)
                 return;
 
             var now = DateTime.UtcNow.Ticks;
-            var expired = new List<string>();
+            var expired = _expiredAssemblies;
+            expired.Clear();
             foreach (var pair in _fragmentAssemblies)
             {
                 if (now - pair.Value.CreatedUtcTicks > FragmentAssemblyExpiryTicks)
@@ -329,16 +301,6 @@ namespace Generated
 
             for (var i = 0; i < expired.Count; i++)
                 _fragmentAssemblies.Remove(expired[i]);
-        }
-
-        sealed class NetworkDeserializer : INetworkDeserializer
-        {
-            public static readonly NetworkDeserializer Instance = new NetworkDeserializer();
-
-            public T Deserialize<T>(byte[] data)
-            {
-                return MyAPIGateway.Utilities.SerializeFromBinary<T>(data);
-            }
         }
 
         [ProtoContract]

@@ -111,31 +111,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
                 radiusScale: scale);
         }
 
-        public static MySprite[] DrawRectangle(RectangleF rectangle, Color color, float finalScale = 1f,
-            float radiusPixels = DEFAULT_RADIUS_PIXELS)
-        {
-            if (color.A == 0)
-                return Array.Empty<MySprite>();
-
-            SpritesBuffer.Clear();
-            Vector2 fullSize = rectangle.Size * finalScale;
-
-            float r = Math.Min(radiusPixels * finalScale, Math.Min(fullSize.X, fullSize.Y) * 0.5f);
-            if (r <= 0f)
-            {
-                SpritesBuffer.Add(new MySprite(0, "SquareSimple", rectangle.Center, fullSize, color));
-                return SpritesBuffer.ToArray();
-            }
-
-            if (color.A < 255)
-                DrawTranslucentRectangle(rectangle.Center, fullSize, color, r, SpritesBuffer);
-            else
-                DrawOpaqueRectangle(rectangle.Center, fullSize, color, r, SpritesBuffer);
-
-
-            return SpritesBuffer.ToArray();
-        }
-
         static void DrawOpaqueRectangle(
             Vector2 center,
             Vector2 fullSize,

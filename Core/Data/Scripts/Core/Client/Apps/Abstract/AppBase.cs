@@ -4,7 +4,9 @@ using LcdMod.Client.Animation;
 using LcdMod.Client.Extensions;
 using LcdMod.Client.Gui;
 using LcdMod.Client.Gui.ControlsTemplates;
+using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.Styling;
+using LcdMod.Client.Gui.Styling.DataTemplates;
 using LcdMod.Client.Gui.Styling.Styles;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.GridData;
@@ -20,18 +22,19 @@ namespace LcdMod.Client.Apps.Abstract
     
     
     
-    public abstract partial class App : Control, IApp, ITextSurfaceProvider, ITextStyleProvider
+    public abstract partial class App : Control, IApp, ITextStyleProvider
     {
         readonly List<Control> _logicalChildren = new List<Control>();
         AnimationController _animationController;
         StyleTree _styles;
         ResourceTree _resources;
         Dictionary<string, Color> _theme;
-        Color _themeHeaderColor;
-        Color _themeForegroundColor;
-        Color _themeWarningColor;
-        Color _themeErrorColor;
-        bool _themeDark;
+        Color _rawHeaderColor;
+        Color _rawBackgroundColor;
+        Color _rawForegroundColor;
+        Color _rawWarningColor;
+        Color _rawErrorColor;
+        bool _rawCustomizedColors;
         float _themeLayoutScale;
         float _themeFontScale;
         float _themeAutoScrollSecondsPerStep;
@@ -49,7 +52,7 @@ namespace LcdMod.Client.Apps.Abstract
                 throw new ArgumentNullException(nameof(host));
 
             _animationController = Host.Animations;
-            _styles = DefaultStyleBuilder.Build();
+            _styles = BuildDefaultStyles();
         }
 
         protected IAppHost Host { get; private set; }
@@ -57,15 +60,6 @@ namespace LcdMod.Client.Apps.Abstract
         internal override AnimationController AnimationController => _animationController;
         public override IReadOnlyList<Control> LogicalChildren => _logicalChildren;
         public override StyleTree Styles => _styles;
-
-        protected void RebindAppHost(IAppHost host)
-        {
-            if (host == null)
-                throw new ArgumentNullException(nameof(host));
-
-            Host = host;
-            _animationController = Host.Animations;
-        }
 
         protected void NeedGridData(GridCapability need)
         {
@@ -183,12 +177,6 @@ namespace LcdMod.Client.Apps.Abstract
             return true;
         }
 
-        protected void ClearLogicalChildren()
-        {
-            for (int i = _logicalChildren.Count - 1; i >= 0; i--)
-                RemoveLogicalChild(_logicalChildren[i]);
-        }
-
         public Sandbox.ModAPI.Ingame.IMyTextSurface TextSurface => Host.Surface;
 
         public string TextFont
@@ -278,56 +266,134 @@ namespace LcdMod.Client.Apps.Abstract
                 return;
             _themeFrame = frame;
 
-            var headerColor = GetHeaderColor();
-            var foregroundColor = GetForegroundColor();
-            var warningColor = GetWarningColor();
-            var errorColor = GetErrorColor();
-            bool dark = ShouldUseDarkTheme();
+            var colors = ColorComponent;
+            var rawHeaderColor = colors.ResolveHeaderColor(Host.Block as Sandbox.ModAPI.IMyTerminalBlock);
+            var rawWarningColor = colors.ResolveWarningColor();
+            var rawErrorColor = colors.ResolveErrorColor();
+            bool customizedColors = colors.CustomizedColors;
+            var backgroundColor = Host.BackgroundColor;
+            var foregroundColor = Host.ForegroundColor;
             float layoutScale = GetLayoutScaleResourceValue();
             float fontScale = GetFontScaleResourceValue();
+            float autoScrollStep = InteractionComponent.AutoScrollStep;
             string textFont = GetTextFontResourceValue();
             int themeKind = (int)Host.ThemeKind;
 
-            if (!_hasTheme ||
-                themeKind != _themeKind ||
-                !headerColor.Equals(_themeHeaderColor) ||
-                !foregroundColor.Equals(_themeForegroundColor) ||
-                !warningColor.Equals(_themeWarningColor) ||
-                !errorColor.Equals(_themeErrorColor) ||
-                dark != _themeDark ||
-                !layoutScale.Equals(_themeLayoutScale) ||
-                !fontScale.Equals(_themeFontScale) ||
-                !InteractionComponent.AutoScrollStep.Equals(_themeAutoScrollSecondsPerStep) ||
-                !string.Equals(textFont, _themeTextFont, StringComparison.Ordinal))
-            {
-                _theme = headerColor.ToTheme(dark);
-                _resources = ThemeResourceBuilder.FromThemeDictionary(_theme);
-                // A cor da letra escolhida no terminal vale para todo texto, inclusive nos cartões; só é
-                // ajustada quando não contrasta com o fundo onde é desenhada.
-                _resources.Set(ThemeResources.FontColor, foregroundColor);
-                _resources.Set(ThemeResources.OnSurfaceColor, foregroundColor.EnsureMinimalContrast(Host.BackgroundColor));
-                _resources.Set(ThemeResources.OnAccentContainerColor,
-                    foregroundColor.EnsureMinimalContrast(_theme[LcdMod.Common.Helpers.Constants.PRIMARY_CONTAINER]));
-                _resources.Set(ThemeResources.WarningColor, warningColor);
-                _resources.Set(ThemeResources.ErrorColor, errorColor);
-                _resources.Set(ThemeResources.LayoutScale, layoutScale);
-                _resources.Set(ThemeResources.FontScale, fontScale);
-                _resources.Set(ThemeResources.AutoScrollSecondsPerStep, InteractionComponent.AutoScrollStep);
-                _resources.Set(ThemeResources.TextFont, textFont);
-                _resources.Set(ThemeResources.Theme, themeKind);
-                _themeHeaderColor = headerColor;
-                _themeForegroundColor = foregroundColor;
-                _themeWarningColor = warningColor;
-                _themeErrorColor = errorColor;
-                _themeDark = dark;
-                _themeLayoutScale = layoutScale;
-                _themeFontScale = fontScale;
-                _themeAutoScrollSecondsPerStep = InteractionComponent.AutoScrollStep;
-                _themeTextFont = textFont;
-                _themeKind = themeKind;
-                _hasTheme = true;
-                MarkSubtreeDirty();
-            }
+            if (_hasTheme &&
+                themeKind == _themeKind &&
+                rawHeaderColor == _rawHeaderColor &&
+                rawWarningColor == _rawWarningColor &&
+                rawErrorColor == _rawErrorColor &&
+                customizedColors == _rawCustomizedColors &&
+                backgroundColor == _rawBackgroundColor &&
+                foregroundColor == _rawForegroundColor &&
+                layoutScale == _themeLayoutScale &&
+                fontScale == _themeFontScale &&
+                autoScrollStep == _themeAutoScrollSecondsPerStep &&
+                string.Equals(textFont, _themeTextFont, StringComparison.Ordinal))
+                return;
+
+            var headerColor = Readable(rawHeaderColor);
+            var warningColor = Readable(rawWarningColor);
+            var errorColor = Readable(rawErrorColor);
+            bool dark = ShouldUseDarkTheme();
+
+            _theme = headerColor.ToTheme(dark);
+            _resources = BuildThemeResources(_theme);
+            // A cor da letra escolhida no terminal vale para todo texto, inclusive nos cartões; só é
+            // ajustada quando não contrasta com o fundo onde é desenhada.
+            _resources.Set(ThemeResources.FontColor, foregroundColor);
+            _resources.Set(ThemeResources.OnSurfaceColor, foregroundColor.EnsureMinimalContrast(backgroundColor));
+            _resources.Set(ThemeResources.OnAccentContainerColor,
+                foregroundColor.EnsureMinimalContrast(_theme[Constants.PRIMARY_CONTAINER]));
+            _resources.Set(ThemeResources.WarningColor, warningColor);
+            _resources.Set(ThemeResources.ErrorColor, errorColor);
+            _resources.Set(ThemeResources.LayoutScale, layoutScale);
+            _resources.Set(ThemeResources.FontScale, fontScale);
+            _resources.Set(ThemeResources.AutoScrollSecondsPerStep, autoScrollStep);
+            _resources.Set(ThemeResources.TextFont, textFont);
+            _resources.Set(ThemeResources.Theme, themeKind);
+            _rawHeaderColor = rawHeaderColor;
+            _rawWarningColor = rawWarningColor;
+            _rawErrorColor = rawErrorColor;
+            _rawCustomizedColors = customizedColors;
+            _rawBackgroundColor = backgroundColor;
+            _rawForegroundColor = foregroundColor;
+            _themeLayoutScale = layoutScale;
+            _themeFontScale = fontScale;
+            _themeAutoScrollSecondsPerStep = autoScrollStep;
+            _themeTextFont = textFont;
+            _themeKind = themeKind;
+            _hasTheme = true;
+            MarkSubtreeDirty();
+        }
+
+        static ResourceTree BuildThemeResources(IReadOnlyDictionary<string, Color> theme)
+        {
+            ResourceTree resources = new ResourceTree();
+            ItemDataTemplate.AddResources(resources);
+
+            resources.Set(ThemeResources.AccentColor, theme[Constants.PRIMARY]);
+            resources.Set(ThemeResources.AccentContainerColor, theme[Constants.PRIMARY_CONTAINER]);
+            resources.Set(ThemeResources.OnAccentContainerColor, theme[Constants.ON_PRIMARY_CONTAINER]);
+            resources.Set(ThemeResources.WarningColor, theme[Constants.TERTIARY]);
+            resources.Set(ThemeResources.ErrorColor, theme[Constants.ERROR]);
+            resources.Set(ThemeResources.SuccessColor, theme[Constants.SUCCESS]);
+            resources.Set(ThemeResources.MutedTextColor, theme[Constants.ON_SURFACE_VARIANT]);
+            resources.Set(ThemeResources.DividerColor, theme[Constants.OUTLINE_VARIANT]);
+            resources.Set(ThemeResources.DisabledColor, theme[Constants.DISABLED_FOREGROUND]);
+            resources.Set(ThemeResources.BackgroundColor, theme[Constants.BACKGROUND]);
+            resources.Set(ThemeResources.FontColor, theme[Constants.ON_BACKGROUND]);
+            resources.Set(ThemeResources.SurfaceColor, theme[Constants.SURFACE]);
+            resources.Set(ThemeResources.OnSurfaceColor, theme[Constants.ON_SURFACE]);
+            resources.Set(ThemeResources.OnSurfaceVariantColor, theme[Constants.ON_SURFACE_VARIANT]);
+            resources.Set(ThemeResources.SurfaceContainerLowColor, theme[Constants.SURFACE_CONTAINER_LOW]);
+            resources.Set(ThemeResources.SurfaceContainerColor, theme[Constants.SURFACE_CONTAINER]);
+            resources.Set(ThemeResources.SurfaceContainerHighestColor, theme[Constants.SURFACE_CONTAINER_HIGHEST]);
+            resources.Set(ThemeResources.SecondaryContainerColor, theme[Constants.SECONDARY_CONTAINER]);
+            resources.Set(ThemeResources.OnSecondaryContainerColor, theme[Constants.ON_SECONDARY_CONTAINER]);
+            resources.Set(ThemeResources.BorderColor, theme[Constants.OUTLINE]);
+            resources.Set(ThemeResources.BorderVariantColor, theme[Constants.OUTLINE_VARIANT]);
+            resources.Set(ThemeResources.ScrollBarTrackColor, new Color(theme[Constants.OUTLINE_VARIANT], 127));
+            resources.Set(ThemeResources.ScrollBarThumbColor, new Color(theme[Constants.PRIMARY], 250));
+
+            resources.Set(ThemeResources.TextFont, "White");
+            resources.Set(ThemeResources.PictureTransitionFrames, 24);
+
+            return resources;
+        }
+
+        static StyleTree BuildDefaultStyles()
+        {
+            StyleTree styles = new StyleTree();
+
+            Style control = styles.For<ControlTemplate>()
+                .Set(ControlTemplate.TextColorProperty, ThemeResources.FontColor)
+                .Set(ControlTemplate.TextFontProperty, ThemeResources.TextFont)
+                .Set(ControlTemplate.LayoutScaleProperty, ThemeResources.LayoutScale)
+                .Set(ControlTemplate.FontScaleProperty, ThemeResources.FontScale)
+                .Set(ControlTemplate.OpacityProperty, 1f)
+                .Set(ControlTemplate.BackgroundColorProperty, ThemeResources.SurfaceColor)
+                .Set(ControlTemplate.BorderColorProperty, ThemeResources.BorderVariantColor)
+                .Set(ControlTemplate.BorderRadiusPixelsProperty, BorderRenderer.DEFAULT_RADIUS_PIXELS)
+                .Set(ControlTemplate.BorderThicknessPixelsProperty, 0f)
+                .Set(ControlTemplate.PaddingProperty, Vector4.Zero);
+
+            styles.For<ScrollPanel>()
+                .Set(ScrollPanel.ScrollBarTrackColorProperty, ThemeResources.ScrollBarTrackColor)
+                .Set(ScrollPanel.ScrollBarThumbColorProperty, ThemeResources.ScrollBarThumbColor);
+
+            control.State(StyleState.Disabled)
+                .Set(ControlTemplate.BackgroundColorProperty, ThemeResources.SurfaceContainerLowColor)
+                .Set(ControlTemplate.TextColorProperty, ThemeResources.DisabledColor);
+
+            styles.For<Border>()
+                .Set(ControlTemplate.BackgroundColorProperty, ThemeResources.AccentContainerColor)
+                .Set(ControlTemplate.BorderThicknessPixelsProperty, 0);
+
+            ButtonStyle.Build(styles);
+
+            return styles;
         }
 
         float GetLayoutScaleResourceValue()
@@ -338,7 +404,7 @@ namespace LcdMod.Client.Apps.Abstract
 
         float GetFontScaleResourceValue()
         {
-            float fontScale = Host.Surface.FontSize;
+            float fontScale = Host.FontScale;
             return fontScale > 0f ? fontScale : 1f;
         }
 

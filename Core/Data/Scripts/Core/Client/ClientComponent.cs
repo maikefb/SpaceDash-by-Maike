@@ -12,7 +12,6 @@ using LcdMod.Client.ScreenAreas;
 using LcdMod.Client.Terminal;
 using LcdMod.Common.Helpers;
 using LcdMod.Common.Networking;
-using ParallelTasks;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using VRage;
@@ -24,12 +23,10 @@ namespace LcdMod.Client
     /// Ciclo de vida do lado cliente. O que é específico de cada mod (módulos de dados, caches de sprites)
     /// entra pelos métodos parciais implementados em ClientComponent.Mod.cs de cada mod.
     /// </summary>
-    public partial class LcdModClientComponent : ISingleton<LcdModClientComponent>
+    public partial class LcdModClientComponent
     {
         public static readonly List<Action> RunNextFrame = new List<Action>();
         static readonly List<Action> RunThisFrame = new List<Action>();
-
-        public static readonly List<Task> Blocker = new List<Task>();
 
         sealed class ScheduledOnePerFrameAction
         {
@@ -106,7 +103,6 @@ namespace LcdMod.Client
             ListBoxItemHelper.PerTypeCache.Clear();
             RunNextFrame.Clear();
             RunThisFrame.Clear();
-            Blocker.Clear();
             RunOnePerFrame.Clear();
             InventoryWorkScheduler.Clear();
             OnUpdateBeforeSimulation = null;
@@ -239,19 +235,6 @@ namespace LcdMod.Client
             {
                 ErrorHandlerHelper.LogError(e, _session);
             }
-
-            WaitForBlockers();
-        }
-
-        void WaitForBlockers()
-        {
-            foreach (var task in Blocker)
-            {
-                if (task.valid && !task.IsComplete)
-                    task.Wait();
-            }
-
-            Blocker.Clear();
         }
 
         internal void HandleSyncConfig(NetworkPackageSyncComponentConfig packet)

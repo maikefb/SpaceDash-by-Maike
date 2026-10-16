@@ -6,7 +6,7 @@ namespace LcdMod.Server
 
         partial void LoadModData()
         {
-            Survivors = new SurvivorsServerTracker(this);
+            Survivors = new SurvivorsServerTracker();
             Survivors.Load();
         }
 

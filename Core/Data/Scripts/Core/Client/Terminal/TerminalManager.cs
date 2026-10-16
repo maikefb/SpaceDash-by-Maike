@@ -39,12 +39,6 @@ namespace LcdMod.Client.Terminal
             new Dictionary<IMyTerminalControlListbox, CapturedScriptControl>();
         static int _surfaceControlShadowId;
         static int _scriptControlShadowId;
-        static readonly string[] SurfaceControlIds =
-        {
-"Font",
-"FontSize",
-"TextPadding",
-"Alignment"        };
         static readonly string[] SurfaceControlOrder =
         {
 "Font",
@@ -253,9 +247,8 @@ namespace LcdMod.Client.Terminal
             if (string.IsNullOrEmpty(id))
                 return null;
 
-            for (int i = 0; i < SurfaceControlIds.Length; i++)
-                if (SurfaceControlIds[i] == id)
-                    return id;
+            if (Array.IndexOf(SurfaceControlOrder, id) >= 0)
+                return id;
 
             switch (id)
             {
@@ -365,14 +358,7 @@ namespace LcdMod.Client.Terminal
                 ? Enumerable.Empty<TerminalControlsWrapper>()
                 : Controls.Where(control => control.Visible(block));
 
-            if (provider is IMyTextPanel)
-            {
-                InsertSearchScriptTextBox(block, controls);
-                InsertScriptListShadow(block, controls);
-                ReorderSurfaceControls(controls, script);
-                InsertVisibleControls(controls, visibleControls);
-            }
-            else if (provider.SurfaceCount > 0)
+            if (provider is IMyTextPanel || provider.SurfaceCount > 0)
             {
                 InsertSearchScriptTextBox(block, controls);
                 InsertScriptListShadow(block, controls);

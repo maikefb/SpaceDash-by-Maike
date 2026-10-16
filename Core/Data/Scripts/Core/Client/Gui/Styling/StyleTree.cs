@@ -22,9 +22,37 @@ namespace LcdMod.Client.Gui.Styling
             StyleProperty<TValue> property,
             out TValue value)
         {
-            return StyleTreeWalker.TryResolve(this, target, id, state, property, out value);
+            value = default(TValue);
+            bool found = false;
+            for (int i = 0; i < _roots.Count; i++)
+                found = TryResolve(_roots[i], target, id, state, property, ref value) || found;
+
+            return found;
         }
 
-        internal IList<StyleNode> Roots => _roots;
+        static bool TryResolve<TValue>(
+            StyleNode node,
+            ControlTemplate target,
+            string id,
+            StyleState state,
+            StyleProperty<TValue> property,
+            ref TValue value)
+        {
+            if (node == null ||
+                !node.MatchesControl(target) ||
+                !node.MatchesSelector(id, state))
+                return false;
+
+            TValue current;
+            bool found = node.Resources.TryResolve(target, property, out current);
+            if (found)
+                value = current;
+
+            var children = node.Children;
+            for (int i = 0; i < children.Count; i++)
+                found = TryResolve(children[i], target, id, state, property, ref value) || found;
+
+            return found;
+        }
     }
 }

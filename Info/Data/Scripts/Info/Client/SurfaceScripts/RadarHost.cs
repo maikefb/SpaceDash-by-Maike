@@ -23,7 +23,6 @@ namespace LcdMod.Client.SurfaceScripts
         public const string ID = ID_PREFIX + "Radar";
         public const string TITLE = MOD_PREFIX + "Radar";
         protected override string DefaultTitle => TITLE;
-        protected override string FrameId => ID;
 
         public override IApp App => _app;       
         RadarApp _app;

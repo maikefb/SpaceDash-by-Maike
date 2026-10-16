@@ -239,7 +239,7 @@ namespace LcdMod.Client.Helpers
             }
             UploadedThisSession.Add(key);
 
-            var packet = new NetworkPackageSyncTexture(localId, name, bytes, MyAPIGateway.Session.Player.DisplayName);
+            var packet = new NetworkPackageSyncTexture(localId, name, bytes, null);
             var server = LcdModSessionComponent.Server;
             if (server != null)
                 server.HandleSyncTexture(packet, localId);

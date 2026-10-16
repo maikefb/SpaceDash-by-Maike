@@ -37,6 +37,7 @@ namespace LcdMod.Client.Terminal
             AddRegistration(registrations, 3010, new SliderRadarRange());
             AddRegistration(registrations, 3020, new GeneratedSwitch_LcdMod_Common_Config_Components_ClockDashboardConfigComponent_Use24HourClock());
             AddRegistration(registrations, 3030, new ComboboxClockDashboardTemperatureMode());
+            AddRegistration(registrations, 3035, new GeneratedSwitch_LcdMod_Common_Config_Components_DefenseDashboardConfigComponent_ShowPercent());
             AddRegistration(registrations, 3040, new SliderAutoScrollStep());
             AddRegistration(registrations, 3300, new ComboboxDisplayMode());
             AddRegistration(registrations, 3325, new ComboboxItemDisplayMode());

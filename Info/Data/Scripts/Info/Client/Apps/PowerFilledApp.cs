@@ -99,10 +99,13 @@ namespace LcdMod.Client.Apps
             return _entryById.TryGetValue(entryId, out entry) ? entry : null;
         }
 
+        readonly List<MySprite> _sprites = new List<MySprite>();
+
         public override List<MySprite> GetSprites()
         {
             BeginPowerEntryHitboxFrame();
-            var sprites = new List<MySprite>();
+            var sprites = _sprites;
+            sprites.Clear();
             DrawFooter(_surfaceHost, sprites);
             DrawBatteries(_surfaceHost, sprites);
             return sprites;
@@ -240,7 +243,7 @@ namespace LcdMod.Client.Apps
                 return;
             }
 
-            float rowHeight = 40f * owner.ConfiguredScale * owner.Surface.FontSize;
+            float rowHeight = 40f * owner.ConfiguredScale * owner.FontScale;
             float footerHeight = rowHeight * rows;
             float footerTop = owner.ViewBox.Bottom - footerHeight;
             float footerLeft = owner.ViewBox.X;
@@ -261,7 +264,7 @@ namespace LcdMod.Client.Apps
             });
 
             float iconLeft = contentLeft;
-            float textScale = owner.ConfiguredScale * 0.75f * owner.Surface.FontSize;
+            float textScale = owner.ConfiguredScale * 0.75f * owner.FontScale;
             float textLeftPad = Math.Max(2f, owner.ConfiguredScale * 2f);
             int rowIndex = 0;
 
@@ -336,7 +339,7 @@ namespace LcdMod.Client.Apps
             float height = bounds.Height;
             float labelGap = Math.Max(1f, owner.ConfiguredScale * 2f);
             Vector2 pctRef = FormatingHelper.GetSizeInPixel(slot.PercentText, this, 1f, owner.Surface);
-            float pctScale = Math.Min((width * 0.6f) / Math.Max(1f, pctRef.X), (height * 0.22f) / Math.Max(1f, pctRef.Y)) * Math.Min(owner.Surface.FontSize, 1f);
+            float pctScale = Math.Min((width * 0.6f) / Math.Max(1f, pctRef.X), (height * 0.22f) / Math.Max(1f, pctRef.Y)) * Math.Min(owner.FontScale, 1f);
             float pctH = pctRef.Y * pctScale;
             float iconSize = Math.Max(0f, Math.Min(width, height - pctH - labelGap));
             float centerX = bounds.X + width / 2f;
@@ -405,7 +408,7 @@ namespace LcdMod.Client.Apps
 
         float GetContentTop(IAppHost owner)
         {
-            return owner.TitleVisible ? owner.ViewBox.Y + (40f * owner.ConfiguredScale * owner.Surface.FontSize) : owner.ViewBox.Y;
+            return owner.TitleVisible ? owner.ViewBox.Y + (40f * owner.ConfiguredScale * owner.FontScale) : owner.ViewBox.Y;
         }
 
         float GetFooterHeight(IAppHost owner)
@@ -416,7 +419,7 @@ namespace LcdMod.Client.Apps
                     rows++;
             if (rows == 0)
                 return 0f;
-            return (40f * owner.ConfiguredScale * owner.Surface.FontSize) * rows;
+            return (40f * owner.ConfiguredScale * owner.FontScale) * rows;
         }
     }
 }

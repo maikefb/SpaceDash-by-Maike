@@ -72,7 +72,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Panels
             base.AddChild(child);
         }
 
-        public bool RemoveChild(ControlTemplate child)
+        public override bool RemoveChild(Control child)
         {
             if (ReferenceEquals(child, _content))
             {

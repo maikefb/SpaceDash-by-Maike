@@ -99,7 +99,7 @@ namespace LcdMod.Client.Apps.Abstract
         {
             RectangleF view = Host.ViewBox;
             float configuredScale = Host.ConfiguredScale;
-            float fontSize = Host.Surface.FontSize;
+            float fontSize = Host.FontScale;
             Metrics = EnergyMetrics.From(view, configuredScale, fontSize);
             Metrics.Theme = Theme;
             Metrics.TitleBarHeight = Math.Max(Metrics.TitleBarHeight,

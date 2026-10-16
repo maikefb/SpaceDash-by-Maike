@@ -58,18 +58,6 @@ namespace LcdMod.Client.Gui.Frames
             return Layouts.TryGetValue(Key(theme, screenId, false), out layout) ? layout : null;
         }
 
-        /// <summary>Moldura genérica do tema (borda sem campos) para as telas sem moldura dedicada.</summary>
-        public static string GenericTexture(LcdTheme theme)
-        {
-            return theme == LcdTheme.Default ? null : "SD_Frame_" + theme + "_Generic";
-        }
-
-        /// <summary>Borda da moldura genérica (32 px de 512) escalada por eixo à superfície.</summary>
-        public static Vector2 GenericInset(Vector2 surfaceSize)
-        {
-            return surfaceSize * (32f / 512f);
-        }
-
         static string Key(LcdTheme theme, string screenId, bool tiny)
         {
             return (int)theme + "|" + screenId + (tiny ? "|t" : "");

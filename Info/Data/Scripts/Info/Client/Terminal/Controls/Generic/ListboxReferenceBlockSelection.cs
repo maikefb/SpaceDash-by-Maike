@@ -160,6 +160,9 @@ namespace LcdMod.Client.Terminal.Controls.Generic
             if (provider is RenderProxySurfaceScript)
                 return Constants.RENDER_PROXY_REFERENCE;
 
+            if (provider is ConveyorMapSurfaceScript)
+                return Constants.CONVEYOR_REFERENCE;
+
             return null;
         }
     }

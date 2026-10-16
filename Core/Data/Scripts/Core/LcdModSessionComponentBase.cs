@@ -18,8 +18,8 @@ using static LcdMod.Common.Helpers.Constants;
 
 namespace LcdMod
 {
-    [MySessionComponentDescriptor(MyUpdateOrder.BeforeSimulation | MyUpdateOrder.Simulation | MyUpdateOrder.AfterSimulation)]
-    public partial class LcdModSessionComponent : MySessionComponentBase, ISingleton<LcdModSessionComponent>
+    [MySessionComponentDescriptor(MyUpdateOrder.BeforeSimulation | MyUpdateOrder.AfterSimulation)]
+    public partial class LcdModSessionComponent : MySessionComponentBase
     {
         static LcdModSessionComponent _instance;
         internal readonly Dictionary<long, MyTuple<IMyCubeGrid, GridLogic>> _grids = new Dictionary<long, MyTuple<IMyCubeGrid, GridLogic>>();
@@ -28,11 +28,7 @@ namespace LcdMod
         public static LcdModClientComponent Client;
         public static LcdModServerComponent Server;
 
-        public static NetworkManager NetworkManager = new NetworkManager(new NetworkParameters(
-            PORT,
-            96 * 1024,
-            6 * 1024 * 1024,
-            64));
+        public static NetworkManager NetworkManager = new NetworkManager(PORT);
 
         public static event Action OnLanguageChanged;
         public static event Action OnAfterSimulationUpdate;
@@ -57,8 +53,6 @@ namespace LcdMod
             OnLanguageChanged = null;
             OnAfterSimulationUpdate = null;
         }
-
-        public override void Simulate() => Client?.Simulate();
 
         public static GridLogic GetOrCreateGridLogic(IMyCubeGrid grid)
         {
@@ -203,6 +197,7 @@ namespace LcdMod
         public override void UpdateBeforeSimulation()
         {
             Client?.UpdateBeforeSimulation();
+            Client?.Simulate();
         }
 
         public override void UpdateAfterSimulation()
@@ -238,7 +233,9 @@ namespace LcdMod
             foreach (var app in ConfigManager.GetAppsForBlock(block))
                 app.UseProviderConfig(settings);
 
-            ConfigManager.Save(block, settings);
+            // No host o servidor já gravou esta config no Storage ao receber o pacote.
+            if (Server == null)
+                ConfigManager.Save(block, settings);
 
             foreach (var app in ConfigManager.GetAppsForBlock(block))
                 app.RequestRedraw();
