@@ -39,3 +39,5 @@ Onda B: Task 7 (Projetor) lançada sobre 27c1347.
 Task 4: reviewer a8510e84134b24c25; CLEAN (minor 1 aplicado: _networkCount do layout cheio em vez de contar raízes; centro null com zero esteiras mantido). Task 4: complete (commit 696180d).
 Task 7: implementer aee9b66b507647d19; DONE_WITH_CONCERNS (árvore; resx novas: Projector_Remaining, _Buildable, _Ok; paginação própria porque IconGridPageCount é private set; Projector.cs intercepta vazio — mantido como nos demais).
 resx do Plano 3: 23 chaves em en e pt-BR — commit 5c41fe8.
+Task 7: reviewer a704b0f19d6c0442e; CLEAN (minor não aplicado: unificar paginação via IconGridPageCount protected set). Task 7: complete (commit 4242b05).
+Task 10: BASE 4242b05 (implementador único; passo 3 — build e jogo — é do usuário).
