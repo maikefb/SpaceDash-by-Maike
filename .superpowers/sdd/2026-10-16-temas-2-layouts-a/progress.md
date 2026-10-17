@@ -27,3 +27,5 @@ Task 5: implementer ab0e94537658f2936; DONE_WITH_CONCERNS (árvore; sem resx; se
 Task 6: implementer a5fc698d5b3a93abc; DONE_WITH_CONCERNS (árvore; sem resx; O₂ branco fixo no Café).
 Task 1: reviewer a1aa34dfe11143487; CLEAN (minors: centro do anel vazio em vez de N/A quando MaxMassKg==0 com gravidade; 1.2f do brief mantido). Task 1: complete (commit 403483d).
 Ruling: BuildPalette.paintPanel exclui IsBare (cores contrastam com o fundo, não com um painel que não é desenhado) — commit 0d17cc1.
+Task 2: reviewer a224e849b775d39a9; CLEAN. Task 2: complete (commit 4c15e3e).
+Task 4: implementer ac4587b2bdfeca520; DONE_WITH_CONCERNS (árvore; sem resx; DrawPlotWithoutAxis → DrawCurve; linhas de bateria somem sem baterias).
