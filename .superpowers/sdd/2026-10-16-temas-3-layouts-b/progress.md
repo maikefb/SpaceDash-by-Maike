@@ -36,3 +36,4 @@ Task 5: reviewer a7641ed54a289da04; CLEAN (minors: Label=hora some antes da data
 Task 4: implementer adf3a808585538434; DONE_WITH_CONCERNS (árvore; resx novas: ConveyorMap_BlocksNetworks = '{0} blocks · {1} networks'/'{0} blocos · {1} redes', ConveyorMap_OffBottlenecks = 'Off · Bottlenecks'/'Desligados · Gargalos'; NetworkCount por _rootSize inclui nós isolados).
 Task 6: reviewer a6240afdc42955a74; FIX → (1) resx Inventory_Volume: coberto pelo passe de resx; (2) GetTerminalGroupBlocks alocava por Update: orquestrador cacheia _groupBlocks e só refaz quando SelectedGroups muda de referência ou a cada 300 frames. Task 6: complete (commit 27c1347).
 Onda B: Task 7 (Projetor) lançada sobre 27c1347.
+Task 4: reviewer a8510e84134b24c25; CLEAN (minor 1 aplicado: _networkCount do layout cheio em vez de contar raízes; centro null com zero esteiras mantido). Task 4: complete (commit 696180d).

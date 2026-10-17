@@ -1,0 +1,186 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs b/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
+index 84a4cfb..e5b6a49 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
+@@ -5,6 +5,7 @@ using LcdMod.Client.Extensions;
+ using LcdMod.Client.GridData;
+ using LcdMod.Client.Gui;
+ using LcdMod.Client.Gui.ControlsTemplates.Panels;
++using LcdMod.Client.Gui.ControlsTemplates.Progress;
+ using LcdMod.Client.Gui.Styling;
+ using LcdMod.Client.Helpers;
+ using LcdMod.Common.Config.Components;
+@@ -32,6 +33,9 @@ namespace LcdMod.Client.Apps
+         const float MAX_TILE_BASE = 64f;
+         const float PITCH = 1.6f;
+         const float ICON_FILL = 0.75f;
++        const float MINIMAL_HERO_FONT_MUL = 3f;
++        const float RING_TRACK_MIX = 0.15f;
++        const string SEPARATOR = " · ";
+ 
+         static readonly float[] NetworkHueShifts = { 0f, 0.42f, 0.25f, 0.75f, 0.58f, 0.83f };
+ 
+@@ -79,6 +83,9 @@ namespace LcdMod.Client.Apps
+         readonly List<IMyTerminalBlock> _networkAnchors = new List<IMyTerminalBlock>();
+         readonly List<IMySlimBlock> _projected = new List<IMySlimBlock>();
+         readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
++        readonly Dictionary<string, string> _labels = new Dictionary<string, string>();
++        readonly DonutSegment[] _segments = new DonutSegment[3];
++        readonly List<BareLayout.KvRow> _rows = new List<BareLayout.KvRow>();
+         int[] _anchorOfRoot = new int[0];
+         readonly Color[] _networkColors = new Color[NetworkHueShifts.Length];
+         int[] _unionFind = new int[0];
+@@ -618,6 +625,17 @@ namespace LcdMod.Client.Apps
+         {
+             var sprites = _sprites;
+             sprites.Clear();
++            if (IsMinimal)
++            {
++                DrawMinimal(sprites);
++                return sprites;
++            }
++            if (IsCompact)
++            {
++                DrawCompact(sprites);
++                return sprites;
++            }
++
+             var area = GetMapArea();
+             UpdateNetworkColors();
+             float messageScale = 0.6f * LayoutScale;
+@@ -634,6 +652,135 @@ namespace LcdMod.Client.Apps
+             return sprites;
+         }
+ 
++        int NetworkCount()
++        {
++            int count = 0;
++            for (int i = 0; i < _nodes.Count; i++)
++                if (_rootSize[i] > 0)
++                    count++;
++            return count;
++        }
++
++        Color DamageColor(Color accent)
++        {
++            return Destroyed > 0 ? GetErrorColor() : Damaged > 0 ? GetWarningColor() : accent;
++        }
++
++        void DrawMinimal(List<MySprite> sprites)
++        {
++            var view = ViewBox;
++            Color fg = Host.ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color warning = GetWarningColor();
++            Color error = GetErrorColor();
++            Color track = Color.Lerp(BackgroundColor, fg, RING_TRACK_MIX);
++            int intact = _blocks.Count - Damaged;
++            bool valid = BlueprintTotal > 0;
++            float total = valid ? BlueprintTotal : 1f;
++            _segments[0] = new DonutSegment(intact / total, accent);
++            _segments[1] = new DonutSegment(Damaged / total, warning);
++            _segments[2] = new DonutSegment(Destroyed / total, error);
++            Color centerColor = valid ? DamageColor(accent) : fg;
++            string center = valid ? FormatingHelper.PercentageToString(intact / total) : null;
++            string line2 = valid ? string.Format(Label("BlocksNetworks"), _blocks.Count, NetworkCount()) : null;
++            float margin = Bare.Margin;
++            float lineHeight = Bare.LineHeight(1f);
++
++            if (BareLayout.IsWide(view))
++            {
++                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
++                Bare.Ring(sprites, ringArea, _segments, track, center, centerColor, MINIMAL_HERO_FONT_MUL);
++                float left = ringArea.Right + margin;
++                float textTop = view.Center.Y - lineHeight;
++                if (valid)
++                    DrawCounts(sprites, left, textTop, view.Right - left, lineHeight, false, intact, fg, warning, error);
++                Bare.Text(sprites, line2, new Vector2(left, textTop + lineHeight), TextAlignment.LEFT, 1f, fg, view.Right - left, lineHeight);
++                return;
++            }
++
++            float textBlock = lineHeight * 2f + margin;
++            float ringSide = Math.Min(view.Width, view.Height - textBlock);
++            if (ringSide < textBlock)
++            {
++                Bare.Ring(sprites, view, _segments, track, center, centerColor, MINIMAL_HERO_FONT_MUL);
++                return;
++            }
++
++            float top = view.Y + (view.Height - ringSide - textBlock) * 0.5f;
++            var ring = new RectangleF(view.X, top, view.Width, ringSide);
++            Bare.Ring(sprites, ring, _segments, track, center, centerColor, MINIMAL_HERO_FONT_MUL);
++            float linesTop = ring.Bottom + margin;
++            if (valid)
++                DrawCounts(sprites, view.Center.X, linesTop, view.Width, lineHeight, true, intact, fg, warning, error);
++            Bare.Text(sprites, line2, new Vector2(view.Center.X, linesTop + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
++        }
++
++        void DrawCounts(List<MySprite> sprites, float x, float y, float maxWidth, float maxHeight, bool centered, int intact, Color fg, Color warning, Color error)
++        {
++            float scale = FontScale;
++            string intactText = intact.ToString();
++            string damagedText = Damaged.ToString();
++            string destroyedText = Destroyed.ToString();
++            var size = MeasureText(intactText + SEPARATOR + damagedText + SEPARATOR + destroyedText, scale);
++            if (size.X > maxWidth || size.Y > maxHeight)
++                return;
++
++            var position = new Vector2(centered ? x - size.X * 0.5f : x, y);
++            position.X += AddText(sprites, intactText, position, scale, TextAlignment.LEFT, fg);
++            position.X += AddText(sprites, SEPARATOR, position, scale, TextAlignment.LEFT, fg);
++            position.X += AddText(sprites, damagedText, position, scale, TextAlignment.LEFT, Damaged > 0 ? warning : fg);
++            position.X += AddText(sprites, SEPARATOR, position, scale, TextAlignment.LEFT, fg);
++            AddText(sprites, destroyedText, position, scale, TextAlignment.LEFT, Destroyed > 0 ? error : fg);
++        }
++
++        void DrawCompact(List<MySprite> sprites)
++        {
++            if (_blocks.Count == 0)
++            {
++                Host.DrawMessage(sprites, Label("NoConveyors"), "Warning", GetWarningColor());
++                return;
++            }
++
++            Color fg = Host.ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color warning = GetWarningColor();
++            Color error = GetErrorColor();
++            int intact = _blocks.Count - Damaged;
++            string percent = BlueprintTotal > 0 ? FormatingHelper.PercentageToString(intact / (float)BlueprintTotal) : LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
++
++            _rows.Clear();
++            if (HasBlueprint)
++                _rows.Add(new BareLayout.KvRow { Label = Label("Blueprint"), Value = BlueprintTotal.ToString(), ValueColor = fg, Bar = -1f });
++            _rows.Add(new BareLayout.KvRow { Label = Label("Intact"), Value = intact + SEPARATOR + percent, ValueColor = DamageColor(accent), Bar = -1f });
++            if (Damaged > 0)
++                _rows.Add(new BareLayout.KvRow
++                {
++                    Label = Label("Damaged"),
++                    Value = Damaged + SEPARATOR + FormatingHelper.TrimName(WorstDamagedName) + " " + FormatingHelper.PercentageToString(WorstDamagedRatio),
++                    ValueColor = warning,
++                    Bar = -1f
++                });
++            if (Destroyed > 0 && HasBlueprint)
++                _rows.Add(new BareLayout.KvRow { Label = Label("Destroyed"), Value = Destroyed.ToString(), ValueColor = error, Bar = -1f });
++            _rows.Add(new BareLayout.KvRow
++            {
++                Label = Label("OffBottlenecks"),
++                Value = _alerts + SEPARATOR + _bottlenecks,
++                ValueColor = _alerts > 0 ? error : _bottlenecks > 0 ? warning : fg,
++                Bar = -1f
++            });
++
++            Bare.Kv(sprites, ViewBox, _rows, fg, Theme);
++        }
++
++        string Label(string key)
++        {
++            string text;
++            if (!_labels.TryGetValue(key, out text))
++                _labels[key] = text = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_" + key);
++            return text;
++        }
++
+         RectangleF GetMapArea()
+         {
+             float margin = 4f * Scale;
