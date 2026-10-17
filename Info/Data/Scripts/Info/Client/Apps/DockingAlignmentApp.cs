@@ -640,7 +640,7 @@ namespace LcdMod.Client.Apps
         void DrawAlignment(Vector3D positionOffset, Vector3D rotationOffset, Vector3D velocityOffset,
             double dockingAxisDistance, double closingVelocity)
         {
-            var foreground = Surface.ScriptForegroundColor;
+            var foreground = Host.ForegroundColor;
             var statusColor = GetStatusColor();
 
             DrawAngleGuides(_sprites, _layout.Square, statusColor, (float)rotationOffset.X, (float)rotationOffset.Y);
@@ -942,7 +942,7 @@ namespace LcdMod.Client.Apps
             if (connector.Status == MyShipConnectorStatus.Connected)
                 return GetHeaderColor();
 
-            return Surface.ScriptForegroundColor;
+            return Host.ForegroundColor;
         }
 
         static Vector2 NormalizedToSquare(RectangleF square, float x, float y)

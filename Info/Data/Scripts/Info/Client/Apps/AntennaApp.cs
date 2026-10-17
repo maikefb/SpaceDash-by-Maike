@@ -455,7 +455,7 @@ namespace LcdMod.Client.Apps
                     yStart + cellPadding / 2f,
                     (xEnd - xStart) - cellPadding,
                     rowHeight - cellPadding);
-                if (!ThemeChrome.DrawCard(sprites, Theme, cellRect, backgroundColor, backgroundColor, Host.Surface.ScriptForegroundColor, GeneralComponent.GetScale()))
+                if (!ThemeChrome.DrawCard(sprites, Theme, cellRect, backgroundColor, backgroundColor, Host.ForegroundColor, GeneralComponent.GetScale()))
                 {
                     var dropShadow = new RectangleF(cellRect.Position + 2, cellRect.Size);
                     BorderRenderer.CreateSpritesFromRect(dropShadow, sprites, hsv.HSVtoColor(), radiusScale: GeneralComponent.GetScale());
@@ -463,7 +463,7 @@ namespace LcdMod.Client.Apps
                 }
             }
 
-            var foreground = drawAsLines ? entry.StatusColor : Host.Surface.ScriptForegroundColor;
+            var foreground = drawAsLines ? entry.StatusColor : Host.ForegroundColor;
             var iconSizeVector = new Vector2(iconRect.Width, iconRect.Height);
             var centeringOffsetY = 0f;
             var skipLaserOffset = string.Equals(entry.StatusIcon, "RotationPlane", StringComparison.Ordinal)

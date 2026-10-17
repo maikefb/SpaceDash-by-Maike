@@ -177,7 +177,7 @@ namespace LcdMod.Client.Apps
                 Data = sb.ToString(),
                 Position = pos,
                 RotationOrScale = textScale,
-                Color = Surface.ScriptForegroundColor,
+                Color = Host.ForegroundColor,
                 Alignment = TextAlignment.LEFT,
                 FontId = TextFont
             });
@@ -200,7 +200,7 @@ namespace LcdMod.Client.Apps
                 Data = sb.ToString(),
                 Position = pos,
                 RotationOrScale = textScale,
-                Color = Surface.ScriptForegroundColor,
+                Color = Host.ForegroundColor,
                 Alignment = TextAlignment.LEFT,
                 FontId = TextFont
             });
@@ -227,7 +227,7 @@ namespace LcdMod.Client.Apps
                 Data = "Circle",
                 Position = pos,
                 Size = legendSize,
-                Color = Surface.ScriptForegroundColor,
+                Color = Host.ForegroundColor,
                 Alignment = TextAlignment.CENTER,
             });
 

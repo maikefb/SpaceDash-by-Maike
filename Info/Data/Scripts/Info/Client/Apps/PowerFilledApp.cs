@@ -251,7 +251,7 @@ namespace LcdMod.Client.Apps
             float footerPad = 6f * owner.ConfiguredScale;
             float contentLeft = footerLeft + footerPad;
             float contentRight = footerLeft + footerWidth - footerPad;
-            Color fg = owner.Surface.ScriptForegroundColor;
+            Color fg = owner.ForegroundColor;
 
             sprites.Add(new MySprite
             {
@@ -346,7 +346,7 @@ namespace LcdMod.Client.Apps
             float centerY = bounds.Y + iconSize / 2f;
 
             DrawFillableTexture(sprites, slot.FillableTexture, new Vector2(centerX, centerY), iconSize, slot.Ratio, slot.FillColor,
-                owner.Surface.ScriptForegroundColor, slot.DrawCenterIcon, slot.CenterIconRotation, slot.CenterIconScale);
+                owner.ForegroundColor, slot.DrawCenterIcon, slot.CenterIconRotation, slot.CenterIconScale);
 
             sprites.Add(new MySprite
             {
@@ -354,7 +354,7 @@ namespace LcdMod.Client.Apps
                 Data = slot.PercentText,
                 Position = new Vector2(centerX, bounds.Y + iconSize + labelGap),
                 RotationOrScale = pctScale,
-                Color = owner.Surface.ScriptForegroundColor,
+                Color = owner.ForegroundColor,
                 Alignment = TextAlignment.CENTER,
                 FontId = TextFont
             });
