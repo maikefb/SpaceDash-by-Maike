@@ -733,7 +733,7 @@ namespace LcdMod.Client.Apps
                 return;
             }
 
-            Host.DrawMessage(_sprites, message, "Warning", GetWarningColor(), GeneralComponent.GetScale());
+            Host.DrawMessage(_sprites, message, BareIcons.Warning, GetWarningColor(), GeneralComponent.GetScale());
         }
 
         void DrawMinimal(Vector3D positionOffset, double dockingAxisDistance, bool hasTarget)

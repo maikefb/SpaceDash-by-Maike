@@ -919,7 +919,7 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
     <value>[SD] Mapa de Esteiras</value>
   </data>
   <data name="LcdMod_ConveyorMap_Footer" xml:space="preserve">
-    <value>{0} REDES | {1} BLOCOS | {2} PONTAS VAZIAS | {3} GARGALOS | {4} ALERTAS</value>
+    <value>{0} REDES | {1} BLOCOS | {2} PONTAS VAZIAS | {3} GARGALOS</value>
   </data>
   <data name="LcdMod_ConveyorMap_Legend" xml:space="preserve">
     <value>COR = REDE FÍSICA | FLUXO NÃO AVALIADO</value>
