@@ -29,3 +29,6 @@ Task 1: reviewer a1aa34dfe11143487; CLEAN (minors: centro do anel vazio em vez d
 Ruling: BuildPalette.paintPanel exclui IsBare (cores contrastam com o fundo, não com um painel que não é desenhado) — commit 0d17cc1.
 Task 2: reviewer a224e849b775d39a9; CLEAN. Task 2: complete (commit 4c15e3e).
 Task 4: implementer ac4587b2bdfeca520; DONE_WITH_CONCERNS (árvore; sem resx; DrawPlotWithoutAxis → DrawCurve; linhas de bateria somem sem baterias).
+Task 7: implementer ac37a16cdf95ca01d; DONE_WITH_CONCERNS (árvore; resx nova: LcdMod_DefenseDashboard_Weapons = weapons/armas; munição omitida — app não expõe).
+Task 8: implementer a881f1becfaefeba2; DONE_WITH_CONCERNS (árvore; resx novas: LcdMod_DockingAlignment_State_Connected/Ready/Aligned/Adjust; tolerâncias 2°/0,25 m escolhidas pelo implementador).
+Task 5: reviewer ad4afcdb4882a6ae1; CLEAN (minors: ramos 'sem itens' inalcançáveis porque o surface script intercepta antes). Task 5: complete (commit 4626e30).
