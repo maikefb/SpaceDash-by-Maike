@@ -77,6 +77,8 @@ namespace LcdMod.Client.Apps
         readonly List<int> _markerNode = new List<int>();
         readonly List<int> _markerFace = new List<int>();
         readonly List<IMyTerminalBlock> _networkAnchors = new List<IMyTerminalBlock>();
+        readonly List<IMySlimBlock> _projected = new List<IMySlimBlock>();
+        readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
         int[] _anchorOfRoot = new int[0];
         readonly Color[] _networkColors = new Color[NetworkHueShifts.Length];
         int[] _unionFind = new int[0];
@@ -101,6 +103,12 @@ namespace LcdMod.Client.Apps
         float FooterHeight => LEGEND_HEIGHT_BASE * LayoutScale;
 
         public bool HasData { get; private set; }
+        public int Damaged { get; private set; }
+        public int Destroyed { get; private set; }
+        public int BlueprintTotal { get; private set; }
+        public string WorstDamagedName { get; private set; }
+        public float WorstDamagedRatio { get; private set; }
+        public bool HasBlueprint { get; private set; }
 
         /// <summary>Um bloco de terminal por rede (o de menor EntityId): é o que o jogador escolhe no terminal.</summary>
         public IReadOnlyList<IMyTerminalBlock> NetworkAnchors => _networkAnchors;
@@ -163,7 +171,8 @@ namespace LcdMod.Client.Apps
             if (FilterToNetwork(ConveyorReferenceComponent.EntityId))
                 BuildNodes(largeGrid);
 
-            _tooLarge = _nodes.Count > MAX_NODES;
+            CollectDamage(grid, all);
+            _tooLarge = _nodes.Count > MAX_NODES || Destroyed >= MAX_NODES;
             if (_tooLarge || _nodes.Count == 0)
                 return;
 
@@ -180,6 +189,71 @@ namespace LcdMod.Client.Apps
             var area = GetMapArea();
             double aspect = area.Width > 0f ? area.Height / area.Width : 1d;
             _layout.Run(Math.Max(1, (int)Math.Ceiling(Math.Sqrt(_nodes.Count * aspect))), aspect);
+        }
+
+        void CollectDamage(IMyCubeGrid grid, IList<IMyCubeBlock> all)
+        {
+            Damaged = 0;
+            WorstDamagedName = null;
+            WorstDamagedRatio = 1f;
+            for (int b = 0; b < _blocks.Count; b++)
+            {
+                var slim = _blocks[b].SlimBlock;
+                if (slim == null || slim.IsFullIntegrity)
+                    continue;
+                Damaged++;
+                float ratio = slim.BuildLevelRatio;
+                if (ratio >= WorstDamagedRatio)
+                    continue;
+                WorstDamagedRatio = ratio;
+                var terminal = _blocks[b] as IMyTerminalBlock;
+                WorstDamagedName = terminal != null ? terminal.CustomName : slim.BlockDefinition.Id.SubtypeName;
+            }
+
+            Destroyed = 0;
+            var projector = FindRepairProjector(grid, all);
+            HasBlueprint = projector != null;
+            if (HasBlueprint)
+            {
+                var projected = projector.ProjectedGrid;
+                for (int i = 0; i < _projected.Count && Destroyed < MAX_NODES; i++)
+                {
+                    var fat = _projected[i].FatBlock;
+                    if (fat == null || fat.Model == null || GetPorts(fat.Model).Count == 0)
+                        continue;
+                    if (!grid.CubeExists(grid.WorldToGridInteger(projected.GridIntegerToWorld(_projected[i].Position))))
+                        Destroyed++;
+                }
+            }
+            _projected.Clear();
+            BlueprintTotal = _blocks.Count + Destroyed;
+        }
+
+        IMyProjector FindRepairProjector(IMyCubeGrid grid, IList<IMyCubeBlock> all)
+        {
+            for (int i = 0; i < all.Count; i++)
+            {
+                var projector = all[i] as IMyProjector;
+                if (projector == null || projector.Closed || !projector.IsProjecting)
+                    continue;
+                var projected = projector.ProjectedGrid;
+                if (projected == null || projected.GridSizeEnum != grid.GridSizeEnum)
+                    continue;
+
+                _projected.Clear();
+                projected.GetBlocks(_projected, null);
+                if (_projected.Count == 0)
+                    continue;
+
+                int matches = 0;
+                for (int j = 0; j < _projected.Count; j++)
+                    if (grid.CubeExists(grid.WorldToGridInteger(projected.GridIntegerToWorld(_projected[j].Position))))
+                        matches++;
+                if ((float)matches / _projected.Count >= 0.5f)
+                    return projector;
+            }
+            _projected.Clear();
+            return null;
         }
 
         void CollectPorts(IMyCubeGrid grid, IList<IMyCubeBlock> all)
@@ -673,10 +747,24 @@ namespace LcdMod.Client.Apps
             var position = new Vector2(left, top + textY);
             for (int i = 0; i < summary.Length; i++)
             {
+                if (summary[i].Contains("{4}"))
+                    continue;
                 if (i > 0)
                     position.X += AddText(sprites, "|", position, textScale, TextAlignment.LEFT, foreground);
-                string part = string.Format(summary[i], _networkCount, _blocks.Count - _filteredOut, _markerNode.Count, _bottlenecks, _alerts);
+                string part = string.Format(summary[i], _networkCount, _blocks.Count - _filteredOut, _markerNode.Count, _bottlenecks);
                 position.X += AddText(sprites, part, position, textScale, TextAlignment.LEFT, SummaryColor(summary[i], foreground));
+            }
+            position.X += AddText(sprites, "|", position, textScale, TextAlignment.LEFT, foreground);
+            position.X += AddText(sprites, " " + _alerts + " " + Loc("Alerts") + " ", position, textScale, TextAlignment.LEFT, _alerts > 0 ? GetErrorColor() : foreground);
+
+            string damage = Damaged > 0 && Destroyed > 0 ? "| " + Damaged + " " + Loc("Damaged") + " | " + Destroyed + " " + Loc("Destroyed")
+                : Damaged > 0 ? "| " + Damaged + " " + Loc("Damaged")
+                : Destroyed > 0 ? "| " + Destroyed + " " + Loc("Destroyed") : null;
+            if (damage != null)
+            {
+                position.X += MeasureText(" ", textScale).X;
+                Bare.Text(sprites, damage, position, TextAlignment.LEFT, 0.46f * Scale, Destroyed > 0 ? GetErrorColor() : GetWarningColor(),
+                    ViewBox.Right - position.X, rowHeight);
             }
 
             var legend = _footerLegend ?? (_footerLegend = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_Legend").Split('|'));
@@ -701,9 +789,15 @@ namespace LcdMod.Client.Apps
                 return Color.Yellow.EnsureMinimalContrast(BackgroundColor);
             if (template.Contains("{3}") && _bottlenecks > 0)
                 return GetWarningColor();
-            if (template.Contains("{4}") && _alerts > 0)
-                return GetErrorColor();
             return foreground;
+        }
+
+        string Loc(string key)
+        {
+            string text;
+            if (!_loc.TryGetValue(key, out text))
+                _loc[key] = text = LocHelper.GetLoc(MOD_PREFIX + "ConveyorMap_" + key).ToUpperInvariant();
+            return text;
         }
 
         float AddText(List<MySprite> sprites, string text, Vector2 position, float scale, TextAlignment alignment, Color color)
