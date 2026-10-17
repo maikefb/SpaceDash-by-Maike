@@ -118,7 +118,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 ? title.Substring(SCRIPT_LIST_PREFIX.Length)
                 : title;
 
-        public float ConfiguredScale => GeneralComponent.GetScale();
+        public float ConfiguredScale => Config == null ? 1f : GeneralComponent.GetScale();
         public float FontScale => (_userFontScale <= 0f ? 1f : _userFontScale) * ThemeChrome.FontBoost(_userTheme);
         protected float LayoutScale => ConfiguredScale * FontScale;
 
