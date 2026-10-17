@@ -39,6 +39,11 @@ namespace LcdMod.Client.Apps
         const string ICON_ICE = "MyObjectBuilder_Ore/Ice";
         const string ICON_BOTTLE = "MyObjectBuilder_GasContainerObject/HydrogenBottle";
         const string ICON_FALLBACK = "IconEnergy";
+        const float MINIMAL_HERO_FONT_MUL = 3f;
+        const float TRACK_MIX = 0.15f;
+        const string SEPARATOR = " · ";
+        static readonly Color H2_COLOR = new Color(64, 156, 255);
+        static readonly Color O2_COLOR = Color.White;
         static readonly string[] LABEL_ICONS = { ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_O2, ICON_BOTTLE };
         public const int STATUS_NOMINAL = 0;
         public const int STATUS_ATTENTION = 1;
@@ -308,6 +313,7 @@ namespace LcdMod.Client.Apps
 
         readonly List<MySprite> _sprites = new List<MySprite>();
         readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
+        readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
 
         public override void LayoutChanged()
         {
@@ -315,10 +321,187 @@ namespace LcdMod.Client.Apps
             _loc.Clear();
         }
 
+        string StatusText()
+        {
+            return Status == STATUS_CRITICAL ? Loc("Critical") : Status == STATUS_ATTENTION ? Loc("Attention") : Loc("Nominal");
+        }
+
+        Color StatusColor(Color accent)
+        {
+            return Status == STATUS_CRITICAL ? GetErrorColor() : Status == STATUS_ATTENTION ? GetWarningColor() : accent;
+        }
+
+        string LevelText(GasStat stat, string na)
+        {
+            return stat.Capacity > 0d ? FormatingHelper.PercentageToString((float)stat.Level) : na;
+        }
+
+        string MinimalLine()
+        {
+            string status = StatusText();
+            bool h2 = _h2.Tanks > 0;
+            bool o2 = _o2.Tanks > 0;
+            if (!h2 && !o2)
+                return status;
+            bool worstIsH2 = h2 && (!o2 || _h2.Level <= _o2.Level);
+            return status + SEPARATOR + Loc(worstIsH2 ? "H2Stored" : "O2Stored");
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            var view = ViewBox;
+            Color fg = ForegroundColor;
+            Color track = Color.Lerp(BackgroundColor, fg, TRACK_MIX);
+            Color lineColor = StatusColor(GetHeaderColor());
+            string line = HasData ? MinimalLine() : null;
+            float margin = Bare.Margin;
+            float lineHeight = Bare.LineHeight(1f);
+
+            if (BareLayout.IsWide(view))
+            {
+                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
+                DrawRings(sprites, ringArea, fg, track);
+                float left = ringArea.Right + margin;
+                Bare.Text(sprites, line, new Vector2(left, view.Center.Y - lineHeight * 0.5f), TextAlignment.LEFT, 1f, lineColor, view.Right - left, view.Height);
+                return;
+            }
+
+            var rings = new RectangleF(view.X, view.Y, view.Width, view.Height - lineHeight - margin);
+            DrawRings(sprites, rings, fg, track);
+            Bare.Text(sprites, line, new Vector2(view.Center.X, rings.Bottom + margin), TextAlignment.CENTER, 1f, lineColor, view.Width, lineHeight);
+        }
+
+        void DrawRings(List<MySprite> sprites, RectangleF area, Color fg, Color track)
+        {
+            bool h2 = _h2.Tanks > 0;
+            bool o2 = _o2.Tanks > 0;
+            if (!h2 && !o2)
+            {
+                Bare.Ring(sprites, area, 0f, fg, track, null, fg, MINIMAL_HERO_FONT_MUL);
+                return;
+            }
+            if (h2 != o2)
+            {
+                DrawRing(sprites, area, h2 ? _h2 : _o2, h2 ? H2_COLOR : O2_COLOR, fg, track);
+                return;
+            }
+
+            RectangleF first, second;
+            if (BareLayout.IsTall(area))
+            {
+                float half = area.Height * 0.5f;
+                first = new RectangleF(area.X, area.Y, area.Width, half);
+                second = new RectangleF(area.X, area.Y + half, area.Width, half);
+            }
+            else
+            {
+                float half = area.Width * 0.5f;
+                first = new RectangleF(area.X, area.Y, half, area.Height);
+                second = new RectangleF(area.X + half, area.Y, half, area.Height);
+            }
+            DrawRing(sprites, first, _h2, H2_COLOR, fg, track);
+            DrawRing(sprites, second, _o2, O2_COLOR, fg, track);
+        }
+
+        void DrawRing(List<MySprite> sprites, RectangleF area, GasStat stat, Color fill, Color fg, Color track)
+        {
+            string na = LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
+            Bare.Ring(sprites, area, (float)stat.Level, fill, track, LevelText(stat, na), fg, MINIMAL_HERO_FONT_MUL);
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            Color fg = ForegroundColor;
+            Color warn = GetWarningColor();
+            Color error = GetErrorColor();
+            string na = LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
+            _kv.Clear();
+
+            if (_h2.Tanks > 0)
+                _kv.Add(StoredRow(_h2, ICON_H2, "H2Stored", H2_COLOR, fg, warn, error, na));
+            if (_o2.Tanks > 0)
+                _kv.Add(StoredRow(_o2, ICON_O2, "O2Stored", O2_COLOR, fg, warn, error, na));
+
+            if (_gens > 0)
+            {
+                _kv.Add(new BareLayout.KvRow
+                {
+                    Label = Loc("Generators"),
+                    Icon = _genIcon ?? ICON_FALLBACK,
+                    Value = _gensActive + "/" + _gens + SEPARATOR + FormatingHelper.VolumeToString(_h2.ProdLps + _o2.ProdLps) + "/s",
+                    ValueColor = _gensActive == 0 ? warn : fg,
+                    Bar = -1f
+                });
+            }
+
+            if (_h2.Tanks > 0 || _o2.Tanks > 0)
+            {
+                string flow = _h2.Tanks > 0 && _o2.Tanks > 0 ? FlowText(_h2, na) + SEPARATOR + FlowText(_o2, na)
+                    : FlowText(_h2.Tanks > 0 ? _h2 : _o2, na);
+                bool draining = (_h2.Tanks > 0 && _h2.RateLps < 0d) || (_o2.Tanks > 0 && _o2.RateLps < 0d);
+                _kv.Add(new BareLayout.KvRow
+                {
+                    Label = Loc("Flow"),
+                    Icon = _h2.Tanks > 0 ? ICON_H2 : ICON_O2,
+                    Value = flow,
+                    ValueColor = draining ? warn : fg,
+                    Bar = -1f
+                });
+            }
+
+            if (HasData)
+            {
+                double ice = _iceOnGrid + _iceInGens;
+                _kv.Add(new BareLayout.KvRow
+                {
+                    Label = Loc("IceReserve"),
+                    Icon = ICON_ICE,
+                    Value = FormatingHelper.MassToString(ice),
+                    ValueColor = _gens > 0 && _iceInGens <= 0d ? warn : fg,
+                    Bar = -1f
+                });
+            }
+
+            if (_kv.Count == 0)
+            {
+                Host.DrawMessage(sprites, na, "Warning", warn);
+                return;
+            }
+            Bare.Kv(sprites, ViewBox, _kv, fg, Theme);
+        }
+
+        BareLayout.KvRow StoredRow(GasStat stat, string icon, string labelKey, Color gasColor, Color fg, Color warn, Color error, string na)
+        {
+            return new BareLayout.KvRow
+            {
+                Label = Loc(labelKey),
+                Icon = icon,
+                Value = LevelText(stat, na) + SEPARATOR + FormatingHelper.VolumeToString(stat.Stored) + "/" + FormatingHelper.VolumeToString(stat.Capacity),
+                ValueColor = stat.LowCritical > 0 ? error : stat.LowAttention > 0 ? warn : fg,
+                Bar = (float)stat.Level,
+                BarColor = gasColor
+            };
+        }
+
+        static string FlowText(GasStat stat, string na)
+        {
+            return stat.HasRate ? (stat.RateLps > 0d ? "+" : string.Empty) + FormatingHelper.VolumeToString(stat.RateLps) + "/s" : na;
+        }
+
         public override List<MySprite> GetSprites()
         {
             var sprites = _sprites;
             sprites.Clear();
+            if (IsMinimal)
+            {
+                DrawMinimal(sprites);
+                return sprites;
+            }
+            if (IsCompact)
+            {
+                DrawCompact(sprites);
+                return sprites;
+            }
             if (Host.Frame != null)
             {
                 DrawFramed(sprites);
