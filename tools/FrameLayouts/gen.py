@@ -15,6 +15,9 @@ ID_PREFIX = "LcdInfo_"
 SKIP = {"LcdInfo_InGameClockDashboard", "LcdInfo_Radar"}
 # Cabeçalho "GRID / Telemetria da grid em tempo real" saiu das molduras: o .md do designer continua com ele, o mod não.
 SKIP_LABELS = {"GRID", "Telemetria da grid", "Telemetria", "da grid", "em tempo real"}
+# Telas cujos cartões ficam só com o ícone da textura: o rótulo com largura máxima sai e o campo de valor da mesma
+# linha cresce para a esquerda até onde o rótulo começava.
+ICON_ONLY = {"LcdInfo_EnergyChart"}
 
 # Texto de referência (PT) -> chave resx. "=texto" é literal, "@Chave" é chave do jogo (não validada no resx do mod).
 LABEL_KEYS = {
@@ -142,7 +145,30 @@ def parse(md_path, theme):
                 sys.exit(f"rótulo sem chave no mapa: {ref!r} ({theme}/{screen['id']})")
             maxw = 0.0 if c[9] == "—" else num(c[9])
             screen["labels"].append((LABEL_KEYS[ref], num(c[2]), num(c[3]), ALIGN[c[4]], num(c[6]), int(c[7]) >= 700, maxw, ref))
+    for screen in screens:
+        if screen["id"] in ICON_ONLY:
+            icon_only(screen)
     return screens
+
+
+def icon_only(screen):
+    """Remove os rótulos de cartão (com largura máxima) e estende o campo de texto da mesma linha até o x do rótulo."""
+    kept = []
+    for label in screen["labels"]:
+        _, lx, ly, _, _, _, maxw, ref = label
+        if maxw <= 0:
+            kept.append(label)
+            continue
+        hit = None
+        for i, (field, kind, x, y, w, h, font, align) in enumerate(screen["slots"]):
+            if kind == "t" and x > lx and y <= ly <= y + h:
+                hit = i
+                break
+        if hit is None:
+            sys.exit(f"rótulo sem campo na mesma linha: {ref!r} ({screen['theme']}/{screen['id']})")
+        field, kind, x, y, w, h, font, align = screen["slots"][hit]
+        screen["slots"][hit] = (field, kind, lx, y, w + (x - lx), h, font, align)
+    screen["labels"] = kept
 
 
 def f(value):
