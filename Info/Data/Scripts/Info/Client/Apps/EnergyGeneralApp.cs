@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Gui.ControlsTemplates.Custom.Energy;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.Modules.Energy;
 using VRage.Game.GUI.TextPanel;
@@ -13,8 +14,15 @@ namespace LcdMod.Client.Apps
     internal sealed class EnergyGeneralApp : EnergyAppBase
     {
         const float KIND_VALUE = EnergyTheme.VALUE * 1.2f;
+        const string ICON_POWER = "IconEnergy";
+        const string ICON_BATTERY = "Battery";
+        const float MINIMAL_HERO_FONT_MUL = 3f;
+        const float RING_TRACK_MIX = 0.15f;
+        const float USED_WARN_RATIO = 0.75f;
+        const float USED_ERROR_RATIO = 0.9f;
 
         readonly List<MySprite> _sprites = new List<MySprite>(170);
+        readonly List<BareLayout.Tile> _tiles = new List<BareLayout.Tile>();
 
         public EnergyGeneralApp(IAppHost host) : base(host)
         {
@@ -28,6 +36,16 @@ namespace LcdMod.Client.Apps
             if (Mode != EnergyLayoutMode.Tiny && !FullLayoutFits())
                 Mode = EnergyLayoutMode.Tiny;
             _sprites.Clear();
+            if (IsMinimal)
+            {
+                DrawMinimal(_sprites);
+                return _sprites;
+            }
+            if (IsCompact)
+            {
+                DrawCompact(_sprites);
+                return _sprites;
+            }
             var snapshot = Snapshot;
             if (Host.Frame != null)
             {
@@ -49,6 +67,69 @@ namespace LcdMod.Client.Apps
             }
 
             return _sprites;
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            var s = Snapshot;
+            var view = Host.ViewBox;
+            Color fg = GetForegroundColor();
+            Color track = Color.Lerp(Host.BackgroundColor, fg, RING_TRACK_MIX);
+            bool valid = s.HasData && s.ProducedMw > EnergySnapshot.EPSILON_MW;
+            float fraction = valid ? MathHelper.Clamp(s.ConsumedMw / s.ProducedMw, 0f, 1f) : 0f;
+            Color fill = !valid ? fg : fraction > USED_ERROR_RATIO ? GetErrorColor() : fraction > USED_WARN_RATIO ? GetWarningColor() : GetHeaderColor();
+            string center = !s.HasData ? null : valid ? FormatingHelper.PercentageToString(fraction) : NotAvailable;
+            string aux = s.HasData
+                ? "P " + FormatingHelper.MegaWattsToString(s.ProducedMw) + "  C " + FormatingHelper.MegaWattsToString(s.ConsumedMw) + "  " + PowerText(s.NetMw, true, float.MaxValue)
+                : null;
+            float margin = Bare.Margin;
+            float lineHeight = Bare.LineHeight(1f);
+
+            if (BareLayout.IsWide(view))
+            {
+                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
+                Bare.Ring(sprites, ringArea, fraction, fill, track, center, fill, MINIMAL_HERO_FONT_MUL);
+                float left = ringArea.Right + margin;
+                Bare.Text(sprites, aux, new Vector2(left, view.Center.Y - lineHeight * 0.5f), TextAlignment.LEFT, 1f, fg, view.Right - left, view.Height);
+                return;
+            }
+
+            var ring = new RectangleF(view.X, view.Y, view.Width, view.Height - lineHeight - margin);
+            Bare.Ring(sprites, ring, fraction, fill, track, center, fill, MINIMAL_HERO_FONT_MUL);
+            Bare.Text(sprites, aux, new Vector2(view.Center.X, ring.Bottom + margin), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            var s = Snapshot;
+            if (!s.HasData)
+            {
+                Host.DrawMessage(sprites, NotAvailable, "Warning", GetWarningColor());
+                return;
+            }
+
+            Color fg = GetForegroundColor();
+            Color accent = GetHeaderColor();
+            bool hasBatteries = s.HasBatteries;
+
+            _tiles.Clear();
+            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Production"), Value = FormatingHelper.MegaWattsToString(s.ProducedMw), ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Consumption"), Value = FormatingHelper.MegaWattsToString(s.ConsumedMw), ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile
+            {
+                Icon = ICON_BATTERY,
+                Label = Loc("Charge"),
+                Value = hasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
+                ValueColor = hasBatteries ? BatteryStatusColor(s.BatteryStatus) : fg
+            });
+            _tiles.Add(new BareLayout.Tile
+            {
+                Icon = ICON_POWER,
+                Label = Loc("Balance"),
+                Value = PowerText(s.NetMw, true, float.MaxValue),
+                ValueColor = s.NetMw >= 0f ? accent : GetErrorColor()
+            });
+            Bare.Tiles(sprites, Host.ViewBox, _tiles, 2, 2, fg, accent, Theme);
         }
 
         /// <summary>
