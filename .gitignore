@@ -3,3 +3,5 @@ tools/CompileCheck/obj/
 tools/LayoutCheck/bin/
 tools/LayoutCheck/obj/
 .maike-lcd-build
+IMAGENS/
+.superpowers/brainstorm/
