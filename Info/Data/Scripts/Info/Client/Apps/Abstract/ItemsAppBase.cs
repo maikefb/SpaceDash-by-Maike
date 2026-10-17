@@ -148,6 +148,21 @@ namespace LcdMod.Client.Apps.Abstract
 
         protected const int LINE_HEIGHT = 30;
         protected const int MINIMUM_COL_WIDTH = 220;
+        const int ICON_GRID_PAGE_FRAMES = 300;
+        const float ICON_GRID_ICON_BASE = 32f;
+        const float ICON_GRID_GAP_BASE = 4f;
+        int _lastIconGridPage;
+
+        protected ObservableList<ItemEntry> DisplayItems => _displayItems;
+        protected int IconGridPageCount { get; private set; } = 1;
+        protected int IconGridPage
+        {
+            get
+            {
+                long frame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
+                return (int)((frame / ICON_GRID_PAGE_FRAMES) % Math.Max(1, IconGridPageCount));
+            }
+        }
 
         protected ItemsApp(IAppHost host)
             : this(host, null)
@@ -249,6 +264,16 @@ namespace LcdMod.Client.Apps.Abstract
                 if (_activeScrollPanel != null && _activeScrollPanel.UpdateAutoScroll())
                     InvalidateContentSprites();
 
+                if (IsBare && IconGridPageCount > 1)
+                {
+                    int page = IconGridPage;
+                    if (page != _lastIconGridPage)
+                    {
+                        _lastIconGridPage = page;
+                        InvalidateContentSprites();
+                    }
+                }
+
                 var hasFilters = HasConfiguredFilters();
                 var filterStateChanged = HasFilters != hasFilters;
                 if (HasRenderConfigChanged() || filterStateChanged)
@@ -293,6 +318,19 @@ namespace LcdMod.Client.Apps.Abstract
         {
             var sprites = _sprites;
             sprites.Clear();
+            if (IsBare)
+            {
+                ClearInteractiveTree();
+                _contentSpritesDirty = true;
+                _footerSpritesDirty = true;
+                if (IsMinimal)
+                    DrawMinimal(sprites);
+                else
+                    DrawCompact(sprites);
+                ClearDirtyAfterRender();
+                return sprites;
+            }
+
             CaptureDirtyControlSections();
 
             if (_contentSpritesDirty)
@@ -757,6 +795,58 @@ namespace LcdMod.Client.Apps.Abstract
 
         protected virtual void DrawFooter(List<MySprite> frame)
         {
+        }
+
+        protected virtual void DrawMinimal(List<MySprite> s)
+        {
+            DrawIconGrid(s, ViewBox, _displayItems, IconGridPage);
+        }
+
+        protected virtual void DrawCompact(List<MySprite> s)
+        {
+            DrawIconGrid(s, ViewBox, _displayItems, IconGridPage);
+        }
+
+        protected void DrawIconGrid(List<MySprite> s, RectangleF area, ObservableList<ItemEntry> items, int page)
+        {
+            IconGridPageCount = 1;
+            if (s == null || items == null || area.Width <= 0f || area.Height <= 0f)
+                return;
+
+            int count = items.Count;
+            if (count <= 0)
+                return;
+
+            float scale = Bare.Scale;
+            float icon = ICON_GRID_ICON_BASE * scale;
+            float gap = ICON_GRID_GAP_BASE * scale;
+            float lineHeight = Bare.LineHeight(1f);
+            float cellWidth = icon + gap;
+            float cellHeight = icon + lineHeight + gap;
+            int cols = Math.Max(1, (int)Math.Floor(area.Width / cellWidth));
+            int rows = Math.Max(1, (int)Math.Floor((area.Height + gap) / cellHeight));
+            int cells = cols * rows;
+            int pages = (count + cells - 1) / cells;
+            IconGridPageCount = pages;
+            page = ((page % pages) + pages) % pages;
+
+            int start = page * cells;
+            int end = Math.Min(count, start + cells);
+            float originX = area.X + Math.Max(0f, (area.Width - cols * cellWidth + gap) * 0.5f);
+            Color fg = ForegroundColor;
+            Color bg = BackgroundColor;
+            for (int i = start; i < end; i++)
+            {
+                var item = items[i];
+                if (item == null)
+                    continue;
+
+                int slot = i - start;
+                float x = originX + (slot % cols) * cellWidth;
+                float y = area.Y + (slot / cols) * cellHeight;
+                DrawItemIcon(s, ResolveSprite(item.ItemType), new Vector2(x + icon * 0.5f, y + icon * 0.5f), new Vector2(icon, icon), TextAlignment.CENTER, bg);
+                Bare.Text(s, FormatingHelper.FormatItemQty((double)item.Amount), new Vector2(x + icon * 0.5f, y + icon), TextAlignment.CENTER, 1f, fg, cellWidth, lineHeight);
+            }
         }
 
         void ClearInteractiveTree()
