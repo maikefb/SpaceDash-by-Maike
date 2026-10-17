@@ -4,7 +4,6 @@ using System.Text;
 using LcdMod.Client.Helpers;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
-using IMyTextSurface = Sandbox.ModAPI.Ingame.IMyTextSurface;
 
 namespace LcdMod.Client.Gui.ControlsTemplates.Progress
 {
@@ -286,36 +285,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
                 RotationOrScale = attachmentTheta +
                                   (pointsForward ? MathHelper.PiOver2 : -MathHelper.PiOver2)
             });
-        }
-
-        public static void CreateSprites(
-            List<MySprite> sprites,
-            string title,
-            IMyTextSurface surface,
-            Vector2 margin,
-            Vector2 size,
-            float value,
-            Color? color = null,
-            bool turnDarkOnComplete = false,
-            bool showTitle = true)
-        {
-            if (color == null)
-                color = surface.ScriptForegroundColor;
-
-            var origo = new Vector2(margin.X, 512 - margin.Y);
-            var backgroundColor = surface.ScriptForegroundColor;
-
-            if (showTitle) DrawTitle(sprites, title, origo, size, value, color.Value);
-            float outerRadius = Math.Max(0f, Math.Min(size.X, size.Y) * 0.5f);
-            DrawDonut(
-                sprites,
-                origo,
-                outerRadius * 0.68f,
-                outerRadius,
-                value,
-                color.Value,
-                GetDarkenedColor(backgroundColor),
-                gapPixels: 2f);
         }
 
         internal static Color GetDarkenedColor(Color color) =>

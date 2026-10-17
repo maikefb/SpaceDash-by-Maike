@@ -11,7 +11,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
         public static void CreateSprites(
             List<MySprite> sprites,
             string title,
-            IMyTextSurface surface,
+            Color foreground,
+            Color background,
             Vector2 margin,
             Vector2 size,
             float value,
@@ -21,10 +22,10 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
             bool showTitle = true)
         {
             if (color == null)
-                color = surface.ScriptForegroundColor;
+                color = foreground;
 
             var origo = new Vector2(margin.X, 512 - margin.Y);
-            var backgroundColor = surface.ScriptForegroundColor;
+            var backgroundColor = foreground;
 
             if (showTitle) DonutPanel.DrawTitle(sprites, title, origo, size, value, color.Value);
             value = MathHelper.Clamp(value, 0f, 1f);
@@ -57,7 +58,7 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Progress
                 segments,
                 DonutPanel.GetDarkenedColor(backgroundColor),
                 gapPixels: 2f,
-                gapColor: surface.ScriptBackgroundColor);
+                gapColor: background);
         }
     }
 }

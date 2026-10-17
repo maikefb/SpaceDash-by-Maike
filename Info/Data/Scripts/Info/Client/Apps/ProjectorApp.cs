@@ -234,7 +234,8 @@ namespace LcdMod.Client.Apps
             DonutDualPanel.CreateSprites(
                 frame,
 "",
-                (IMyTextSurface)Surface,
+                Host.ForegroundColor,
+                Host.BackgroundColor,
                 ToScreenMargin(layout.PieCenter),
                 pieSize,
                 componentsPct,
