@@ -240,6 +240,8 @@ namespace LcdMod.Client.Apps.Abstract
         protected bool IsCompact => Theme == LcdTheme.Compact;
         protected bool IsBare => ThemeChrome.IsBare(Theme);
         protected BareLayout Bare { get; }
+        protected bool BlinkOn => ((Sandbox.ModAPI.MyAPIGateway.Session?.GameplayFrameCounter ?? 0L) / 10) % 2 == 0;
+        protected static long LocalIdentityId => Sandbox.ModAPI.MyAPIGateway.Session?.Player?.IdentityId ?? 0L;
 
         protected Color GetForegroundColor()
         {
