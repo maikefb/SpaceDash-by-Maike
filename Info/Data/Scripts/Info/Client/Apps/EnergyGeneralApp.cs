@@ -4,7 +4,6 @@ using LcdMod.Client.Apps.Abstract;
 using LcdMod.Client.Gui.ControlsTemplates.Custom.Energy;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.Modules.Energy;
-using VRage;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -22,7 +21,6 @@ namespace LcdMod.Client.Apps
         }
 
         public override bool OwnsTitle => true;
-        protected override string ShortTitle => MyTexts.GetString("RadialMenuGroupTitle_Power");
 
         public override List<MySprite> GetSprites()
         {

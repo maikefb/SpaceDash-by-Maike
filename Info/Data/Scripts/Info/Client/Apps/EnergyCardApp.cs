@@ -25,7 +25,6 @@ namespace LcdMod.Client.Apps
         }
 
         public override bool OwnsTitle => true;
-        protected override string ShortTitle => KindName(_kind);
 
         public override bool HasVisibleItems()
         {

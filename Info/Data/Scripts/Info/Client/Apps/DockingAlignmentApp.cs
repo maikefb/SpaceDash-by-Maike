@@ -787,10 +787,10 @@ namespace LcdMod.Client.Apps
             double closingVelocity, float footerHeight, Color valueColor)
         {
             var footerTop = ViewBox.Bottom - FOOTER_HEIGHT - footerHeight;
-            var row1Y = footerTop + footerHeight * 0.36f;
-            var row2Y = footerTop + footerHeight * 0.78f;
-            var footerTextScale = Math.Max(0.36f, 0.52f * Scale) * FontScale;
-            var footerTextOffsetY = FormatingHelper.GetSizeInPixel("A", TextFont, footerTextScale, Surface).Y * 0.5f;
+            var rowHeight = footerHeight * 0.5f;
+            var footerTextMul = Math.Max(0.36f, 0.52f * Scale);
+            var footerTextScale = footerTextMul * FontScale;
+            var footerTextOffsetY = Bare.LineHeight(footerTextMul) * 0.5f;
             var closingDistance = GetClosingDistanceRate(dockingAxisDistance);
 
             UpdateFooterLabel(0, -positionOffset.X, 100d, "L/R {0:0.00}m");
@@ -806,10 +806,11 @@ namespace LcdMod.Client.Apps
             var columnWidth = ViewBox.Width / 4f;
             for (int i = 0; i < 4; i++)
             {
-                var x = ViewBox.X + columnWidth * (i + 0.5f);
-                AddText(_sprites, labels[i], new Vector2(x, row1Y - footerTextOffsetY), footerTextScale, valueColor,
+                var row1 = new RectangleF(ViewBox.X + columnWidth * i, footerTop, columnWidth, rowHeight);
+                var row2 = new RectangleF(row1.X, footerTop + rowHeight, columnWidth, rowHeight);
+                AddText(_sprites, labels[i], new Vector2(row1.Center.X, row1.Center.Y - footerTextOffsetY), footerTextScale, valueColor,
                     TextAlignment.CENTER);
-                AddText(_sprites, labels[i + 4], new Vector2(x, row2Y - footerTextOffsetY), footerTextScale, valueColor,
+                AddText(_sprites, labels[i + 4], new Vector2(row2.Center.X, row2.Center.Y - footerTextOffsetY), footerTextScale, valueColor,
                     TextAlignment.CENTER);
             }
         }

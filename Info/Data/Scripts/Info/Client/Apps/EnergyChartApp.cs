@@ -27,6 +27,8 @@ namespace LcdMod.Client.Apps
         const float MIN_PLOT_UNITS = 6f;
         const string USED_CHANNEL = "EnergyUsed";
         const string STORED_CHANNEL = "EnergyStored";
+        const string ICON_POWER = "IconEnergy";
+        const string ICON_BATTERY = "Battery";
 
         /// <summary>Rótulos do eixo numa só unidade, escolhida pelo teto do eixo.</summary>
         static readonly Func<float, string> TickMegaWatts = mw => mw.ToString("0.##", FormatingHelper.Culture) + " MW";
@@ -119,9 +121,9 @@ namespace LcdMod.Client.Apps
                 s.UsedHistory, s.HistoryHead, axisMax, Palette.ChartUsed);
 
             float donutHeight = right.Height * EnergyTheme.CHART_DONUT_CELL;
-            DrawDonutCell(new RectangleF(right.X, right.Y, right.Width, donutHeight), Loc("Used"), _displayUsed,
+            DrawDonutCell(new RectangleF(right.X, right.Y, right.Width, donutHeight), Loc("Used"), ICON_POWER, _displayUsed,
                 FormatingHelper.PercentageToString(s.UsedRatio), EnergyTheme.UsedColor(ref Palette, s.UsedRatio));
-            DrawDonutCell(new RectangleF(right.X, right.Y + donutHeight, right.Width, donutHeight), Loc("Stored"), _displayStored,
+            DrawDonutCell(new RectangleF(right.X, right.Y + donutHeight, right.Width, donutHeight), Loc("Stored"), ICON_BATTERY, _displayStored,
                 s.HasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
                 s.HasBatteries ? EnergyTheme.ChargeColor(ref Palette, s.StoredRatio) : Palette.LabelMuted);
             DrawBatteryPanel(new RectangleF(right.X, right.Y + donutHeight * 2f, right.Width, right.Height - donutHeight * 2f), s);
@@ -199,8 +201,8 @@ namespace LcdMod.Client.Apps
             float labelScale;
             StripLayout(rect.Width, ref valueScale, out valueWidth, out gap, out labelScale);
             string valueText = PowerText(current, false, valueWidth);
-            EnergyCardRenderer.DrawText(_sprites, surface, font, label.ToUpperInvariant(), rect.X, stripCenter, rect.Width - valueWidth - gap, stripHeight,
-                labelScale, Palette.LabelMuted, TextAlignment.LEFT);
+            Bare.Label(_sprites, label.ToUpperInvariant(), ICON_POWER, new RectangleF(rect.X, rect.Y, rect.Width - valueWidth - gap, stripHeight),
+                Palette.LabelMuted, labelScale / Host.FontScale);
             EnergyCardRenderer.DrawText(_sprites, surface, FormatingHelper.BoldFont(font, valueText), valueText, rect.Right, stripCenter, valueWidth, stripHeight,
                 valueScale, seriesColor, TextAlignment.RIGHT);
 
@@ -258,7 +260,7 @@ namespace LcdMod.Client.Apps
         ///     Anel com o percentual no centro; sem largura para o percentual dentro do anel, só o rótulo e o percentual. O
         ///     tamanho do percentual vem do modelo "100%", para não mudar a cada amostra, e o rótulo nunca fica maior que ele.
         /// </summary>
-        void DrawDonutCell(RectangleF cell, string label, float displayFraction, string percent, Color color)
+        void DrawDonutCell(RectangleF cell, string label, string icon, float displayFraction, string percent, Color color)
         {
             var surface = Host.Surface;
             string font = TextFont;
@@ -285,8 +287,8 @@ namespace LcdMod.Client.Apps
                     EnergyTheme.DONUT_STEPS, 0f, 2f * Metrics.S);
             valueScale = EnergyCardRenderer.DrawText(_sprites, surface, valueFont, percent, center.X, center.Y, boxWidth, boxHeight, valueScale, color,
                 TextAlignment.CENTER);
-            _sprites.Add(EnergyCardRenderer.Text(upper, new Vector2(cell.Center.X, cell.Y), Math.Min(labelScale, valueScale), Palette.LabelMuted,
-                TextAlignment.CENTER, font));
+            Bare.Label(_sprites, label.ToUpperInvariant(), icon, new RectangleF(cell.X, cell.Y, cell.Width, labelHeight), Palette.LabelMuted,
+                Math.Min(labelScale, valueScale) / Host.FontScale);
         }
 
         /// <summary>Tabela secundária: não cresce além do tamanho natural para não competir com as leituras do gráfico.</summary>

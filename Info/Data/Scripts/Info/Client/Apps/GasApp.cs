@@ -39,6 +39,7 @@ namespace LcdMod.Client.Apps
         const string ICON_ICE = "MyObjectBuilder_Ore/Ice";
         const string ICON_BOTTLE = "MyObjectBuilder_GasContainerObject/HydrogenBottle";
         const string ICON_FALLBACK = "IconEnergy";
+        static readonly string[] LABEL_ICONS = { ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_O2, ICON_BOTTLE };
         public const int STATUS_NOMINAL = 0;
         public const int STATUS_ATTENTION = 1;
         public const int STATUS_CRITICAL = 2;
@@ -358,7 +359,7 @@ namespace LcdMod.Client.Apps
                     cardWidth, cardHeight);
                 string icon, title;
                 FillCard(i, out icon, out title, fg, accent, warn, error, na);
-                DrawCard(sprites, rect, icon, title, oneLine, fg, accent, ls);
+                DrawCard(sprites, rect, icon, title, LABEL_ICONS[i], oneLine, fg, accent, ls);
             }
 
             if (statusHeight > 0f)
@@ -458,7 +459,7 @@ namespace LcdMod.Client.Apps
             return text;
         }
 
-        void DrawCard(List<MySprite> sprites, RectangleF rect, string icon, string title, bool oneLine, Color fg, Color accent, float ls)
+        void DrawCard(List<MySprite> sprites, RectangleF rect, string icon, string title, string labelIcon, bool oneLine, Color fg, Color accent, float ls)
         {
             if (!ThemeChrome.DrawCard(sprites, Theme, rect, BackgroundColor, accent, fg, ls))
                 sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, Color.Lerp(BackgroundColor, fg, 0.08f)));
@@ -473,11 +474,9 @@ namespace LcdMod.Client.Apps
             float left = cell.Right + pad * 2f;
             float right = rect.Right - pad * 2f;
             float textWidth = Math.Max(1f, right - left);
-            float titleScale = 0.6f * ls;
-            string titleFont = ThemeChrome.TitleFont(Theme, TextFont, title);
-            string titleText = FormatingHelper.FitText(TextSurface, ThemeChrome.LabelText(Theme, title), titleFont, titleScale, textWidth, 0f, 0.3f, out titleScale);
-            float titleHeight = MeasureLineHeight(titleScale);
-            sprites.Add(new MySprite(SpriteType.TEXT, titleText, new Vector2(left, rect.Y + pad), null, fg, titleFont, TextAlignment.LEFT, titleScale));
+            float titleMul = 0.6f * ls / Math.Max(0.25f, Host.FontScale);
+            float titleHeight = Bare.LineHeight(titleMul);
+            Bare.Label(sprites, ThemeChrome.LabelText(Theme, title), labelIcon, new RectangleF(left, rect.Y + pad, textWidth, titleHeight), fg, titleMul);
 
             int rowCount = oneLine ? 1 : 2;
             float rowsTop = rect.Y + pad + titleHeight;

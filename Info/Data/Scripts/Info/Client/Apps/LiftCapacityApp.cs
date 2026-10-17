@@ -225,11 +225,8 @@ namespace LcdMod.Client.Apps
             float labelHeight = MeasureLineHeight(labelScale);
             sprites.Add(new MySprite(SpriteType.TEXT, label, new Vector2(left, rect.Y + pad), null, new Color(fg, 0.7f), TextFont, TextAlignment.LEFT, labelScale));
 
-            float valueScale = 0.9f * ls;
-            string valueFont = ThemeChrome.TitleFont(Theme, TextFont, value);
-            string valueText = FormatingHelper.FitText(TextSurface, value, valueFont, valueScale, width, Math.Max(1f, rect.Height - labelHeight - pad * 3f), 0.3f, out valueScale);
-            float valueHeight = MeasureLineHeight(valueScale);
-            sprites.Add(new MySprite(SpriteType.TEXT, valueText, new Vector2(left, rect.Bottom - pad - valueHeight), null, fg, valueFont, TextAlignment.LEFT, valueScale));
+            float valueHeight = Bare.LineHeight(1f);
+            Bare.Text(sprites, value, new Vector2(left, rect.Bottom - pad - valueHeight), TextAlignment.LEFT, 1f, fg, width, Math.Max(1f, rect.Height - labelHeight - pad * 3f));
         }
 
         void DrawRow(List<MySprite> sprites, RectangleF rect, string label, string value, float fraction, Color fg, Color fill, float ls)
@@ -240,15 +237,16 @@ namespace LcdMod.Client.Apps
             float right = rect.Right - pad * 3f;
             float width = Math.Max(1f, right - left);
             float scale = 0.5f * ls;
-            float textHeight = MeasureLineHeight(scale);
+            bool valueFits = Bare.Fits(value, 1f, width, rect.Height);
+            float textHeight = Math.Max(MeasureLineHeight(scale), valueFits ? Bare.LineHeight(1f) : 0f);
             bool hasBar = fraction >= 0f;
             float barHeight = Math.Max(BAR_HEIGHT_BASE * ls, rect.Height - textHeight - pad * 2.5f);
             float textTop = hasBar ? rect.Y + pad : rect.Center.Y - textHeight * 0.5f;
 
-            float valueWidth = MeasureText(value, scale).X;
+            float valueWidth = valueFits ? MeasureText(value, Host.FontScale).X : 0f;
             string labelText = FormatingHelper.FitText(TextSurface, ThemeChrome.LabelText(Theme, label), TextFont, scale, Math.Max(1f, width - valueWidth - pad), 0f, 0.3f, out scale);
             sprites.Add(new MySprite(SpriteType.TEXT, labelText, new Vector2(left, textTop), null, new Color(fg, 0.7f), TextFont, TextAlignment.LEFT, scale));
-            sprites.Add(new MySprite(SpriteType.TEXT, value, new Vector2(right, textTop), null, fg, TextFont, TextAlignment.RIGHT, 0.5f * ls));
+            Bare.Text(sprites, value, new Vector2(right, textTop), TextAlignment.RIGHT, 1f, fg, width, rect.Height);
 
             if (!hasBar) return;
             float barTop = textTop + textHeight + pad * 0.5f;

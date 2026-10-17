@@ -60,12 +60,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             LineRenderer.DrawCornerBrackets(sprites, rect, metrics.BracketArm, metrics.BracketThickness, palette.Bracket);
         }
 
-        /// <summary>
-        ///     Título em caixa-alta e negrito entre dois blocos. Se o título localizado não cabe inteiro no tamanho dos rótulos,
-        ///     usa o curto (<paramref name="shortTitle"/>, ou o próprio título sem ele), que pode descer até a escala mínima
-        ///     antes de ser cortado.
-        /// </summary>
-        public static void DrawTitleBar(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF bar, string title, string shortTitle,
+        /// <summary>Título em caixa-alta e negrito entre dois blocos, ajustado ao tamanho dos rótulos.</summary>
+        public static void DrawTitleBar(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF bar, string title,
             ref EnergyPalette palette, ref EnergyMetrics metrics)
         {
             bool clean = metrics.Theme == LcdTheme.Clean;
@@ -89,13 +85,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
             string titleFont = clean ? font : FormatingHelper.BoldFont(font, upper);
             string text = FormatingHelper.FitText(surface, upper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
                 metrics.Text(EnergyTheme.LABEL), out scale);
-            if (text.Length != upper.Length)
-            {
-                string shortUpper = clean ? shortTitle ?? upper : (shortTitle ?? upper).ToUpperInvariant();
-                titleFont = clean ? font : FormatingHelper.BoldFont(font, shortUpper);
-                text = FormatingHelper.FitText(surface, shortUpper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
-                    EnergyMetrics.MIN_TEXT, out scale);
-            }
 
             if (maxWidth > 0f)
             {

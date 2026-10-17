@@ -44,9 +44,6 @@ namespace LcdMod.Client.Apps.Abstract
         public virtual bool OwnsTitle => false;
         public string EmptyMessage => Loc("NoUnits");
 
-        /// <summary>Título alternativo, mais curto, usado quando o localizado não cabe inteiro na barra.</summary>
-        protected virtual string ShortTitle => null;
-
         /// <summary>Cor de aviso legível sobre o painel, para a mensagem de tela vazia.</summary>
         public Color MessageColor => Palette.ValueAttention;
 
@@ -89,7 +86,7 @@ namespace LcdMod.Client.Apps.Abstract
             {
                 var bar = new RectangleF(_content.X + Metrics.FrameLine, _content.Y + Metrics.FrameLine,
                     _content.Width - Metrics.FrameLine * 2f, Metrics.TitleBarHeight);
-                EnergyCardRenderer.DrawTitleBar(sprites, Host.Surface, TextFont, bar, Host.Title, ShortTitle, ref Palette, ref Metrics);
+                EnergyCardRenderer.DrawTitleBar(sprites, Host.Surface, TextFont, bar, Host.Title, ref Palette, ref Metrics);
             }
 
             return Body.Y;
