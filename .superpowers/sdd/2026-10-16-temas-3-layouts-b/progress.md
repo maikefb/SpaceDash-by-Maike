@@ -18,3 +18,10 @@ Ruling: Task 10 (BareIcons + lista de ícones) fica por último, feita pelo orqu
 
 ## Progresso
 Onda A: BASE d2dd522; Tasks 1, 2, 3, 5, 6, 8, 9 em paralelo.
+Task 1: implementer a41be4beb7fa8d63c; DONE_WITH_CONCERNS (árvore; sem resx; COMPACT_ROW_RATIO duplica KV_ROW_RATIO de BareLayout).
+Task 2: implementer aacbf432412a34bb1; DONE_WITH_CONCERNS (árvore; resx novas: LcdMod_Antenna_Active = active/ativas, LcdMod_Antenna_MaxRange = Max range/Maior alcance; bloco via GetEntityById; ícone RadioAntenna).
+Task 3: implementer a7a0f8d105588c9a5; DONE_WITH_CONCERNS (árvore; resx novas: ConveyorMap_Alerts=Off/Desligados, _Damaged, _Destroyed, _Intact, _Blueprint; recomenda tirar '| {4} ALERTS' do ConveyorMap_Footer; Loc do app devolve maiúsculas).
+Task 8: implementer a0c089e1138132dda; DONE_WITH_CONCERNS (árvore; resx novas: Survivors_AliveFor = ALIVE FOR/VIVO HÁ, Survivors_Rank = '#{0} · record {1}'/'#{0} · recorde {1}'; fator 1,5 da linha do Kv duplicado — 2ª ocorrência, candidato a BareLayout.KvRowHeight na Task 10).
+Task 9: implementer a1c8df6a6c7a3f38f; DONE_WITH_CONCERNS (árvore; resx novas: Farm_Ready, _Next, _NoWater, _AvgGrowth, _AvgWater, _ReadyToHarvest; FarmEntry ganhou IsReady/RemainingSeconds no mesmo arquivo).
+Task 1: reviewer a8cb238b481911bdf; CLEAN (minors: COMPACT_ROW_RATIO duplicado; setores ASCII). Task 1: complete (commit 479bb22).
+Nota T9: Farm.cs usa DrawTitle da base (retorna cedo no bare) — preocupação do implementador não se confirma.
