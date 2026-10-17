@@ -25,3 +25,8 @@ Task 8: implementer a0c089e1138132dda; DONE_WITH_CONCERNS (árvore; resx novas: 
 Task 9: implementer a1c8df6a6c7a3f38f; DONE_WITH_CONCERNS (árvore; resx novas: Farm_Ready, _Next, _NoWater, _AvgGrowth, _AvgWater, _ReadyToHarvest; FarmEntry ganhou IsReady/RemainingSeconds no mesmo arquivo).
 Task 1: reviewer a8cb238b481911bdf; CLEAN (minors: COMPACT_ROW_RATIO duplicado; setores ASCII). Task 1: complete (commit 479bb22).
 Nota T9: Farm.cs usa DrawTitle da base (retorna cedo no bare) — preocupação do implementador não se confirma.
+Task 5: implementer a0c91654ffc1670de; DONE_WITH_CONCERNS (árvore; resx novas: ClockDashboard_SunEvents = 'Sunrise · Sunset'/'Nascer · Pôr', ClockDashboard_Oxygen = Oxygen/Oxigênio; EnsureSnapshot extraído, usado também pelo layout cheio).
+Task 2: reviewer a3740f041bfdcb1c7; CLEAN (minors: 2 GetEntityById por antena por frame; Substring por frame). Task 2: complete (commit e52d0b3).
+Task 3: reviewer a7e187e5a70897377; CLEAN (minor 1 aplicado pelo orquestrador: espaço no segmento de alertas do rodapé). Task 3: complete (commit 974ba95).
+Task 8: reviewer ac7cc4eeb9b5e5b62; CLEAN (minor 1 aplicado: Icon do KvRow removido para não duplicar o círculo da medalha; cinza por índice e última vida = recorde mantidos). Task 8: complete (commit 839edd4).
+Onda B: Task 4 (Esteiras layouts) lançada sobre 974ba95.

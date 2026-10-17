@@ -1,0 +1,162 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs b/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
+index 4a768c7..f4b23ba 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
+@@ -7,6 +7,7 @@ using LcdMod.Client.ClockDashboard;
+ using LcdMod.Client.Gui;
+ using LcdMod.Client.Gui.ControlsTemplates.Custom;
+ using LcdMod.Client.Gui.ControlsTemplates.Panels;
++using LcdMod.Client.Gui.Styling;
+ using LcdMod.Client.Helpers;
+ using LcdMod.Client.Modules.Survivors;
+ using LcdMod.Common.Helpers;
+@@ -26,6 +27,8 @@ namespace LcdMod.Client.Apps
+         public static string Alive => LocHelper.GetLoc(TITLE_KEY + "_Alive");
+         public static string Record => LocHelper.GetLoc(TITLE_KEY + "_Record");
+         public static string Dead => LocHelper.GetLoc(TITLE_KEY + "_Dead");
++        public static string AliveFor => LocHelper.GetLoc(TITLE_KEY + "_AliveFor");
++        public static string Rank => LocHelper.GetLoc(TITLE_KEY + "_Rank");
+     }
+ 
+     /// <summary>
+@@ -37,6 +40,11 @@ namespace LcdMod.Client.Apps
+         const float MIN_CONTENT_HEIGHT = 40f;
+         const float ROW_HEIGHT_BASE = 30f;
+         const int MEDALS = 3;
++        const float MINIMAL_HERO_FONT_MUL = 2.5f;
++        const float COMPACT_DIM_ALPHA = 0.6f;
++        const float KV_ROW_RATIO = 1.5f;
++        const int COMPACT_ROWS = 6;
++        const string MEDAL_SPRITE = "Circle";
+ 
+         static readonly Color[] MedalColors =
+         {
+@@ -89,11 +97,23 @@ namespace LcdMod.Client.Apps
+         }
+ 
+         readonly List<MySprite> _sprites = new List<MySprite>();
++        readonly List<BareLayout.KvRow> _kvRows = new List<BareLayout.KvRow>();
+ 
+         public override List<MySprite> GetSprites()
+         {
+             var sprites = _sprites;
+             sprites.Clear();
++            if (IsMinimal)
++            {
++                DrawMinimal(sprites);
++                return sprites;
++            }
++            if (IsCompact)
++            {
++                DrawCompact(sprites);
++                return sprites;
++            }
++
+             var bounds = GetContentBounds();
+             if (bounds.Width <= 5f || bounds.Height <= 5f)
+                 return sprites;
+@@ -111,6 +131,104 @@ namespace LcdMod.Client.Apps
+             return sprites;
+         }
+ 
++        static string Duration(long ticks)
++        {
++            return ClockDashboardFormatter.FormatDuration(WorldClock.ToSeconds(ticks));
++        }
++
++        int ResolveLocalIndex()
++        {
++            long local = LocalIdentityId;
++            for (int i = 0; i < _sorted.Count; i++)
++            {
++                if (_sorted[i].IdentityId == local)
++                    return i;
++            }
++
++            return 0;
++        }
++
++        void DrawMinimal(List<MySprite> sprites)
++        {
++            if (_sorted.Count == 0)
++                return;
++
++            long now = WorldClock.ElapsedTicks();
++            int index = ResolveLocalIndex();
++            var me = _sorted[index];
++            RectangleF view = Host.ViewBox;
++            Color accent = GetHeaderColor();
++            Color fg = GetForegroundColor();
++
++            string label = me.Alive ? SurvivorsLocalization.AliveFor : null;
++            string hero = me.Alive ? Duration(me.CurrentLifeTicks(now)) : SurvivorsLocalization.Dead;
++            Color heroColor = me.Alive ? accent : GetErrorColor();
++            string record = Duration(me.BestTicks(now));
++            string detail = me.Alive
++                ? string.Format(SurvivorsLocalization.Rank, (index + 1).ToString(CultureInfo.InvariantCulture), record)
++                : record;
++
++            float lineHeight = Bare.LineHeight(1f);
++            float heroHeight = Bare.LineHeight(MINIMAL_HERO_FONT_MUL);
++            float total = heroHeight + lineHeight * 2f;
++            if (total > view.Height)
++            {
++                Bare.Hero(sprites, hero, view, MINIMAL_HERO_FONT_MUL, heroColor);
++                return;
++            }
++
++            float top = view.Center.Y - total * 0.5f;
++            Bare.Text(sprites, label, new Vector2(view.Center.X, top), TextAlignment.CENTER, 1f, accent, view.Width, lineHeight);
++            Bare.Hero(sprites, hero, new RectangleF(view.X, top + lineHeight, view.Width, heroHeight), MINIMAL_HERO_FONT_MUL, heroColor);
++            Bare.Text(sprites, detail, new Vector2(view.Center.X, top + lineHeight + heroHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
++        }
++
++        void DrawCompact(List<MySprite> sprites)
++        {
++            if (_sorted.Count == 0)
++            {
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                return;
++            }
++
++            long now = WorldClock.ElapsedTicks();
++            Color fg = GetForegroundColor();
++            Color dim = ThemeChrome.WithAlpha(fg, COMPACT_DIM_ALPHA);
++            Color error = GetErrorColor();
++            ComputeMedals(now);
++
++            _kvRows.Clear();
++            int count = Math.Min(COMPACT_ROWS, _sorted.Count);
++            for (int i = 0; i < count; i++)
++            {
++                var entry = _sorted[i];
++                bool medal = ResolveMedal(entry.IdentityId).HasValue;
++                _kvRows.Add(new BareLayout.KvRow
++                {
++                    Label = entry.Name ?? "?",
++                    Icon = medal ? MEDAL_SPRITE : null,
++                    Value = entry.Alive ? Duration(entry.CurrentLifeTicks(now)) : SurvivorsLocalization.Dead,
++                    ValueColor = !entry.Alive ? error : i < MEDALS ? fg : dim,
++                    Bar = -1f
++                });
++            }
++
++            RectangleF view = Host.ViewBox;
++            float rowHeight = Bare.LineHeight(1f) * KV_ROW_RATIO;
++            float markerSide = Math.Min(rowHeight * 0.5f, 16f * Bare.Scale);
++            float left = markerSide + Bare.Margin;
++            var area = new RectangleF(view.X + left, view.Y, view.Width - left, view.Height);
++            int drawn = Bare.Kv(sprites, area, _kvRows, fg, Theme);
++            for (int i = 0; i < drawn; i++)
++            {
++                Color? medal = ResolveMedal(_sorted[i].IdentityId);
++                if (!medal.HasValue)
++                    continue;
++                var center = new Vector2(view.X + markerSide * 0.5f, area.Y + i * rowHeight + rowHeight * 0.5f);
++                sprites.Add(new MySprite(SpriteType.TEXTURE, MEDAL_SPRITE, center, new Vector2(markerSide, markerSide), medal.Value, null, TextAlignment.CENTER));
++            }
++        }
++
+         RectangleF GetContentBounds()
+         {
+             RectangleF view = Host.ViewBox;
