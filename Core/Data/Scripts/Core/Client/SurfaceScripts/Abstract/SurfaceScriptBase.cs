@@ -146,6 +146,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         protected virtual string FrameId => null;
         protected virtual bool FrameTiny => Surface.SurfaceSize.Y / Surface.SurfaceSize.X < 0.375f;
         LcdTheme _userTheme;
+        /// <summary>Cor de texto do LCD já filtrada pelo tema (Café usa a paleta fixa).</summary>
+        public new Color ForegroundColor => ThemeChrome.Foreground(_userTheme, Surface.ScriptForegroundColor);
+        /// <summary>Cor de fundo do LCD já filtrada pelo tema (Café usa a paleta fixa).</summary>
+        public new Color BackgroundColor => ThemeChrome.Background(_userTheme, Surface.ScriptBackgroundColor);
         public ColorConfigComponent ColorComponent => Config.GetComponent<ColorConfigComponent>();
         /// <summary>Fonte escolhida no terminal, com o padrão do jogo como reserva.</summary>
         public string TextFont => string.IsNullOrEmpty(Surface.Font) ? "White" : Surface.Font;
@@ -595,7 +599,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             var position = new Vector2(ViewBox.Center.X, ViewBox.Center.Y - measured.Y * scale / 2f);
             using (var frame = Surface.DrawFrame())
             {
-                frame.Add(new MySprite(SpriteType.TEXT, message, position, null, Surface.ScriptForegroundColor, TextFont,
+                frame.Add(new MySprite(SpriteType.TEXT, message, position, null, ForegroundColor, TextFont,
                     TextAlignment.CENTER, scale));
             }
         }
@@ -630,7 +634,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 var bSoD = BSoD.ShowBSoD(this, e);
 
                 _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, bSoD.Frame, _textureSize, _aspectRatio,
-                    Surface.ScriptBackgroundColor, Surface.BackgroundAlpha);
+                    BackgroundColor, Surface.BackgroundAlpha);
                 
                 NotifyRendered();
             }
@@ -671,11 +675,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         public virtual void DrawTitle(List<MySprite> frame)
         {
             const float margin = 0f;
+            const float titleFontSize = 1.3f;
             float headerScale = LayoutScale;
-            bool small = _userTheme == LcdTheme.Small;
-            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale * (small ? 0.6f : 1f);
-            float titleFontSize = small ? 1f : 1.3f;
-            float iconSize = (small ? 24f : 40f) * headerScale;
+            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale;
+            float iconSize = 40f * headerScale;
             Vector2 position = ViewBox.Position;
             position.X += margin;
 
@@ -684,8 +687,15 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             if (ThemeChrome.IsBare(_userTheme))
                 return;
 
+            if (_userTheme == LcdTheme.Small)
+                return;
+
             if (Frame != null || !TitleVisible)
                 return;
+
+            Color accent = GetHeaderColor();
+            Color titleColor = ThemeChrome.TitleColor(_userTheme, accent, BackgroundColor);
+            ThemeChrome.DrawTitleAccent(frame, _userTheme, new RectangleF(ViewBox.X, ViewBox.Y, ViewBox.Width, titleBarHeight), ViewBox, accent, ForegroundColor, headerScale);
 
             AddHeaderSprite(frame, new MySprite
             {
@@ -693,7 +703,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Data = Icon,
                 Position = position + new Vector2(iconSize * 0.5f),
                 Size = new Vector2(iconSize),
-                Color = GetHeaderColor(),
+                Color = titleColor,
                 Alignment = TextAlignment.CENTER
             });
             position.X += ViewBox.Width / 8f;
@@ -702,7 +712,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 (int)(ViewBox.Width - position.X + ViewBox.X),
                 (int)titleBarHeight)));
 
-            bool centered = _userTheme != LcdTheme.Default;
+            TextAlignment alignment = ThemeChrome.TitleAlignment(_userTheme);
+            bool centered = alignment == TextAlignment.CENTER;
             var availableWidth = centered ? ViewBox.Width * 0.75f : ViewBox.Width - position.X + ViewBox.X;
             var titleText = GetCachedTitleText(availableWidth, titleFontSize, true);
 
@@ -712,13 +723,12 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Data = titleText,
                 Position = centered ? new Vector2(ViewBox.Center.X, position.Y) : position,
                 RotationOrScale = ConfiguredScale * titleFontSize * FontScale,
-                Color = GetHeaderColor(),
-                Alignment = centered ? TextAlignment.CENTER : TextAlignment.LEFT,
-                FontId = ThemeChrome.TitleFont(ThemeKind, TextFont, titleText)
+                Color = titleColor,
+                Alignment = alignment,
+                FontId = ThemeChrome.TitleFont(_userTheme, TextFont, titleText)
             });
 
             frame.Add(MySprite.CreateClearClipRect());
-            ThemeChrome.DrawTitleAccent(frame, ThemeKind, new RectangleF(ViewBox.X, ViewBox.Y, ViewBox.Width, titleBarHeight), ViewBox, GetHeaderColor(), ForegroundColor, headerScale);
 
             CaretY += titleBarHeight;
         }
@@ -961,7 +971,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Data = "Screen_LoadingBar",
                 Position = center,
                 Size = new Vector2(outerSize),
-                Color = Surface.ScriptForegroundColor,
+                Color = ForegroundColor,
                 Alignment = TextAlignment.CENTER,
                 RotationOrScale = outerRotation
             });
@@ -972,7 +982,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Data = "Screen_LoadingBar",
                 Position = center,
                 Size = new Vector2(innerSize),
-                Color = Surface.ScriptForegroundColor,
+                Color = ForegroundColor,
                 Alignment = TextAlignment.CENTER,
                 RotationOrScale = innerRotation
             });
@@ -982,7 +992,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 Type = SpriteType.TEXT,
                 Data = LocHelper.GetLoc("LoadingPleaseWait"),
                 Position = new Vector2(center.X, center.Y + outerSize * 0.9f),
-                Color = Surface.ScriptForegroundColor,
+                Color = ForegroundColor,
                 Alignment = TextAlignment.CENTER,
                 FontId = TextFont,
                 RotationOrScale = ConfiguredScale * FontScale
@@ -1201,7 +1211,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
                 LastRenderFrame = currentFrame;
                 NotifyRendered();
 
-                var backgroundColor = Surface.ScriptBackgroundColor;
+                var backgroundColor = BackgroundColor;
                 var renderOpacity = GetRenderOpacity();
                 var textureChanged = ShouldRenderTexture(renderList, backgroundColor, renderOpacity, currentFrame);
                 if (!force && !textureChanged)
