@@ -1,0 +1,150 @@
+# Review package: 8c849e3..HEAD
+
+## Commits
+2a041f1 fix: rótulo pt-BR do tema Small vira Pequeno
+dba805c feat: temas Mínimo e Compacto no enum e no terminal
+
+## Files changed
+ Core/Data/Localization/MyTexts.pt-BR.resx                           | 6 ++++++
+ Core/Data/Localization/MyTexts.resx                                 | 6 ++++++
+ .../Scripts/Core/Client/Terminal/Controls/Generic/ComboboxTheme.cs  | 2 ++
+ .../Common/Config/Components/GeneralConfigComponentExtensions.cs    | 2 +-
+ Core/Data/Scripts/Core/Common/Config/Components/LcdTheme.cs         | 4 +++-
+ 5 files changed, 18 insertions(+), 2 deletions(-)
+
+## Diff
+diff --git a/Core/Data/Localization/MyTexts.pt-BR.resx b/Core/Data/Localization/MyTexts.pt-BR.resx
+index 2a6c9ff..a460f0b 100644
+--- a/Core/Data/Localization/MyTexts.pt-BR.resx
++++ b/Core/Data/Localization/MyTexts.pt-BR.resx
+@@ -663,20 +663,26 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
+   <data name="LcdMod_Theme_Futuristic" xml:space="preserve">
+     <value>Futurista</value>
+   </data>
+   <data name="LcdMod_Theme_Clean" xml:space="preserve">
+     <value>Clean</value>
+   </data>
+   <data name="LcdMod_Theme_Cafe" xml:space="preserve">
+     <value>Café</value>
+   </data>
+   <data name="LcdMod_Theme_Small" xml:space="preserve">
++    <value>Pequeno</value>
++  </data>
++  <data name="LcdMod_Theme_Minimal" xml:space="preserve">
++    <value>Mínimo</value>
++  </data>
++  <data name="LcdMod_Theme_Compact" xml:space="preserve">
+     <value>Compacto</value>
+   </data>
+   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+     <value>Desenha a barra de título. Desativado automaticamente em telas muito largas.</value>
+   </data>
+   <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+     <value>Segundos entre as imagens. 0 mantém a primeira imagem.</value>
+   </data>
+   <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+     <value>Bloco de referência</value>
+diff --git a/Core/Data/Localization/MyTexts.resx b/Core/Data/Localization/MyTexts.resx
+index d4cc75a..497a70f 100644
+--- a/Core/Data/Localization/MyTexts.resx
++++ b/Core/Data/Localization/MyTexts.resx
+@@ -647,20 +647,26 @@ We are waiting for a while, and then we will restart it for you.</value>
+   </data>
+   <data name="LcdMod_Theme_Clean" xml:space="preserve">
+     <value>Clean</value>
+   </data>
+   <data name="LcdMod_Theme_Cafe" xml:space="preserve">
+     <value>Café</value>
+   </data>
+   <data name="LcdMod_Theme_Small" xml:space="preserve">
+     <value>Small</value>
+   </data>
++  <data name="LcdMod_Theme_Minimal" xml:space="preserve">
++    <value>Minimal</value>
++  </data>
++  <data name="LcdMod_Theme_Compact" xml:space="preserve">
++    <value>Compact</value>
++  </data>
+   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
+     <value>Draws the title bar. Disabled automatically on very wide screens.</value>
+   </data>
+   <data name="LcdMod_ImageChangeInterval_Tooltip" xml:space="preserve">
+     <value>Seconds between images in the slideshow. 0 keeps the first image.</value>
+   </data>
+   <data name="LcdMod_ReferenceBlock" xml:space="preserve">
+     <value>Reference block</value>
+   </data>
+   <data name="LcdMod_None" xml:space="preserve">
+diff --git a/Core/Data/Scripts/Core/Client/Terminal/Controls/Generic/ComboboxTheme.cs b/Core/Data/Scripts/Core/Client/Terminal/Controls/Generic/ComboboxTheme.cs
+index fc9bc66..5cc740c 100644
+--- a/Core/Data/Scripts/Core/Client/Terminal/Controls/Generic/ComboboxTheme.cs
++++ b/Core/Data/Scripts/Core/Client/Terminal/Controls/Generic/ComboboxTheme.cs
+@@ -26,20 +26,22 @@ namespace LcdMod.Client.Terminal.Controls.Generic
+             TerminalControl = combobox;
+         }
+ 
+         static void Content(List<MyTerminalControlComboBoxItem> items)
+         {
+             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Default, Value = MyStringId.GetOrCompute("LcdMod_Theme_Default") });
+             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Futuristic, Value = MyStringId.GetOrCompute("LcdMod_Theme_Futuristic") });
+             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Clean, Value = MyStringId.GetOrCompute("LcdMod_Theme_Clean") });
+             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Cafe, Value = MyStringId.GetOrCompute("LcdMod_Theme_Cafe") });
+             items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Small, Value = MyStringId.GetOrCompute("LcdMod_Theme_Small") });
++            items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Minimal, Value = MyStringId.GetOrCompute("LcdMod_Theme_Minimal") });
++            items.Add(new MyTerminalControlComboBoxItem { Key = (long)LcdTheme.Compact, Value = MyStringId.GetOrCompute("LcdMod_Theme_Compact") });
+         }
+ 
+         void Setter(IMyTerminalBlock block, long value)
+         {
+             ConfigManager.ModifyComponentForCurrentSurface<GeneralConfigComponent>(
+                 block,
+                 Constants.GENERAL,
+                 config => config.ThemeInternal = (int)value);
+         }
+ 
+diff --git a/Core/Data/Scripts/Core/Common/Config/Components/GeneralConfigComponentExtensions.cs b/Core/Data/Scripts/Core/Common/Config/Components/GeneralConfigComponentExtensions.cs
+index b6ef582..f4bcacc 100644
+--- a/Core/Data/Scripts/Core/Common/Config/Components/GeneralConfigComponentExtensions.cs
++++ b/Core/Data/Scripts/Core/Common/Config/Components/GeneralConfigComponentExtensions.cs
+@@ -15,21 +15,21 @@ namespace LcdMod.Common.Config.Components
+         }
+ 
+         public static void SetScale(this GeneralConfigComponent config, float value)
+         {
+             if (config != null)
+                 config.InternalScale = MathHelper.Clamp(value, MIN_SCALE, MAX_SCALE);
+         }
+ 
+         public static LcdTheme GetTheme(this GeneralConfigComponent config)
+         {
+-            if (config == null || config.ThemeInternal < (int)LcdTheme.Default || config.ThemeInternal > (int)LcdTheme.Small)
++            if (config == null || config.ThemeInternal < (int)LcdTheme.Default || config.ThemeInternal > (int)LcdTheme.Compact)
+                 return LcdTheme.Default;
+             return (LcdTheme)config.ThemeInternal;
+         }
+     }
+ 
+     public static class ColorConfigComponentExtensions
+     {
+         static readonly Color DefaultErrorColor =
+             new Color(230, 70, 70);
+ 
+diff --git a/Core/Data/Scripts/Core/Common/Config/Components/LcdTheme.cs b/Core/Data/Scripts/Core/Common/Config/Components/LcdTheme.cs
+index f013cf5..5e094d8 100644
+--- a/Core/Data/Scripts/Core/Common/Config/Components/LcdTheme.cs
++++ b/Core/Data/Scripts/Core/Common/Config/Components/LcdTheme.cs
+@@ -1,11 +1,13 @@
+ namespace LcdMod.Common.Config.Components
+ {
+     public enum LcdTheme
+     {
+         Default = 0,
+         Futuristic = 1,
+         Clean = 2,
+         Cafe = 3,
+-        Small = 4
++        Small = 4,
++        Minimal = 5,
++        Compact = 6
+     }
+ }
