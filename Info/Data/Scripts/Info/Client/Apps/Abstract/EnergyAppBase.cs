@@ -137,7 +137,7 @@ namespace LcdMod.Client.Apps.Abstract
             Color accent = ResolveResource(ThemeResources.AccentColor, header);
             Color onSurface = ResolveResource(ThemeResources.OnSurfaceColor, Host.ForegroundColor);
             bool clean = Theme == LcdTheme.Clean;
-            bool paintPanel = !clean && OwnsTitle && !ScreenAreaGeometry.IsTransparentScreenArea(Host.Block, Host.SurfaceIndex);
+            bool paintPanel = !clean && !IsBare && OwnsTitle && !ScreenAreaGeometry.IsTransparentScreenArea(Host.Block, Host.SurfaceIndex);
             Color panel = paintPanel ? new Color(ResolveResource(ThemeResources.SurfaceColor, background), 1f) : new Color(0, 0, 0, 0);
             Color backdrop = paintPanel ? panel : background;
             Color label = OnBackdrop(onSurface, paintPanel, panel);
