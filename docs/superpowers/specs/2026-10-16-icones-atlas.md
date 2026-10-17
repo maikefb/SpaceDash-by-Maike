@@ -1,6 +1,50 @@
 # Ícones para o atlas dos LCDs
 
-Formato: cada ícone branco puro sobre fundo transparente, um só tom (o mod tinge pela cor do tema), 256×256 px, traço de 16 a 20 px, margem interna de 24 px. Nome do sprite no jogo: `SD_Icon_<Nome>`. Já existem no mod: Battery, BeaconBroadcast, Docking, Engine, FarmPlot, GridBroadcastingOn/Off, JumpDrive, Moon, OusideTemp, Reactor, ShieldIcon, SignalMode, Solar, Sun, SunRise, SunSet, Warning, Wind e os climas. O jogo já tem IconEnergy, IconHydrogen, IconOxygen, IconTemperature, Danger, Cross, Arrow, Circle, Triangle, SquareSimple. Ícones de item e de bloco vêm das definições do jogo; não entram no atlas.
+## Formato
+
+Cada ícone é colorido, com a cor própria na textura, sobre fundo transparente. O código desenha sempre com `Color.White`: qualquer outra cor é multiplicada pela textura e estraga o desenho (no Café, o primeiro plano marrom escuro deixaria o ícone quase preto).
+
+- Tamanho 256×256 px, traço de 16 a 20 px, margem interna de 24 px.
+- Contorno escuro `#1E2630`, 8 px, por fora do desenho. Garante leitura sobre o papel creme do Café; sobre o fundo escuro do Futurista quem separa é o preenchimento.
+- Um ícone usa no máximo duas cores da paleta abaixo, mais o contorno. A mesma cor significa a mesma coisa em todos os ícones.
+- PNG com transparência, convertido com `texconv` em BC7 com `-pmalpha`, o mesmo fluxo do `png-to-dds.bat`. Cerca de 87 KB por ícone.
+- Nome do sprite no jogo: `SD_Icon_<Nome>`. Variante de estado: `SD_Icon_<Nome>_<Estado>`, com Estado em `Ok`, `Warn`, `Error` ou `Off`.
+- Sem versão por tema: as cores precisam funcionar no Futurista, no Clean e no Café.
+
+## Paleta
+
+Tons médios e saturados, para ler em fundo claro e escuro. Os contrastes ainda não foram medidos; conferir no jogo nos três temas antes de fechar cada ícone.
+
+| Papel | Cor | Uso |
+|---|---|---|
+| Estrutura | `#8A97A8` | corpo de blocos, tubos, itens, peças neutras |
+| Energia | `#F2B705` | raio, bateria, geração |
+| Ok | `#2FB36B` | check, carregando, cheio |
+| Aviso | `#F07C1F` | atenção, descarregando |
+| Erro | `#E5484D` | X, destruído, crítico |
+| Hidrogênio | `#409CFF` | H₂, tanque H₂, motor H₂ (igual ao `H2_COLOR` do `GasApp`) |
+| Oxigênio, água e gelo | `#4FC3E8` | O₂, gota, cristal de gelo (o branco do O₂ no código some no Café) |
+| Planta | `#5BB450` | broto, colheita, estágio de crescimento |
+| Ouro, prata, bronze | `#E0A800`, `#A9B4C0`, `#B8733A` | medalhas e troféu |
+
+## Variantes de estado
+
+A cor fica na textura, então um ícone não muda de verde para vermelho por código. Quando o estado é parte do significado, o ícone ganha uma variante por estado, ou o estado vai numa borda, ponto ou moldura que o código ainda pode colorir. Candidatos a variante:
+
+| Ícone | Estados |
+|---|---|
+| Power | Ok (ligado), Off (desligado) |
+| Aligned | Ok, Warn, Error |
+| Link | Ok, Off |
+| Lock | Ok (travado), Off |
+
+Os demais ícones têm uma versão só. Ok, Error, Charging, Discharging, Alive, Dead e NoWater já trazem o estado no desenho e na cor. O estado deles continua indo em texto, barra ou borda coloridos por código.
+
+## Já existentes e do jogo
+
+Já existem no mod, em branco ou na cor original: Battery, BeaconBroadcast, Docking, Engine, FarmPlot, GridBroadcastingOn/Off, JumpDrive, Moon, OusideTemp, Reactor, ShieldIcon, SignalMode, Solar, Sun, SunRise, SunSet, Warning, Wind e os climas. Os que forem brancos precisam ser redesenhados na paleta ou continuar sendo tingidos por código, e quem os desenha não pode misturar as duas regras. O jogo já tem IconEnergy, IconHydrogen, IconOxygen, IconTemperature, Danger, Cross, Arrow, Circle, Triangle e SquareSimple. Ícones de item e de bloco vêm das definições do jogo; não entram no atlas.
+
+## Lista de ícones
 
 ## Genéricos (estado e tendência)
 
