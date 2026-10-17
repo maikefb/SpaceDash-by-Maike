@@ -39,3 +39,7 @@ Ruling: a nuvem não tem `dotnet` nem as DLLs do Space Engineers (CompileCheck r
 Task 3: BASE 481f104
 Task 3: implementer a962786bd00b857fe; DONE_WITH_CONCERNS 48df5bd (sem compilador; LF é o eol do checkout, .gitattributes eol=lf).
 Ruling: nesta sessão na nuvem o hook de parada do usuário exige commit+push e a instrução da sessão fixa a branch `main-gv0qq9`; a partir daqui cada task e cada atualização do ledger são enviadas para `origin/main-gv0qq9` (nunca para `main`) — custo se errado: uma branch remota a apagar.
+Task 3: reviewer a2caf2dc69ad9e005; CLEAN (minors não aplicados: divisor do Kv 1 px fixo, medições repetidas em RingCenter; % da barra no Kv fica para a Task 5).
+Task 3: complete (commits 481f104..48df5bd, review clean; check.ps1 pendente para o usuário)
+Ruling: não existe flag de animações habilitadas em `AnimationController` nem na config (grep em Core/Info); `BlinkOn` da Task 4 fica só `(GameplayFrameCounter / 10) % 2 == 0`, sem `AnimationsEnabled` — custo se errado: uma condição a acrescentar quando a flag existir.
+Task 4: BASE 48df5bd
