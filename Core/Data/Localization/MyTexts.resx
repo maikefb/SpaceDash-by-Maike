@@ -963,4 +963,73 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_Frame_LiftSubtitle" xml:space="preserve">
     <value>Mass, thrust and margin</value>
   </data>
+  <data name="LcdMod_Antenna_Active" xml:space="preserve">
+    <value>active</value>
+  </data>
+  <data name="LcdMod_Antenna_MaxRange" xml:space="preserve">
+    <value>Max range</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Alerts" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Damaged" xml:space="preserve">
+    <value>Damaged</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Destroyed" xml:space="preserve">
+    <value>Destroyed</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Intact" xml:space="preserve">
+    <value>Intact</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Blueprint" xml:space="preserve">
+    <value>Blueprint</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_SunEvents" xml:space="preserve">
+    <value>Sunrise · Sunset</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Oxygen" xml:space="preserve">
+    <value>Oxygen</value>
+  </data>
+  <data name="LcdMod_Inventory_Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="LcdMod_Survivors_AliveFor" xml:space="preserve">
+    <value>ALIVE FOR</value>
+  </data>
+  <data name="LcdMod_Survivors_Rank" xml:space="preserve">
+    <value>#{0} · record {1}</value>
+  </data>
+  <data name="LcdMod_Farm_Ready" xml:space="preserve">
+    <value>{0} ready</value>
+  </data>
+  <data name="LcdMod_Farm_Next" xml:space="preserve">
+    <value>next in {0}</value>
+  </data>
+  <data name="LcdMod_Farm_NoWater" xml:space="preserve">
+    <value>plot without water</value>
+  </data>
+  <data name="LcdMod_Farm_AvgGrowth" xml:space="preserve">
+    <value>Avg growth</value>
+  </data>
+  <data name="LcdMod_Farm_AvgWater" xml:space="preserve">
+    <value>Avg water</value>
+  </data>
+  <data name="LcdMod_Farm_ReadyToHarvest" xml:space="preserve">
+    <value>Ready to harvest</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_BlocksNetworks" xml:space="preserve">
+    <value>{0} blocks · {1} networks</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_OffBottlenecks" xml:space="preserve">
+    <value>Off · Bottlenecks</value>
+  </data>
+  <data name="LcdMod_Projector_Remaining" xml:space="preserve">
+    <value>{0} of {1} blocks left</value>
+  </data>
+  <data name="LcdMod_Projector_Buildable" xml:space="preserve">
+    <value>{0} buildable now</value>
+  </data>
+  <data name="LcdMod_Projector_Ok" xml:space="preserve">
+    <value>ok</value>
+  </data>
 </root>

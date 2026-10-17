@@ -981,4 +981,73 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Frame_LiftSubtitle" xml:space="preserve">
     <value>Massa, empuxo e margem</value>
   </data>
+  <data name="LcdMod_Antenna_Active" xml:space="preserve">
+    <value>ativas</value>
+  </data>
+  <data name="LcdMod_Antenna_MaxRange" xml:space="preserve">
+    <value>Maior alcance</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Alerts" xml:space="preserve">
+    <value>Desligados</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Damaged" xml:space="preserve">
+    <value>Danificados</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Destroyed" xml:space="preserve">
+    <value>Destruídos</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Intact" xml:space="preserve">
+    <value>Íntegros</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_Blueprint" xml:space="preserve">
+    <value>Planta</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_SunEvents" xml:space="preserve">
+    <value>Nascer · Pôr</value>
+  </data>
+  <data name="LcdMod_ClockDashboard_Oxygen" xml:space="preserve">
+    <value>Oxigênio</value>
+  </data>
+  <data name="LcdMod_Inventory_Volume" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="LcdMod_Survivors_AliveFor" xml:space="preserve">
+    <value>VIVO HÁ</value>
+  </data>
+  <data name="LcdMod_Survivors_Rank" xml:space="preserve">
+    <value>#{0} · recorde {1}</value>
+  </data>
+  <data name="LcdMod_Farm_Ready" xml:space="preserve">
+    <value>{0} prontos</value>
+  </data>
+  <data name="LcdMod_Farm_Next" xml:space="preserve">
+    <value>próximo em {0}</value>
+  </data>
+  <data name="LcdMod_Farm_NoWater" xml:space="preserve">
+    <value>canteiro sem água</value>
+  </data>
+  <data name="LcdMod_Farm_AvgGrowth" xml:space="preserve">
+    <value>Crescimento médio</value>
+  </data>
+  <data name="LcdMod_Farm_AvgWater" xml:space="preserve">
+    <value>Água média</value>
+  </data>
+  <data name="LcdMod_Farm_ReadyToHarvest" xml:space="preserve">
+    <value>Prontos para colher</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_BlocksNetworks" xml:space="preserve">
+    <value>{0} blocos · {1} redes</value>
+  </data>
+  <data name="LcdMod_ConveyorMap_OffBottlenecks" xml:space="preserve">
+    <value>Desligados · Gargalos</value>
+  </data>
+  <data name="LcdMod_Projector_Remaining" xml:space="preserve">
+    <value>faltam {0} de {1} blocos</value>
+  </data>
+  <data name="LcdMod_Projector_Buildable" xml:space="preserve">
+    <value>{0} construíveis agora</value>
+  </data>
+  <data name="LcdMod_Projector_Ok" xml:space="preserve">
+    <value>ok</value>
+  </data>
 </root>
