@@ -44,3 +44,5 @@ Task 10: BASE 4242b05 (implementador único; passo 3 — build e jogo — é do 
 Task 10: implementer a84658914a4105a7a; DONE_WITH_CONCERNS (árvore; 32 constantes, 26 pendentes de SD_Icon_*; seção Pendentes na spec de ícones).
 Task 10: reviewer a371cbd40fcdb7fd0; CLEAN (minor 1 aplicado: script versionado em tools/BareIcons/pending.py e menção na spec ajustada). Task 10: complete (commit 0dacd14).
 Plano 3: todas as 10 tasks completas em 0dacd14. Revisão final de integração dos Planos 2 e 3 (50490af..HEAD) em andamento.
+Revisão final Planos 2+3: reviewer aedd48380f053b1da; CLEAN (minors 2 e 8 aplicados em b7e3cc6: segmento {4} removido do ConveyorMap_Footer en/pt-BR; BareIcons.Warning na Acoplagem). Não aplicados: caches Loc/Label duplicados no ConveyorMap; KV_ROW_RATIO duplicado em Radar/Sobreviventes; paginação duplicada no Projetor; trilho Lerp repetido; GetLoc(NotAvailable) por frame. Checklist de teste no relatório do revisor e no resumo ao usuário.
+PLANO COMPLETO em b7e3cc6. check.ps1, build.ps1 e jogo: usuário.

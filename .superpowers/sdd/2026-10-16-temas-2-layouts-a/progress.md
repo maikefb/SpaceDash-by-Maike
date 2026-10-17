@@ -39,3 +39,5 @@ resx da onda 1: 5 chaves (DefenseDashboard_Weapons; DockingAlignment_State_Conne
 Task 7: reviewer a9c456064214d3846; CLEAN (minors: linha 2 mostra Firing em vez do motivo mais comum enquanto há tiro; rótulo 'armas' minúsculo no kv). Task 7: complete (commit b9c253a).
 Task 8: reviewer a3bd373bc58789a8a; CLEAN (minors: herói some em LCD muito baixo antes de tentar; caches não zerados em ResetTextCaches). Task 8: complete (commit 60e896c).
 Plano 2: COMPLETO em 60e896c (8 tasks + 2 fixes transversais em EnergyAppBase + resx). check.ps1 e jogo pendentes para o usuário.
+Revisão final Planos 2+3: reviewer aedd48380f053b1da; CLEAN (minors 2 e 8 aplicados em b7e3cc6: segmento {4} removido do ConveyorMap_Footer en/pt-BR; BareIcons.Warning na Acoplagem). Não aplicados: caches Loc/Label duplicados no ConveyorMap; KV_ROW_RATIO duplicado em Radar/Sobreviventes; paginação duplicada no Projetor; trilho Lerp repetido; GetLoc(NotAvailable) por frame. Checklist de teste no relatório do revisor e no resumo ao usuário.
+PLANO COMPLETO em b7e3cc6. check.ps1, build.ps1 e jogo: usuário.
