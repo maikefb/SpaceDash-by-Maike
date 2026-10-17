@@ -272,7 +272,7 @@ namespace LcdMod.Client.Apps
             var s = Snapshot;
             if (!s.HasData)
             {
-                Host.DrawMessage(sprites, EmptyMessage, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, EmptyMessage, BareIcons.Warning, GetWarningColor());
                 return;
             }
 
@@ -284,14 +284,15 @@ namespace LcdMod.Client.Apps
             var right = new RectangleF(left.Right + gap, view.Y, view.Width - leftWidth - gap, view.Height);
 
             _kv.Clear();
-            _kv.Add(KvRow(Loc("Produced"), ICON_POWER, PowerText(s.ProducedMw, false, float.MaxValue), fg));
-            _kv.Add(KvRow(Loc("Used"), ICON_POWER, PowerText(s.ConsumedMw, false, float.MaxValue), fg));
-            _kv.Add(KvRow(Loc("Balance"), ICON_POWER, PowerText(s.NetMw, true, float.MaxValue), BalanceColor(s)));
-            _kv.Add(KvRow(LocHelper.GetLoc(PEAK_KEY), ICON_POWER, PowerText(PeakMw(s), false, float.MaxValue), fg));
+            _kv.Add(KvRow(Loc("Produced"), BareIcons.Production, PowerText(s.ProducedMw, false, float.MaxValue), fg));
+            _kv.Add(KvRow(Loc("Used"), BareIcons.Consumption, PowerText(s.ConsumedMw, false, float.MaxValue), fg));
+            _kv.Add(KvRow(Loc("Balance"), BareIcons.Balance, PowerText(s.NetMw, true, float.MaxValue), BalanceColor(s)));
+            _kv.Add(KvRow(LocHelper.GetLoc(PEAK_KEY), BareIcons.Peak, PowerText(PeakMw(s), false, float.MaxValue), fg));
             if (s.HasBatteries)
             {
-                _kv.Add(KvRow(Loc("Stored"), ICON_BATTERY, FormatingHelper.MegaWattHoursToString(s.StoredMwh), fg));
-                _kv.Add(KvRow(Loc(s.BatteryStatus == EnergyBatteryStatus.Charging ? "FullIn" : "EmptyIn"), ICON_BATTERY,
+                bool charging = s.BatteryStatus == EnergyBatteryStatus.Charging;
+                _kv.Add(KvRow(Loc("Stored"), BareIcons.Storage, FormatingHelper.MegaWattHoursToString(s.StoredMwh), fg));
+                _kv.Add(KvRow(Loc(charging ? "FullIn" : "EmptyIn"), charging ? BareIcons.Charging : BareIcons.Discharging,
                     s.EtaSeconds == EnergySnapshot.NO_ETA ? NotAvailable : EtaText(s.EtaSeconds), fg));
             }
 

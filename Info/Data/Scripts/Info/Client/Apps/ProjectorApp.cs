@@ -317,7 +317,7 @@ namespace LcdMod.Client.Apps
             _compactPages = 1;
             if (!HasBlueprint || items.Count == 0)
             {
-                Host.DrawMessage(s, LocHelper.Empty, "Warning", GetWarningColor());
+                Host.DrawMessage(s, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
                 return;
             }
 

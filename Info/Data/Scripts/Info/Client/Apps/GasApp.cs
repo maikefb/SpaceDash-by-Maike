@@ -418,16 +418,16 @@ namespace LcdMod.Client.Apps
             _kv.Clear();
 
             if (_h2.Tanks > 0)
-                _kv.Add(StoredRow(_h2, ICON_H2, "H2Stored", H2_COLOR, fg, warn, error, na));
+                _kv.Add(StoredRow(_h2, BareIcons.TankH2, "H2Stored", H2_COLOR, fg, warn, error, na));
             if (_o2.Tanks > 0)
-                _kv.Add(StoredRow(_o2, ICON_O2, "O2Stored", O2_COLOR, fg, warn, error, na));
+                _kv.Add(StoredRow(_o2, BareIcons.TankO2, "O2Stored", O2_COLOR, fg, warn, error, na));
 
             if (_gens > 0)
             {
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = Loc("Generators"),
-                    Icon = _genIcon ?? ICON_FALLBACK,
+                    Icon = _genIcon ?? BareIcons.Generator,
                     Value = _gensActive + "/" + _gens + SEPARATOR + FormatingHelper.VolumeToString(_h2.ProdLps + _o2.ProdLps) + "/s",
                     ValueColor = _gensActive == 0 ? warn : fg,
                     Bar = -1f
@@ -442,7 +442,7 @@ namespace LcdMod.Client.Apps
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = Loc("Flow"),
-                    Icon = _h2.Tanks > 0 ? ICON_H2 : ICON_O2,
+                    Icon = _h2.Tanks > 0 ? BareIcons.Hydrogen : BareIcons.Oxygen,
                     Value = flow,
                     ValueColor = draining ? warn : fg,
                     Bar = -1f
@@ -455,7 +455,7 @@ namespace LcdMod.Client.Apps
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = Loc("IceReserve"),
-                    Icon = ICON_ICE,
+                    Icon = BareIcons.Ice,
                     Value = FormatingHelper.MassToString(ice),
                     ValueColor = _gens > 0 && _iceInGens <= 0d ? warn : fg,
                     Bar = -1f
@@ -464,7 +464,7 @@ namespace LcdMod.Client.Apps
 
             if (_kv.Count == 0)
             {
-                Host.DrawMessage(sprites, na, "Warning", warn);
+                Host.DrawMessage(sprites, na, BareIcons.Warning, warn);
                 return;
             }
             Bare.Kv(sprites, ViewBox, _kv, fg, Theme);

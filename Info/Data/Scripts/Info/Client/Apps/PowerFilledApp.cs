@@ -480,7 +480,7 @@ namespace LcdMod.Client.Apps
                     _kvRows.Add(new BareLayout.KvRow
                     {
                         Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "Frame_Autonomy"),
-                        Icon = "IconEnergy",
+                        Icon = BareIcons.Hourglass,
                         Value = collector.RightSideText,
                         ValueColor = collector.RightSideColor,
                         Bar = -1f,
@@ -491,7 +491,7 @@ namespace LcdMod.Client.Apps
 
             if (_kvRows.Count == 0)
             {
-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
                 return;
             }
 

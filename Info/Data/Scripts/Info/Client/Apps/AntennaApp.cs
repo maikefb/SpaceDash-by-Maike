@@ -39,7 +39,6 @@ namespace LcdMod.Client.Apps
         const float LASER_ICON_TOP_PADDING = 64f;
         const float LASER_ICON_BOTTOM_PADDING = 22f;
         const float MINIMAL_ICON_RATIO = 0.5f;
-        const string MINIMAL_ICON = "RadioAntenna";
         readonly List<AntennaEntry> _entries = new List<AntennaEntry>();
         readonly List<BareLayout.KvRow> _rows = new List<BareLayout.KvRow>();
         readonly Dictionary<long, AntennaEntry> _entryModels = new Dictionary<long, AntennaEntry>();
@@ -207,7 +206,7 @@ namespace LcdMod.Client.Apps
             if (BareLayout.IsWide(view))
             {
                 var iconCenter = new Vector2(view.X + view.Width * 0.25f, view.Center.Y);
-                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, iconCenter, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, iconCenter, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
                 float left = view.X + view.Width * 0.5f + margin;
                 float width = view.Right - left;
                 float textTop = view.Center.Y - lineHeight;
@@ -220,12 +219,12 @@ namespace LcdMod.Client.Apps
             float textBlock = lineHeight * 2f + margin;
             if (view.Height - iconSide < textBlock)
             {
-                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, view.Center, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, view.Center, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
                 return;
             }
 
             float top = view.Y + (view.Height - iconSide - textBlock) * 0.5f;
-            sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, new Vector2(view.Center.X, top + iconSide * 0.5f), new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+            sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, new Vector2(view.Center.X, top + iconSide * 0.5f), new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
             float linesTop = top + iconSide + margin;
             Bare.Text(sprites, line1, new Vector2(view.Center.X, linesTop), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
             if (!Bare.Text(sprites, line2, new Vector2(view.Center.X, linesTop + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight))
@@ -236,7 +235,7 @@ namespace LcdMod.Client.Apps
         {
             if (_entries.Count == 0)
             {
-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
                 return;
             }
 

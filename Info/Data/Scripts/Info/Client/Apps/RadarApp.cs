@@ -1874,7 +1874,7 @@ namespace LcdMod.Client.Apps
         {
             if (_sortedContacts.Count == 0)
             {
-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
                 return;
             }
 

@@ -33,9 +33,6 @@ namespace LcdMod.Client.Apps
         const float MINIMAL_HERO_RATIO = 0.7f;
         const float ICON_BASE = 16f;
         const string SEPARATOR = " · ";
-        const string ICON_SUNRISE = "WeatherSunRise";
-        const string ICON_SUNSET = "WeatherSunSet";
-        const string ICON_OXYGEN = "IconOxygen";
         const string ICON_UPTIME = "BeaconBroadcast";
 
         enum ClockDashboardLayoutMode
@@ -270,7 +267,7 @@ namespace LcdMod.Client.Apps
                 ? ClockDashboardSolarTime.PositiveModulo(_snapshot.TerrainSunsetHour - now, 24d)
                 : double.MaxValue;
             bool sunrise = toSunrise <= toSunset;
-            icon = sunrise ? ICON_SUNRISE : ICON_SUNSET;
+            icon = sunrise ? BareIcons.Sunrise : BareIcons.Sunset;
             return ClockDashboardFormatter.FormatSolarEventTime(
                 sunrise ? _snapshot.TerrainSunriseHour : _snapshot.TerrainSunsetHour,
                 ClockDashboardComponent);
@@ -343,7 +340,7 @@ namespace LcdMod.Client.Apps
             Color fg = GetForegroundColor();
             if (_snapshot == null)
             {
-                Host.DrawMessage(sprites, ClockDashboardLocalization.Unavailable, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, ClockDashboardLocalization.Unavailable, BareIcons.Warning, GetWarningColor());
                 return;
             }
 
@@ -388,7 +385,7 @@ namespace LcdMod.Client.Apps
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_SunEvents"),
-                    Icon = ICON_SUNRISE,
+                    Icon = BareIcons.Sunrise,
                     Value = sunrise != null && sunset != null ? sunrise + SEPARATOR + sunset : sunrise ?? sunset,
                     ValueColor = fg,
                     Bar = -1f
@@ -399,7 +396,7 @@ namespace LcdMod.Client.Apps
             _kv.Add(new BareLayout.KvRow
             {
                 Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_Oxygen"),
-                Icon = ICON_OXYGEN,
+                Icon = BareIcons.Oxygen,
                 Value = ClockDashboardFormatter.FormatOxygen(_snapshot.OxygenRatio),
                 ValueColor = oxygenColor,
                 Bar = MathHelper.Clamp(_snapshot.OxygenRatio, 0f, 1f),
@@ -418,7 +415,7 @@ namespace LcdMod.Client.Apps
             _kv.Add(new BareLayout.KvRow
             {
                 Label = ClockDashboardLocalization.ServerUptime,
-                Icon = ICON_UPTIME,
+                Icon = BareIcons.Server,
                 Value = ClockDashboardFormatter.FormatDuration(session != null ? ClockDashboardFormatter.WorldElapsedSeconds(session.GameDateTime) : 0d),
                 ValueColor = fg,
                 Bar = -1f

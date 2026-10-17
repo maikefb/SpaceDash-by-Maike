@@ -33,11 +33,6 @@ namespace LcdMod.Client.Apps
         const string TYPE_COMPONENT = "MyObjectBuilder_Component";
         const string TYPE_AMMO = "MyObjectBuilder_AmmoMagazine";
         const string TYPE_TOOL = "MyObjectBuilder_PhysicalGunObject";
-        const string ICON_ORE = "MyObjectBuilder_Ore/Iron";
-        const string ICON_INGOT = "MyObjectBuilder_Ingot/Iron";
-        const string ICON_COMPONENT = "MyObjectBuilder_Component/SteelPlate";
-        const string ICON_AMMO = "MyObjectBuilder_AmmoMagazine/NATO_25x184mm";
-        const string ICON_VOLUME = "MyObjectBuilder_CargoContainer/LargeBlockLargeContainer";
 
         readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
         const long GROUP_REFRESH_FRAMES = 300;
@@ -183,7 +178,7 @@ namespace LcdMod.Client.Apps
             _kv.Add(new BareLayout.KvRow
             {
                 Label = LocHelper.GetLoc(MOD_PREFIX + "Inventory_Volume"),
-                Icon = _volumeIcon ?? ICON_VOLUME,
+                Icon = _volumeIcon ?? BareIcons.Volume,
                 Value = FormatingHelper.VolumeToString(_volumeUsed) + " / " + FormatingHelper.VolumeToString(_volumeMax) + SEPARATOR + FormatingHelper.PercentageToString(fraction),
                 ValueColor = fraction >= VOLUME_ATTENTION ? fill : fg,
                 Bar = -1f
@@ -209,10 +204,10 @@ namespace LcdMod.Client.Apps
                     }
                 }
 
-                _kv.Add(CategoryRow("Ore", ICON_ORE, FormatingHelper.FormatItemQty(ores), fg));
-                _kv.Add(CategoryRow("Ingot", ICON_INGOT, FormatingHelper.FormatItemQty(ingots), fg));
-                _kv.Add(CategoryRow("Component", ICON_COMPONENT, FormatingHelper.FormatItemQty(components), fg));
-                _kv.Add(CategoryRow("AmmoMagazine", ICON_AMMO,
+                _kv.Add(CategoryRow("Ore", BareIcons.Ore, FormatingHelper.FormatItemQty(ores), fg));
+                _kv.Add(CategoryRow("Ingot", BareIcons.Ingot, FormatingHelper.FormatItemQty(ingots), fg));
+                _kv.Add(CategoryRow("Component", BareIcons.Component, FormatingHelper.FormatItemQty(components), fg));
+                _kv.Add(CategoryRow("AmmoMagazine", BareIcons.Ammo,
                     FormatingHelper.FormatItemQty(ammo) + SEPARATOR + FormatingHelper.FormatItemQty(tools), fg,
                     ItemCategoryHelper.GetGroupDisplayName("AmmoMagazine") + SEPARATOR + ItemCategoryHelper.GetGroupDisplayName("PhysicalGun")));
             }

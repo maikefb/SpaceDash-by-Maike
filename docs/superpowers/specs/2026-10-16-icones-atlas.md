@@ -164,3 +164,38 @@ Formato: cada ícone branco puro sobre fundo transparente, um só tom (o mod tin
 | Lock | cadeado com retícula |
 
 Total: 100 ícones.
+
+## Pendentes
+
+Constantes de `Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs` (temas Mínimo e Compacto) que ainda apontam para um fallback em vez do sprite final do atlas. Gerado por `python -I tools/BareIcons/pending.py Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs`; as demais constantes (`Warning`, `Battery`, `Hydrogen`, `Oxygen`, `Sunrise`, `Sunset`) já usam o ícone definitivo do mod ou do jogo.
+
+| Constante | Fallback atual | Nome final |
+|---|---|---|
+| `BareIcons.Balance` | `IconEnergy` | `SD_Icon_Balance` |
+| `BareIcons.Gauge` | `IconTemperature` | `SD_Icon_Gauge` |
+| `BareIcons.Hourglass` | `IconEnergy` | `SD_Icon_Hourglass` |
+| `BareIcons.Mass` | `IconEnergy` | `SD_Icon_Mass` |
+| `BareIcons.SafeMass` | `ShieldIcon` | `SD_Icon_SafeMass` |
+| `BareIcons.Production` | `IconEnergy` | `SD_Icon_Production` |
+| `BareIcons.Consumption` | `IconEnergy` | `SD_Icon_Consumption` |
+| `BareIcons.Peak` | `IconEnergy` | `SD_Icon_Peak` |
+| `BareIcons.Storage` | `Battery` | `SD_Icon_Storage` |
+| `BareIcons.TankH2` | `IconHydrogen` | `SD_Icon_TankH2` |
+| `BareIcons.TankO2` | `IconOxygen` | `SD_Icon_TankO2` |
+| `BareIcons.HydrogenEngine` | `IconHydrogen` | `SD_Icon_HydrogenEngine` |
+| `BareIcons.Charging` | `Battery` | `SD_Icon_Charging` |
+| `BareIcons.Discharging` | `Battery` | `SD_Icon_Discharging` |
+| `BareIcons.Generator` | `IconEnergy` | `SD_Icon_Generator` |
+| `BareIcons.Ice` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_Ice` |
+| `BareIcons.Sprout` | `IconEnergy` | `SD_Icon_Sprout` |
+| `BareIcons.WaterDrop` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_WaterDrop` |
+| `BareIcons.NoWater` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_NoWater` |
+| `BareIcons.Server` | `BeaconBroadcast` | `SD_Icon_Server` |
+| `BareIcons.Ore` | `MyObjectBuilder_Ore/Iron` | `SD_Icon_Ore` |
+| `BareIcons.Ingot` | `MyObjectBuilder_Ingot/Iron` | `SD_Icon_Ingot` |
+| `BareIcons.Component` | `MyObjectBuilder_Component/SteelPlate` | `SD_Icon_Component` |
+| `BareIcons.Ammo` | `MyObjectBuilder_AmmoMagazine/NATO_25x184mm` | `SD_Icon_Ammo` |
+| `BareIcons.Volume` | `MyObjectBuilder_CargoContainer/LargeBlockLargeContainer` | `SD_Icon_Volume` |
+| `BareIcons.AntennaRadio` | `RadioAntenna` | `SD_Icon_AntennaRadio` |
+
+Total: 26 pendentes de 32 constantes.

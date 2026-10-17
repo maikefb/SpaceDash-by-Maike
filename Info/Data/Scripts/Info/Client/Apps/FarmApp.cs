@@ -34,8 +34,6 @@ namespace LcdMod.Client.Apps
         const float MINIMAL_HERO_FONT_MUL = 3f;
         const float TRACK_MIX = 0.15f;
         const string SEPARATOR = " · ";
-        const string ICON_WATER = "MyObjectBuilder_Ore/Ice";
-        const string ICON_PLANT = "IconEnergy";
         static readonly Color WATER_COLOR = new Color(64, 156, 255);
         internal sealed class FarmEntry
         {
@@ -345,11 +343,11 @@ namespace LcdMod.Client.Apps
             int count = _entries.Count;
             if (count == 0)
             {
-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", warn);
+                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, warn);
                 return;
             }
 
-            string plantIcon = _plantIcon ?? ICON_PLANT;
+            string plantIcon = _plantIcon ?? BareIcons.Sprout;
             _kv.Clear();
             _kv.Add(new BareLayout.KvRow
             {
@@ -384,7 +382,7 @@ namespace LcdMod.Client.Apps
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = Loc("AvgWater"),
-                    Icon = ICON_WATER,
+                    Icon = BareIcons.WaterDrop,
                     Value = FormatingHelper.PercentageToString(_avgWater),
                     ValueColor = _noWater > 0 ? warn : fg,
                     Bar = _avgWater,
@@ -396,7 +394,7 @@ namespace LcdMod.Client.Apps
                 _kv.Add(new BareLayout.KvRow
                 {
                     Label = Loc("NoWater"),
-                    Icon = ICON_WATER,
+                    Icon = BareIcons.NoWater,
                     Value = string.IsNullOrEmpty(_noWaterName) ? _noWater.ToString() : _noWater + SEPARATOR + _noWaterName,
                     ValueColor = GetErrorColor(),
                     Bar = -1f

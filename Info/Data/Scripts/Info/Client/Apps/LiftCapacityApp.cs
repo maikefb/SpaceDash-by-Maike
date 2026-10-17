@@ -28,7 +28,6 @@ namespace LcdMod.Client.Apps
         const double STANDARD_GRAVITY = 9.81d;
         const string ICON_GRAVITY = "IconTemperature";
         const string ICON_MASS = "IconEnergy";
-        const string ICON_SAFE = "ShieldIcon";
         const float MINIMAL_STATE_FONT_MUL = 1.2f;
         const float MINIMAL_HERO_FONT_MUL = 3f;
         public const int STATE_SAFE = 0;
@@ -162,7 +161,7 @@ namespace LcdMod.Client.Apps
         {
             if (!HasData)
             {
-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
                 return;
             }
 
@@ -173,10 +172,10 @@ namespace LcdMod.Client.Apps
             bool valid = HasGravity && MaxMassKg > 0d;
 
             _tiles.Clear();
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_GRAVITY, Label = Loc("LiftUsage"), Value = valid ? FormatingHelper.PercentageToString((float)Usage) : na, ValueColor = stateColor });
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("CanCarry"), Value = HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, ValueColor = fg });
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("ShipMass"), Value = ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, ValueColor = fg });
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_SAFE, Label = Loc("SafeMax"), Value = HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Gauge, Label = Loc("LiftUsage"), Value = valid ? FormatingHelper.PercentageToString((float)Usage) : na, ValueColor = stateColor });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Mass, Label = Loc("CanCarry"), Value = HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Mass, Label = Loc("ShipMass"), Value = ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.SafeMass, Label = Loc("SafeMax"), Value = HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, ValueColor = fg });
             Bare.Tiles(sprites, ViewBox, _tiles, 2, 2, fg, accent, Theme);
         }
 

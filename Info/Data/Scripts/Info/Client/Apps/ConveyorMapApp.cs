@@ -728,7 +728,7 @@ namespace LcdMod.Client.Apps
         {
             if (_blocks.Count == 0)
             {
-                Host.DrawMessage(sprites, Label("NoConveyors"), "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, Label("NoConveyors"), BareIcons.Warning, GetWarningColor());
                 return;
             }
 

@@ -14,8 +14,6 @@ namespace LcdMod.Client.Apps
     internal sealed class EnergyGeneralApp : EnergyAppBase
     {
         const float KIND_VALUE = EnergyTheme.VALUE * 1.2f;
-        const string ICON_POWER = "IconEnergy";
-        const string ICON_BATTERY = "Battery";
         const float MINIMAL_HERO_FONT_MUL = 3f;
         const float RING_TRACK_MIX = 0.15f;
         const float USED_WARN_RATIO = 0.75f;
@@ -104,7 +102,7 @@ namespace LcdMod.Client.Apps
             var s = Snapshot;
             if (!s.HasData)
             {
-                Host.DrawMessage(sprites, NotAvailable, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, NotAvailable, BareIcons.Warning, GetWarningColor());
                 return;
             }
 
@@ -113,18 +111,18 @@ namespace LcdMod.Client.Apps
             bool hasBatteries = s.HasBatteries;
 
             _tiles.Clear();
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Production"), Value = FormatingHelper.MegaWattsToString(s.ProducedMw), ValueColor = fg });
-            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Consumption"), Value = FormatingHelper.MegaWattsToString(s.ConsumedMw), ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Production"), Value = FormatingHelper.MegaWattsToString(s.ProducedMw), ValueColor = fg });
+            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Consumption, Label = Loc("Consumption"), Value = FormatingHelper.MegaWattsToString(s.ConsumedMw), ValueColor = fg });
             _tiles.Add(new BareLayout.Tile
             {
-                Icon = ICON_BATTERY,
+                Icon = BareIcons.Battery,
                 Label = Loc("Charge"),
                 Value = hasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
                 ValueColor = hasBatteries ? BatteryStatusColor(s.BatteryStatus) : fg
             });
             _tiles.Add(new BareLayout.Tile
             {
-                Icon = ICON_POWER,
+                Icon = BareIcons.Balance,
                 Label = Loc("Balance"),
                 Value = PowerText(s.NetMw, true, float.MaxValue),
                 ValueColor = s.NetMw >= 0f ? accent : GetErrorColor()

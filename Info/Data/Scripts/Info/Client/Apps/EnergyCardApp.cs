@@ -25,9 +25,6 @@ namespace LcdMod.Client.Apps
         const float MINIMAL_PERCENT_FONT_MUL = 3f;
         const float MINIMAL_POWER_FONT_MUL = 2.5f;
         const float MINIMAL_BAR_HEIGHT_RATIO = 0.5f;
-        const string ICON_BATTERY = "Battery";
-        const string ICON_HYDROGEN = "IconHydrogen";
-        const string ICON_POWER = "IconEnergy";
 
         public EnergyCardApp(IAppHost host, EnergyKind kind) : base(host)
         {
@@ -126,11 +123,11 @@ namespace LcdMod.Client.Apps
             switch (_kind)
             {
                 case EnergyKind.Battery:
-                    return ICON_BATTERY;
+                    return BareIcons.Battery;
                 case EnergyKind.Hydrogen:
-                    return ICON_HYDROGEN;
+                    return BareIcons.HydrogenEngine;
                 default:
-                    return TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, ICON_POWER);
+                    return TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, BareIcons.Production);
             }
         }
 
@@ -189,7 +186,7 @@ namespace LcdMod.Client.Apps
         {
             if (!HasData)
             {
-                Host.DrawMessage(sprites, NotAvailable, "Warning", GetWarningColor());
+                Host.DrawMessage(sprites, NotAvailable, BareIcons.Warning, GetWarningColor());
                 return;
             }
 
@@ -211,8 +208,8 @@ namespace LcdMod.Client.Apps
                 Color charge = stats.Total == 0 ? fg : EnergyTheme.ChargeColor(ref Palette, s.StoredRatio);
                 _tiles.Add(new BareLayout.Tile { Icon = icon, Label = Loc("Charge"), Value = FormatingHelper.PercentageToString(s.StoredRatio), ValueColor = charge });
                 _tiles.Add(new BareLayout.Tile { Label = Loc("Mode"), Value = BatteryModeText(s.BatteryMode), ValueColor = neutral });
-                _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Input"), Value = FormatingHelper.MegaWattsToString(s.BatteryInputMw), ValueColor = neutral });
-                _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral });
+                _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Consumption, Label = Loc("Input"), Value = FormatingHelper.MegaWattsToString(s.BatteryInputMw), ValueColor = neutral });
+                _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral });
                 Bare.Tiles(sprites, grid, _tiles, 2, 2, fg, accent, Theme);
                 return;
             }
@@ -223,8 +220,8 @@ namespace LcdMod.Client.Apps
                 : FormatingHelper.PercentageToString(environmental ? stats.AvailabilityRatio : stats.LoadRatio);
             Color ratioColor = stats.Working == 0 ? Palette.LabelMuted
                 : environmental ? neutral : EnergyTheme.LoadColor(ref Palette, stats.LoadRatio);
-            var output = new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral };
-            var max = new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("MaxOutput"), Value = FormatingHelper.MegaWattsToString(stats.MaxOutputMw), ValueColor = neutral };
+            var output = new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral };
+            var max = new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("MaxOutput"), Value = FormatingHelper.MegaWattsToString(stats.MaxOutputMw), ValueColor = neutral };
             var ratio = new BareLayout.Tile { Icon = icon, Label = ratioLabel, Value = ratioValue, ValueColor = ratioColor };
             var state = new BareLayout.Tile { Label = MyTexts.GetString("TerminalStatus"), Value = StateText(stats.State), ValueColor = stateColor };
             if (_kind == EnergyKind.Hydrogen)
