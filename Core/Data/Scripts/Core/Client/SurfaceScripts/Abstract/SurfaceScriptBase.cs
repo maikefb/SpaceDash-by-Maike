@@ -1045,7 +1045,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         {
             _userTheme = ThemeKind;
             var layout = FrameLayouts.Resolve(_userTheme, FrameId, FrameTiny);
-            Frame = layout == null ? null : new FrameRenderer(layout, Surface, TextFont);
+            Frame = layout == null ? null : new FrameRenderer(layout, Surface, TextFont, FontScale);
         }
 
         public void AddBackground(List<MySprite> frame, Color? color = null)

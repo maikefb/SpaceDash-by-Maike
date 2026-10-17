@@ -23,8 +23,7 @@ namespace LcdMod.Client.Gui.Frames
         const float LINE_PER_PX = 1.2f;
         const float BASELINE = 0.78f;
         const float MIN_SCALE_RATIO = 0.5f;
-        // ponytail: valores ocupam 1,3× a altura da caixa; rótulos sem largura máxima usam a distância à borda (ou 60 % da textura quando centrados).
-        const float VALUE_FILL = 1.3f;
+        // ponytail: rótulos sem largura máxima usam a distância à borda (ou 60 % da textura quando centrados).
         // ponytail: fator fixo sobre o FontPx da tabela; ajustar no jogo se o rotulo encostar na capsula.
         const float LABEL_BOOST = 1.6f;
         const float LABEL_MARGIN = 16f;
@@ -36,10 +35,14 @@ namespace LcdMod.Client.Gui.Frames
         readonly Vector2 _scale;
         readonly Vector2 _origin;
         readonly float _unitLine;
+        readonly float _textScale;
         readonly List<MySprite> _static = new List<MySprite>();
         Color _staticColor;
 
-        public FrameRenderer(FrameLayout layout, IMyTextSurface surface, string font)
+        /// <param name="fontScale">
+        ///     Tamanho de fonte do usuário. A geometria da moldura é fixa, então ele só encolhe o texto (acima de 1 vale 1).
+        /// </param>
+        public FrameRenderer(FrameLayout layout, IMyTextSurface surface, string font, float fontScale = 1f)
         {
             Layout = layout;
             _surface = surface;
@@ -47,6 +50,7 @@ namespace LcdMod.Client.Gui.Frames
             _scale = surface.SurfaceSize / layout.Size;
             _origin = (surface.TextureSize - surface.SurfaceSize) * 0.5f;
             _unitLine = FormatingHelper.LineHeight(1f, surface, font);
+            _textScale = fontScale > 0f ? Math.Min(1f, fontScale) : 1f;
         }
 
         public bool Has(string field)
@@ -127,7 +131,7 @@ namespace LcdMod.Client.Gui.Frames
             }
         }
 
-        /// <summary>Texto do tamanho da caixa, centrado nela (cabeçalho e rodapé seguem a tabela); encolhe até 0,5× e corta quando não cabe.</summary>
+        /// <summary>Texto no tamanho da tabela, centrado na caixa (cabeçalho e rodapé seguem o alinhamento dela); encolhe até 0,5× e corta quando não cabe.</summary>
         public void Text(List<MySprite> sprites, string field, string text, Color color, bool bold = true)
         {
             FrameSlot slot;
@@ -135,7 +139,7 @@ namespace LcdMod.Client.Gui.Frames
                 return;
             string font = bold ? FormatingHelper.BoldFont(_font, text) : _font;
             RectangleF box = ToSurface(slot.Box);
-            float requested = Scale(Math.Max(slot.FontPx, slot.Box.Height * VALUE_FILL));
+            float requested = Scale(slot.FontPx);
             float scale;
             text = FormatingHelper.FitText(_surface, text, font, requested, box.Width, 0f, requested * MIN_SCALE_RATIO, out scale);
             TextAlignment align = field.StartsWith("cabecalho.") || field.StartsWith("rodape.") ? slot.Align : TextAlignment.CENTER;
@@ -183,9 +187,10 @@ namespace LcdMod.Client.Gui.Frames
             return new RectangleF(_origin.X + box.X * _scale.X, _origin.Y + box.Y * _scale.Y, box.Width * _scale.X, box.Height * _scale.Y);
         }
 
+        /// <summary>Escala de sprite para um tamanho em px da tabela, já com a redução pedida pelo usuário.</summary>
         float Scale(float fontPx)
         {
-            return fontPx * _scale.Y * LINE_PER_PX / _unitLine;
+            return fontPx * _scale.Y * LINE_PER_PX / _unitLine * _textScale;
         }
 
         static string Localize(string key)
