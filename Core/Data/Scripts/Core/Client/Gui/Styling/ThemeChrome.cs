@@ -27,8 +27,16 @@ namespace LcdMod.Client.Gui.Styling
         const float CHAMFER_MAX = 12f;
         const float FRAME_INSET_RATIO = 24f / 512f;
         const float SMALL_INSET = 2f;
+        const float BARE_INSET = 4f;
+        const float BARE_CARD_MIX = 0.06f;
         const float SMALL_FONT_BOOST = 1.25f;
         const float CAFE_FILL_MIX = 0.08f;
+
+        /// <summary>Mínimo e Compacto: sem título, rodapé, moldura ou faixas; só fundo e margem.</summary>
+        public static bool IsBare(LcdTheme theme)
+        {
+            return theme == LcdTheme.Minimal || theme == LcdTheme.Compact;
+        }
 
         public static Color FrameFill(LcdTheme theme, Color background, Color foreground)
         {
@@ -61,9 +69,11 @@ namespace LcdMod.Client.Gui.Styling
             return theme == LcdTheme.Small ? SMALL_FONT_BOOST : 1f;
         }
 
-        /// <summary>Borda reservada à moldura: 9-slice no Default, faixa fina nos temas desenhados, mínima no Small.</summary>
-        public static Vector2 FrameInset(LcdTheme theme, Vector2 surfaceSize, float defaultThickness)
+        /// <summary>Borda reservada à moldura: 9-slice no Default, faixa fina nos temas desenhados, mínima no Small, 4 px × escala nos bare.</summary>
+        public static Vector2 FrameInset(LcdTheme theme, Vector2 surfaceSize, float defaultThickness, float scale)
         {
+            if (IsBare(theme))
+                return new Vector2(BARE_INSET * scale);
             switch (theme)
             {
                 case LcdTheme.Default: return new Vector2(defaultThickness);
@@ -75,6 +85,8 @@ namespace LcdMod.Client.Gui.Styling
         /// <summary>Moldura desenhada por código em volta de <paramref name="outer"/>; false no Default (o chamador desenha o 9-slice).</summary>
         public static bool DrawFrame(List<MySprite> sprites, LcdTheme theme, RectangleF outer, Color background, Color accent, Color foreground, float scale)
         {
+            if (IsBare(theme))
+                return true;
             switch (theme)
             {
                 case LcdTheme.Futuristic:
@@ -95,6 +107,8 @@ namespace LcdMod.Client.Gui.Styling
 
         public static bool DrawTitleAccent(List<MySprite> sprites, LcdTheme theme, RectangleF bar, RectangleF screen, Color accent, Color foreground, float scale)
         {
+            if (IsBare(theme))
+                return true;
             switch (theme)
             {
                 case LcdTheme.Futuristic:
@@ -112,6 +126,11 @@ namespace LcdMod.Client.Gui.Styling
 
         public static bool DrawCard(List<MySprite> sprites, LcdTheme theme, RectangleF rect, Color background, Color accent, Color foreground, float scale)
         {
+            if (IsBare(theme))
+            {
+                sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, Color.Lerp(background, foreground, BARE_CARD_MIX)));
+                return true;
+            }
             switch (theme)
             {
                 case LcdTheme.Futuristic:
@@ -132,6 +151,8 @@ namespace LcdMod.Client.Gui.Styling
 
         public static bool DrawFooterBand(List<MySprite> sprites, LcdTheme theme, RectangleF rect, Color background, Color accent, Color foreground, float scale)
         {
+            if (IsBare(theme))
+                return true;
             switch (theme)
             {
                 case LcdTheme.Futuristic:
@@ -153,6 +174,8 @@ namespace LcdMod.Client.Gui.Styling
 
         public static bool DrawDivider(List<MySprite> sprites, LcdTheme theme, Vector2 from, Vector2 to, Color foreground, float scale)
         {
+            if (IsBare(theme))
+                return true;
             if (theme == LcdTheme.Default)
                 return false;
 
@@ -206,6 +229,8 @@ namespace LcdMod.Client.Gui.Styling
 
         public static bool DrawIconCell(List<MySprite> sprites, LcdTheme theme, RectangleF cell, Color accent, float scale)
         {
+            if (IsBare(theme))
+                return true;
             switch (theme)
             {
                 case LcdTheme.Futuristic:

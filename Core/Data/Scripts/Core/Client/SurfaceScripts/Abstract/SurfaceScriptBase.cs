@@ -409,7 +409,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             var padding = (Surface.TextPadding / 100) * Surface.SurfaceSize;
             sizeOffset += padding / 2;
-            Vector2 frameInset = Frame != null ? new Vector2(FrameThickness) : ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness);
+            Vector2 frameInset = Frame != null ? new Vector2(FrameThickness) : ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness, ConfiguredScale);
 
             ViewBox = ApplyProxyOffsets(new RectangleF(
                 sizeOffset.X + frameInset.X,
@@ -681,6 +681,9 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
 
             CaretY = position.Y;
 
+            if (ThemeChrome.IsBare(_userTheme))
+                return;
+
             if (Frame != null || !TitleVisible)
                 return;
 
@@ -723,6 +726,9 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
         protected virtual void DrawFooter(List<MySprite> frame)
         {
             if (!HasFooterRoot)
+                return;
+
+            if (ThemeChrome.IsBare(_userTheme))
                 return;
 
             RenderFooterRoot(frame, FooterRoot.Rect);
@@ -1052,7 +1058,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
             }
 
             frame.AddRange(_backgroundGrids);
-            Vector2 inset = ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness) * 0.5f;
+            Vector2 inset = ThemeChrome.FrameInset(_userTheme, Surface.SurfaceSize, FrameThickness, ConfiguredScale) * 0.5f;
             var outer = new RectangleF(ViewBox.X - inset.X, ViewBox.Y - inset.Y, ViewBox.Width + inset.X * 2f, ViewBox.Height + inset.Y * 2f);
             if (!ThemeChrome.DrawFrame(frame, _userTheme, outer, BackgroundColor, GetHeaderColor(), ForegroundColor, LayoutScale))
                 DrawChrome(frame);

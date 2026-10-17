@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Common.Config.Components;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -43,7 +44,7 @@ namespace LcdMod.Client.Gui.Frames
         /// <summary>Moldura do tema para a tela, preferindo a Tiny quando pedida; null quando o tema não tem moldura para a tela.</summary>
         public static FrameLayout Resolve(LcdTheme theme, string screenId, bool tiny)
         {
-            if (theme == LcdTheme.Default || string.IsNullOrEmpty(screenId))
+            if (theme == LcdTheme.Default || ThemeChrome.IsBare(theme) || string.IsNullOrEmpty(screenId))
                 return null;
             screenId = screenId.Substring(screenId.IndexOf('_') + 1);
             if (!_built)

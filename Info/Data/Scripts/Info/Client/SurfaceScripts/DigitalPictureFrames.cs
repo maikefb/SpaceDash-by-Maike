@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using LcdMod.Client.Apps;
 using LcdMod.Client.Apps.Abstract;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
 using LcdMod.Client.SurfaceScripts.Abstract;
 using LcdMod.Client.Terminal.Controls;
@@ -41,6 +42,15 @@ namespace LcdMod.Client.SurfaceScripts
         DigitalPictureFramesApp _app;
         protected override string DefaultTitle => TITLE;
         public override IApp App => _app;
+
+        public override LcdTheme ThemeKind
+        {
+            get
+            {
+                var theme = base.ThemeKind;
+                return ThemeChrome.IsBare(theme) ? LcdTheme.Default : theme;
+            }
+        }
 
         public DigitalPictureFramesSurfaceScript(IMyTextSurface surface, IMyCubeBlock block, Vector2 size)
             : base(surface, block, size)
