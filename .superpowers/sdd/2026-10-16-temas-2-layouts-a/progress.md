@@ -19,3 +19,6 @@ Ruling: `SD_Icon_Battery` não existe nas texturas (achado da T8 do Plano 1); o 
 
 ## Progresso
 Onda 1: BASE 50490af; Tasks 1..8 em paralelo (implementadores sem git/resx). Commits por task pelo orquestrador após revisão.
+Task 1: implementer aa959abe391bdd1a3; DONE_WITH_CONCERNS (árvore; sem chaves resx novas).
+Task 2: implementer a60ba2f94194f48f9; DONE_WITH_CONCERNS (árvore; sem chaves resx; achado: EnergyAppBase.DrawChrome desenha chrome no bare — orquestrador trata).
+Ruling: EnergyAppBase.DrawChrome devolve após PrepareFrame() quando IsBare (Palette/Metrics continuam preparados para os ramos bare dos apps de energia) — commit 9d96773; vale para T2, T3 e T4.
