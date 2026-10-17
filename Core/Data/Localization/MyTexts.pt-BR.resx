@@ -172,6 +172,18 @@
     <data name="LcdMod_DockingAlignment_NoTarget" xml:space="preserve">
     <value>Nenhum alvo de acoplagem detectado</value>
   </data>
+  <data name="LcdMod_DockingAlignment_State_Connected" xml:space="preserve">
+    <value>Conectado</value>
+  </data>
+  <data name="LcdMod_DockingAlignment_State_Ready" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="LcdMod_DockingAlignment_State_Aligned" xml:space="preserve">
+    <value>Alinhado</value>
+  </data>
+  <data name="LcdMod_DockingAlignment_State_Adjust" xml:space="preserve">
+    <value>Ajustar</value>
+  </data>
 
     <data name="LcdMod_DockingAlignment_DisplayMode_Default" xml:space="preserve">
     <value>Padrão</value>
@@ -491,6 +503,9 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_DefenseDashboard_Ready" xml:space="preserve">
     <value>Pronto</value>
     <comment>TODO_TRANSLATION</comment>
+  </data>
+  <data name="LcdMod_DefenseDashboard_Weapons" xml:space="preserve">
+    <value>armas</value>
   </data>
   <data name="LcdMod_DefenseDashboard_RechargeInSecondsFormat" xml:space="preserve">
     <value>Recarga em {0}s</value>
