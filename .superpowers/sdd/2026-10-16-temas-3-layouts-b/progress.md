@@ -30,3 +30,4 @@ Task 2: reviewer a3740f041bfdcb1c7; CLEAN (minors: 2 GetEntityById por antena po
 Task 3: reviewer a7e187e5a70897377; CLEAN (minor 1 aplicado pelo orquestrador: espaço no segmento de alertas do rodapé). Task 3: complete (commit 974ba95).
 Task 8: reviewer ac7cc4eeb9b5e5b62; CLEAN (minor 1 aplicado: Icon do KvRow removido para não duplicar o círculo da medalha; cinza por índice e última vida = recorde mantidos). Task 8: complete (commit 839edd4).
 Onda B: Task 4 (Esteiras layouts) lançada sobre 974ba95.
+Task 9: reviewer acdb6b86db93a8041; CLEAN (minors: anel some antes das linhas em LCD muito baixo; OutputName como rótulo da linha de próxima colheita). Task 9: complete (commit e5e2f5d).

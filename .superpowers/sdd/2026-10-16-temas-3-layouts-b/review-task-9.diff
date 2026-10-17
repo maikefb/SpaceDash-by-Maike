@@ -1,0 +1,311 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs b/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
+index 2392557..589859e 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
+@@ -9,6 +9,7 @@ using LcdMod.Client.Gui;
+ using LcdMod.Client.Gui.ControlsTemplates;
+ using LcdMod.Client.Gui.ControlsTemplates.Custom;
+ using LcdMod.Client.Gui.ControlsTemplates.Panels;
++using LcdMod.Client.Gui.Styling;
+ using LcdMod.Client.Helpers;
+ using LcdMod.Client.SurfaceScripts.Abstract;
+ using LcdMod.Common.Helpers;
+@@ -30,11 +31,19 @@ namespace LcdMod.Client.Apps
+         const float SLOT_H = 100f;
+         const float SCROLLER_W = 8f;
+         const int DATA_REFRESH_RUN_INTERVAL = 6;
++        const float MINIMAL_HERO_FONT_MUL = 3f;
++        const float TRACK_MIX = 0.15f;
++        const string SEPARATOR = " · ";
++        const string ICON_WATER = "MyObjectBuilder_Ore/Ice";
++        const string ICON_PLANT = "IconEnergy";
++        static readonly Color WATER_COLOR = new Color(64, 156, 255);
+         internal sealed class FarmEntry
+         {
+             public long EntryId { get; private set; }
+             public FarmPlotEntry Plot { get; private set; }
+             public float Ratio { get; private set; }
++            public bool IsReady { get; private set; }
++            public double RemainingSeconds { get; private set; } = -1d;
+             public string PercentText { get; private set; }
+             public string RemainingText { get; private set; }
+             public string WaterText { get; private set; }
+@@ -47,6 +56,8 @@ namespace LcdMod.Client.Apps
+             public bool Update(
+                 FarmPlotEntry plot,
+                 float ratio,
++                bool isReady,
++                double remainingSeconds,
+                 string percentText,
+                 string remainingText,
+                 string waterText,
+@@ -69,6 +80,8 @@ namespace LcdMod.Client.Apps
+                 bool presentationChanged =
+                     EntryId != entryId ||
+                     !Ratio.Equals(ratio) ||
++                    IsReady != isReady ||
++                    !RemainingSeconds.Equals(remainingSeconds) ||
+                     !string.Equals(PercentText, percentText, StringComparison.Ordinal) ||
+                     !string.Equals(RemainingText, remainingText, StringComparison.Ordinal) ||
+                     !string.Equals(WaterText, waterText, StringComparison.Ordinal) ||
+@@ -81,6 +94,8 @@ namespace LcdMod.Client.Apps
+                 Plot = plot;
+                 EntryId = entryId;
+                 Ratio = ratio;
++                IsReady = isReady;
++                RemainingSeconds = remainingSeconds;
+                 PercentText = percentText;
+                 RemainingText = remainingText;
+                 WaterText = waterText;
+@@ -125,6 +140,7 @@ namespace LcdMod.Client.Apps
+         public override void LayoutChanged()
+         {
+             _runsUntilDataRefresh = 0;
++            _loc.Clear();
+             _entries.Clear();
+             _nextEntries.Clear();
+             _entryById.Clear();
+@@ -214,11 +230,181 @@ namespace LcdMod.Client.Apps
+             BeginFarmEntryControlFrame();
+             var sprites = _sprites;
+             sprites.Clear();
++            if (IsMinimal || IsCompact)
++            {
++                Aggregate();
++                if (IsMinimal)
++                    DrawMinimal(sprites);
++                else
++                    DrawCompact(sprites);
++                ClearDirtyAfterRender();
++                return sprites;
++            }
+             DrawFarmPlots(_surfaceHost, sprites);
+             ClearDirtyAfterRender();
+             return sprites;
+         }
+ 
++        readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
++        readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
++        float _avgGrowth, _avgWater;
++        int _ready, _watered, _noWater;
++        FarmEntry _next;
++        string _noWaterName, _plantIcon;
++
++        void Aggregate()
++        {
++            _avgGrowth = _avgWater = 0f;
++            _ready = _watered = _noWater = 0;
++            _next = null;
++            _noWaterName = null;
++            _plantIcon = null;
++            int count = _entries.Count;
++            for (int i = 0; i < count; i++)
++            {
++                var entry = _entries[i];
++                _avgGrowth += entry.Ratio;
++                if (_plantIcon == null && !string.IsNullOrEmpty(entry.OutputSprite))
++                    _plantIcon = entry.OutputSprite;
++                if (entry.IsReady)
++                    _ready++;
++                else if (entry.RemainingSeconds >= 0d && (_next == null || entry.RemainingSeconds < _next.RemainingSeconds))
++                    _next = entry;
++                if (entry.Plot == null || entry.Plot.StorageComponent == null)
++                    continue;
++                _watered++;
++                _avgWater += entry.WaterRatio;
++                if (entry.WaterRatio > 0f)
++                    continue;
++                _noWater++;
++                if (_noWaterName == null)
++                    _noWaterName = entry.OutputName;
++            }
++            if (count > 0)
++                _avgGrowth /= count;
++            if (_watered > 0)
++                _avgWater /= _watered;
++        }
++
++        string Loc(string key)
++        {
++            string text;
++            if (!_loc.TryGetValue(key, out text))
++                _loc[key] = text = LocHelper.GetLoc(MOD_PREFIX + "Farm_" + key);
++            return text;
++        }
++
++        string Loc(string key, object arg)
++        {
++            return string.Format(FormatingHelper.Culture, Loc(key), arg);
++        }
++
++        void DrawMinimal(List<MySprite> sprites)
++        {
++            var view = Host.ViewBox;
++            Color fg = Host.ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color track = Color.Lerp(Host.BackgroundColor, fg, TRACK_MIX);
++            int count = _entries.Count;
++            string center = count > 0 ? FormatingHelper.PercentageToString(_avgGrowth) : null;
++            string line = null;
++            if (count > 0)
++                line = _next != null ? Loc("Ready", _ready) + SEPARATOR + Loc("Next", _next.RemainingText) : Loc("Ready", _ready);
++            string warning = _noWater > 0 ? Loc("NoWater") : null;
++            float margin = Bare.Margin;
++            float lineHeight = Bare.LineHeight(1f);
++            int lines = (line != null ? 1 : 0) + (warning != null ? 1 : 0);
++            float linesHeight = lines * lineHeight;
++
++            if (BareLayout.IsWide(view))
++            {
++                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
++                Bare.Ring(sprites, ringArea, _avgGrowth, accent, track, center, fg, MINIMAL_HERO_FONT_MUL);
++                float left = ringArea.Right + margin;
++                float top = view.Center.Y - linesHeight * 0.5f;
++                if (Bare.Text(sprites, line, new Vector2(left, top), TextAlignment.LEFT, 1f, fg, view.Right - left, lineHeight))
++                    top += lineHeight;
++                Bare.Text(sprites, warning, new Vector2(left, top), TextAlignment.LEFT, 1f, GetWarningColor(), view.Right - left, lineHeight);
++                return;
++            }
++
++            float ringHeight = lines > 0 ? view.Height - linesHeight - margin : view.Height;
++            var rings = new RectangleF(view.X, view.Y, view.Width, ringHeight);
++            Bare.Ring(sprites, rings, _avgGrowth, accent, track, center, fg, MINIMAL_HERO_FONT_MUL);
++            float lineTop = rings.Bottom + margin;
++            if (Bare.Text(sprites, line, new Vector2(view.Center.X, lineTop), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight))
++                lineTop += lineHeight;
++            Bare.Text(sprites, warning, new Vector2(view.Center.X, lineTop), TextAlignment.CENTER, 1f, GetWarningColor(), view.Width, lineHeight);
++        }
++
++        void DrawCompact(List<MySprite> sprites)
++        {
++            Color fg = Host.ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color warn = GetWarningColor();
++            int count = _entries.Count;
++            if (count == 0)
++            {
++                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", warn);
++                return;
++            }
++
++            string plantIcon = _plantIcon ?? ICON_PLANT;
++            _kv.Clear();
++            _kv.Add(new BareLayout.KvRow
++            {
++                Label = Loc("ReadyToHarvest"),
++                Icon = plantIcon,
++                Value = _ready + "/" + count,
++                ValueColor = _ready > 0 ? accent : fg,
++                Bar = -1f
++            });
++            _kv.Add(new BareLayout.KvRow
++            {
++                Label = Loc("AvgGrowth"),
++                Icon = plantIcon,
++                Value = FormatingHelper.PercentageToString(_avgGrowth),
++                ValueColor = fg,
++                Bar = _avgGrowth,
++                BarColor = accent
++            });
++            if (_next != null)
++            {
++                _kv.Add(new BareLayout.KvRow
++                {
++                    Label = _next.OutputName,
++                    Icon = string.IsNullOrEmpty(_next.OutputSprite) ? plantIcon : _next.OutputSprite,
++                    Value = Loc("Next", _next.RemainingText),
++                    ValueColor = fg,
++                    Bar = -1f
++                });
++            }
++            if (_watered > 0)
++            {
++                _kv.Add(new BareLayout.KvRow
++                {
++                    Label = Loc("AvgWater"),
++                    Icon = ICON_WATER,
++                    Value = FormatingHelper.PercentageToString(_avgWater),
++                    ValueColor = _noWater > 0 ? warn : fg,
++                    Bar = _avgWater,
++                    BarColor = WATER_COLOR
++                });
++            }
++            if (_noWater > 0)
++            {
++                _kv.Add(new BareLayout.KvRow
++                {
++                    Label = Loc("NoWater"),
++                    Icon = ICON_WATER,
++                    Value = string.IsNullOrEmpty(_noWaterName) ? _noWater.ToString() : _noWater + SEPARATOR + _noWaterName,
++                    ValueColor = GetErrorColor(),
++                    Bar = -1f
++                });
++            }
++            Bare.Kv(sprites, Host.ViewBox, _kv, fg, Theme);
++        }
++
+         public void CompleteHostRender()
+         {
+             ClearDirtyAfterRender();
+@@ -241,12 +427,16 @@ namespace LcdMod.Client.Apps
+             var outputSprite = ResolveOutputSprite(outputItem);
+             var outputName = ResolveOutputName(outputItem);
+             var percentText = FormatingHelper.PercentageToString(ratio);
+-            var remainingText = GetRemainingText(plot, growthPercent, ratio, percentText);
++            var isReady = IsPlotReady(plot, ratio);
++            var remainingSeconds = GetRemainingSeconds(plot, growthPercent, isReady);
++            var remainingText = GetRemainingText(plot, remainingSeconds, percentText);
+             var waterRatio = GetWaterRatio(plot);
+ 
+             changed = entry.Update(
+                 plot,
+                 ratio,
++                isReady,
++                remainingSeconds,
+                 percentText,
+                 remainingText,
+                 GetWaterText(waterRatio, plot),
+@@ -542,7 +732,27 @@ namespace LcdMod.Client.Apps
+             return owner.TitleVisible ? owner.ViewBox.Y + (40f * owner.ConfiguredScale * owner.FontScale) : owner.ViewBox.Y;
+         }
+ 
+-        string GetRemainingText(FarmPlotEntry plot, float growthPercent, float ratio, string percentText)
++        static bool IsPlotReady(FarmPlotEntry plot, float ratio)
++        {
++            var logic = plot?.Logic;
++            return logic != null && logic.IsPlantPlanted && logic.IsAlive &&
++                   (logic.IsPlantFullyGrown || logic.IsHarvestable || ratio >= 0.999f);
++        }
++
++        double GetRemainingSeconds(FarmPlotEntry plot, float growthPercent, bool isReady)
++        {
++            var logic = plot?.Logic;
++            if (logic == null || !logic.IsPlantPlanted || !logic.IsAlive)
++                return -1d;
++
++            if (isReady)
++                return 0d;
++
++            double remainingSeconds;
++            return TryGetRemainingSeconds(plot, growthPercent, out remainingSeconds) ? remainingSeconds : -1d;
++        }
++
++        static string GetRemainingText(FarmPlotEntry plot, double remainingSeconds, string percentText)
+         {
+             var logic = plot?.Logic;
+             if (logic == null || !logic.IsPlantPlanted)
+@@ -551,13 +761,7 @@ namespace LcdMod.Client.Apps
+             if (!logic.IsAlive)
+                 return "--";
+ 
+-            if (logic.IsPlantFullyGrown || logic.IsHarvestable || ratio >= 0.999f)
+-                return FormatRemainingSeconds(0d);
+-
+-            double remainingSeconds;
+-            return TryGetRemainingSeconds(plot, growthPercent, out remainingSeconds)
+-                ? FormatRemainingSeconds(remainingSeconds)
+-                : percentText ?? string.Empty;
++            return remainingSeconds >= 0d ? FormatRemainingSeconds(remainingSeconds) : percentText ?? string.Empty;
+         }
+ 
+         bool TryGetRemainingSeconds(
