@@ -29,6 +29,14 @@ namespace LcdMod.Client.Apps
         const float MIN_CONTENT_HEIGHT = 40f;
         const float TINY_HEIGHT_TO_WIDTH_RATIO = Constants.MIN_SCREEN_HEIGHT_TO_WIDTH_RATIO;
         const string CLOCK_PROGRESS_BAR_STYLE_ID = "ClockDashboardMetric";
+        const float MINIMAL_HERO_FONT_MUL = 4f;
+        const float MINIMAL_HERO_RATIO = 0.7f;
+        const float ICON_BASE = 16f;
+        const string SEPARATOR = " · ";
+        const string ICON_SUNRISE = "WeatherSunRise";
+        const string ICON_SUNSET = "WeatherSunSet";
+        const string ICON_OXYGEN = "IconOxygen";
+        const string ICON_UPTIME = "BeaconBroadcast";
 
         enum ClockDashboardLayoutMode
         {
@@ -78,6 +86,8 @@ namespace LcdMod.Client.Apps
         readonly MetricValueControl _squarePlayTimeValue;
         readonly MetricValueControl _squareUptimeValue;
         readonly StyleTree _clockProgressBarStyles;
+        readonly string _timerIcon = ResolveTimerIcon();
+        readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
 
         ClockDashboardSnapshot _snapshot;
         bool _layoutConfigured;
@@ -142,8 +152,8 @@ namespace LcdMod.Client.Apps
                 1.0f,
                 TextBlockVerticalAlignment.Center);
             _squareTemperatureBar = CreateProgressBar();
-            _squarePlayTimeValue = new MetricValueControl(ResolveTimerIcon());
-            _squareUptimeValue = new MetricValueControl("BeaconBroadcast");
+            _squarePlayTimeValue = new MetricValueControl(_timerIcon);
+            _squareUptimeValue = new MetricValueControl(ICON_UPTIME);
 
             _squareTopCard = new Border(_squareTopGrid)
             {
@@ -201,18 +211,24 @@ namespace LcdMod.Client.Apps
             var sprites = _sprites;
             sprites.Clear();
 
+            if (IsMinimal)
+            {
+                EnsureSnapshot();
+                DrawMinimal(sprites);
+                return sprites;
+            }
+            if (IsCompact)
+            {
+                EnsureSnapshot();
+                DrawCompact(sprites);
+                return sprites;
+            }
+
             var bounds = GetContentBounds();
             if (bounds.Width <= 5f || bounds.Height <= 5f)
                 return sprites;
 
-            if (_snapshot == null)
-            {
-                _snapshot = _reader.Read(
-                    Host.Block,
-                    Host.GridLogic,
-                    null);
-                BindSnapshot();
-            }
+            EnsureSnapshot();
 
             ConfigureLayout(GetLayoutMode(bounds));
             ConfigureResponsiveText(bounds);
@@ -220,6 +236,195 @@ namespace LcdMod.Client.Apps
             _rootGrid.Render(sprites);
             ClearDirtyAfterRender();
             return sprites;
+        }
+
+        void EnsureSnapshot()
+        {
+            if (_snapshot != null)
+                return;
+            _snapshot = _reader.Read(
+                Host.Block,
+                Host.GridLogic,
+                null);
+            BindSnapshot();
+        }
+
+        bool HasSolarEvents()
+        {
+            return _snapshot.ClockMode == DashboardClockMode.LocalSolar &&
+                   _snapshot.HasLocalSolarTime &&
+                   (_snapshot.HasTerrainSunrise || _snapshot.HasTerrainSunset);
+        }
+
+        string NextSolarEvent(out string icon)
+        {
+            icon = null;
+            if (!HasSolarEvents())
+                return ClockDashboardFormatter.FormatDayMoment(_snapshot.DayMoment);
+
+            double now = ClockDashboardSolarTime.PositiveModulo(_snapshot.LocalSolarHour, 24d);
+            double toSunrise = _snapshot.HasTerrainSunrise
+                ? ClockDashboardSolarTime.PositiveModulo(_snapshot.TerrainSunriseHour - now, 24d)
+                : double.MaxValue;
+            double toSunset = _snapshot.HasTerrainSunset
+                ? ClockDashboardSolarTime.PositiveModulo(_snapshot.TerrainSunsetHour - now, 24d)
+                : double.MaxValue;
+            bool sunrise = toSunrise <= toSunset;
+            icon = sunrise ? ICON_SUNRISE : ICON_SUNSET;
+            return ClockDashboardFormatter.FormatSolarEventTime(
+                sunrise ? _snapshot.TerrainSunriseHour : _snapshot.TerrainSunsetHour,
+                ClockDashboardComponent);
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            var view = Host.ViewBox;
+            Color fg = GetForegroundColor();
+            if (_snapshot == null)
+            {
+                Bare.Hero(sprites, LocHelper.GetLoc(Constants.MOD_PREFIX + "NotAvailable"), view, MINIMAL_HERO_FONT_MUL, fg);
+                return;
+            }
+
+            string time = ClockDashboardFormatter.FormatCompactTime(_snapshot.DisplayDateTime, ClockDashboardComponent);
+            float margin = Bare.Margin;
+            float lineHeight = Bare.LineHeight(1f);
+
+            if (BareLayout.IsWide(view))
+            {
+                var hero = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
+                Bare.Hero(sprites, time, hero, MINIMAL_HERO_FONT_MUL, fg);
+                float left = hero.Right + margin;
+                DrawMinimalLine(sprites, new RectangleF(left, view.Center.Y - lineHeight * 0.5f, view.Right - left, lineHeight), fg, false);
+                return;
+            }
+
+            var top = new RectangleF(view.X, view.Y, view.Width, view.Height * MINIMAL_HERO_RATIO);
+            Bare.Hero(sprites, time, top, MINIMAL_HERO_FONT_MUL, fg);
+            float lineCenterY = top.Bottom + (view.Bottom - top.Bottom) * 0.5f;
+            DrawMinimalLine(sprites, new RectangleF(view.X, lineCenterY - lineHeight * 0.5f, view.Width, lineHeight), fg, true);
+        }
+
+        void DrawMinimalLine(List<MySprite> sprites, RectangleF box, Color fg, bool centered)
+        {
+            if (box.Width <= 0f || box.Height <= 0f)
+                return;
+
+            string eventIcon;
+            string text = NextSolarEvent(out eventIcon);
+            string dayIcon = ClockDashboardSpriteMap.ResolveDayMomentIcon(_snapshot.DayMoment);
+            float side = Math.Min(box.Height, ICON_BASE * Bare.Scale);
+            float gap = Bare.Margin;
+            float iconsWidth = eventIcon != null ? side * 2f + gap : side;
+            float textWidth = MeasureText(text, Bare.FontScale).X;
+            bool showText = iconsWidth + gap + textWidth <= box.Width;
+            float total = showText ? iconsWidth + gap + textWidth : iconsWidth;
+            if (total > box.Width)
+                return;
+
+            float x = centered ? box.Center.X - total * 0.5f : box.X;
+            float centerY = box.Center.Y;
+            sprites.Add(new MySprite(SpriteType.TEXTURE, dayIcon, new Vector2(x + side * 0.5f, centerY), new Vector2(side, side), fg, null, TextAlignment.CENTER));
+            x += side;
+            if (eventIcon != null)
+            {
+                x += gap;
+                sprites.Add(new MySprite(SpriteType.TEXTURE, eventIcon, new Vector2(x + side * 0.5f, centerY), new Vector2(side, side), fg, null, TextAlignment.CENTER));
+                x += side;
+            }
+            if (!showText)
+                return;
+            x += gap;
+            Bare.Text(sprites, text, new Vector2(x, centerY - box.Height * 0.5f), TextAlignment.LEFT, 1f, fg, box.Right - x, box.Height);
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            Color fg = GetForegroundColor();
+            if (_snapshot == null)
+            {
+                Host.DrawMessage(sprites, ClockDashboardLocalization.Unavailable, "Warning", GetWarningColor());
+                return;
+            }
+
+            var config = ClockDashboardComponent;
+            string unavailable = ClockDashboardLocalization.Unavailable;
+            _kv.Clear();
+
+            _kv.Add(new BareLayout.KvRow
+            {
+                Label = ClockDashboardFormatter.FormatCompactTime(_snapshot.DisplayDateTime, config),
+                Icon = ClockDashboardSpriteMap.ResolveDayMomentIcon(_snapshot.DayMoment),
+                Value = ClockDashboardFormatter.FormatCompactDate(_snapshot.DisplayDateTime),
+                ValueColor = fg,
+                Bar = -1f
+            });
+
+            if (_snapshot.HasPlanet)
+            {
+                _kv.Add(new BareLayout.KvRow
+                {
+                    Label = _snapshot.WeatherDisplayName ?? unavailable,
+                    Icon = ClockDashboardSpriteMap.ResolveWeatherIcon(_snapshot.WeatherSubtype),
+                    Value = _snapshot.HasAmbientTemperature
+                        ? FormatingHelper.TemperatureToString(
+                            _snapshot.AmbientTemperatureNormalized,
+                            _snapshot.AmbientTemperatureLevel,
+                            (ClockDashboardTemperatureMode)config.TemperatureModeInternal)
+                        : unavailable,
+                    ValueColor = _snapshot.HasAmbientTemperature ? TemperatureColor(_snapshot.AmbientTemperatureLevel) : fg,
+                    Bar = -1f
+                });
+            }
+
+            if (HasSolarEvents())
+            {
+                string sunrise = _snapshot.HasTerrainSunrise
+                    ? ClockDashboardFormatter.FormatSolarEventTime(_snapshot.TerrainSunriseHour, config)
+                    : null;
+                string sunset = _snapshot.HasTerrainSunset
+                    ? ClockDashboardFormatter.FormatSolarEventTime(_snapshot.TerrainSunsetHour, config)
+                    : null;
+                _kv.Add(new BareLayout.KvRow
+                {
+                    Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_SunEvents"),
+                    Icon = ICON_SUNRISE,
+                    Value = sunrise != null && sunset != null ? sunrise + SEPARATOR + sunset : sunrise ?? sunset,
+                    ValueColor = fg,
+                    Bar = -1f
+                });
+            }
+
+            Color oxygenColor = OxygenColor(_snapshot.OxygenRatio);
+            _kv.Add(new BareLayout.KvRow
+            {
+                Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_Oxygen"),
+                Icon = ICON_OXYGEN,
+                Value = ClockDashboardFormatter.FormatOxygen(_snapshot.OxygenRatio),
+                ValueColor = oxygenColor,
+                Bar = MathHelper.Clamp(_snapshot.OxygenRatio, 0f, 1f),
+                BarColor = oxygenColor
+            });
+
+            var session = MyAPIGateway.Session;
+            _kv.Add(new BareLayout.KvRow
+            {
+                Label = ClockDashboardLocalization.PlayTime,
+                Icon = _timerIcon,
+                Value = ClockDashboardFormatter.FormatDuration(session != null ? session.ElapsedPlayTime.TotalSeconds : 0d),
+                ValueColor = fg,
+                Bar = -1f
+            });
+            _kv.Add(new BareLayout.KvRow
+            {
+                Label = ClockDashboardLocalization.ServerUptime,
+                Icon = ICON_UPTIME,
+                Value = ClockDashboardFormatter.FormatDuration(session != null ? ClockDashboardFormatter.WorldElapsedSeconds(session.GameDateTime) : 0d),
+                ValueColor = fg,
+                Bar = -1f
+            });
+
+            Bare.Kv(sprites, Host.ViewBox, _kv, fg, Theme);
         }
 
         static ClockDashboardLayoutMode GetLayoutMode(RectangleF bounds)
