@@ -6,6 +6,8 @@ namespace LcdMod.Common.Config.Components
         Futuristic = 1,
         Clean = 2,
         Cafe = 3,
-        Small = 4
+        Small = 4,
+        Minimal = 5,
+        Compact = 6
     }
 }

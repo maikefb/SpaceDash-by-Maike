@@ -672,6 +672,12 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_Theme_Small" xml:space="preserve">
     <value>Compacto</value>
   </data>
+  <data name="LcdMod_Theme_Minimal" xml:space="preserve">
+    <value>Mínimo</value>
+  </data>
+  <data name="LcdMod_Theme_Compact" xml:space="preserve">
+    <value>Compacto</value>
+  </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Desenha a barra de título. Desativado automaticamente em telas muito largas.</value>
   </data>

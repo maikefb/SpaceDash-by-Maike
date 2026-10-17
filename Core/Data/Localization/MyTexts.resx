@@ -654,6 +654,12 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_Theme_Small" xml:space="preserve">
     <value>Small</value>
   </data>
+  <data name="LcdMod_Theme_Minimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="LcdMod_Theme_Compact" xml:space="preserve">
+    <value>Compact</value>
+  </data>
   <data name="LcdMod_ShowTitle_Tooltip" xml:space="preserve">
     <value>Draws the title bar. Disabled automatically on very wide screens.</value>
   </data>
