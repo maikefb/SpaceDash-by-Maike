@@ -1,0 +1,273 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs b/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
+index 06d9568..6b1be72 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
+@@ -5,6 +5,7 @@ using System.Text;
+ using LcdMod.Client.Apps.Abstract;
+ using LcdMod.Client.Extensions;
+ using LcdMod.Client.Gui;
++using LcdMod.Client.Gui.ControlsTemplates.Panels;
+ using LcdMod.Client.Gui.Styling;
+ using LcdMod.Client.Helpers;
+ using LcdMod.Client.Terminal.Controls;
+@@ -42,6 +43,13 @@ namespace LcdMod.Client.Apps
+         const float MAX_VECTOR_ANGLE_DEGREES = ANGLE_TICK_COUNT * ANGLE_TICK_DEGREES;
+         const float MAX_TARGET_ANGLE_DEGREES = MAX_VECTOR_ANGLE_DEGREES;
+         const float MAX_VELOCITY_VECTOR_METERS_PER_SECOND = 10f;
++        const float ALIGN_TOLERANCE_DEGREES = 2f;
++        const float ALIGN_TOLERANCE_METERS = 0.25f;
++        const float TOLERANCE_WARNING_FACTOR = 3f;
++        const float BARE_HERO_FONT_MUL = 3f;
++        const float BARE_RETICLE_ALPHA = 0.4f;
++        const float BARE_RETICLE_THICKNESS = 1.5f;
++        const float BARE_TARGET_RING_SCALE = 1.6f;
+ 
+         // todo: convert to interactive app
+         public override IReadOnlyList<Control> VisualChildren { get; } = new Control[]{};
+@@ -77,6 +85,15 @@ namespace LcdMod.Client.Apps
+         readonly string[] _footerLabels = new string[12];
+         readonly int[] _footerQuantized = new int[12];
+         readonly TrimmedLabel[] _referenceLabels = { new TrimmedLabel(), new TrimmedLabel() };
++        readonly List<BareLayout.KvRow> _kvRows = new List<BareLayout.KvRow>();
++        readonly string[] _angleTexts = new string[3];
++        readonly int[] _angleQuantized = new int[3];
++        string _distanceText;
++        int _distanceQuantized;
++        string _stateConnected;
++        string _stateReady;
++        string _stateAligned;
++        string _stateAdjust;
+         string _referenceName;
+         string _targetName;
+         string _targetGridName;
+@@ -144,6 +161,10 @@ namespace LcdMod.Client.Apps
+                 LocHelper.GetLoc("DisplayName_Block_MergeBlock"));
+             _noTargetMessage = LocHelper.GetLoc(MOD_PREFIX + "DockingAlignment_NoTarget");
+             _noCockpitMessage = LocHelper.GetLoc("TssTargetingInfo_NoMainCockpit");
++            _stateConnected = LocHelper.GetLoc(MOD_PREFIX + "DockingAlignment_State_Connected");
++            _stateReady = LocHelper.GetLoc(MOD_PREFIX + "DockingAlignment_State_Ready");
++            _stateAligned = LocHelper.GetLoc(MOD_PREFIX + "DockingAlignment_State_Aligned");
++            _stateAdjust = LocHelper.GetLoc(MOD_PREFIX + "DockingAlignment_State_Adjust");
+         }
+ 
+         public override void Update()
+@@ -155,8 +176,7 @@ namespace LcdMod.Client.Apps
+ 
+             if (!ResolveReferenceAndTarget())
+             {
+-                Host.DrawMessage(_sprites, _dockingFailureMessage, "Warning", GetWarningColor(),
+-                    GeneralComponent.GetScale());
++                DrawNoTarget(_dockingFailureMessage);
+                 return;
+             }
+ 
+@@ -173,8 +193,7 @@ namespace LcdMod.Client.Apps
+                 _targetBlock = null;
+                 _sprites.Clear();
+                 AddStaticChromeSprites();
+-                Host.DrawMessage(_sprites, _noTargetMessage, "Warning", GetWarningColor(),
+-                    GeneralComponent.GetScale());
++                DrawNoTarget(_noTargetMessage);
+                 return;
+             }
+ 
+@@ -543,6 +562,8 @@ namespace LcdMod.Client.Apps
+             _staticChromeSpriteCount = _staticSprites.Count;
+ 
+             _layout = CalculateLayoutMetrics();
++            if (IsBare)
++                return;
+ 
+             var accent = GetHeaderColor();
+             var mutedAccent = ColorExtensions.Alpha(accent, 0.66f);
+@@ -640,16 +661,25 @@ namespace LcdMod.Client.Apps
+         void DrawAlignment(Vector3D positionOffset, Vector3D rotationOffset, Vector3D velocityOffset,
+             double dockingAxisDistance, double closingVelocity)
+         {
++            if (IsMinimal)
++            {
++                DrawMinimal(positionOffset, dockingAxisDistance, true);
++                return;
++            }
++
++            if (IsCompact)
++            {
++                DrawCompact(positionOffset, rotationOffset, dockingAxisDistance);
++                return;
++            }
++
+             var foreground = Host.ForegroundColor;
+             var statusColor = GetStatusColor();
+ 
+             DrawAngleGuides(_sprites, _layout.Square, statusColor, (float)rotationOffset.X, (float)rotationOffset.Y);
+             DrawRollIndicator(_sprites, _layout.Square, statusColor, (float)rotationOffset.Z);
+ 
+-            var positionVector = new Vector2(
+-                MathHelper.Clamp(-(float)positionOffset.X * 0.025f, -0.36f, 0.36f),
+-                MathHelper.Clamp((float)positionOffset.Y * 0.025f, -0.36f, 0.36f));
+-            AddTexture(_sprites, "AH_VelocityVector", NormalizedToSquare(_layout.Square, positionVector.X, positionVector.Y),
++            AddTexture(_sprites, "AH_VelocityVector", PositionToSquare(_layout.Square, positionOffset),
+                 new Vector2(_layout.MarkerSize * GetVectorTextureScale(positionOffset.Z)), GetErrorColor(), 0f);
+ 
+             var velocityVector = new Vector2(
+@@ -695,6 +725,160 @@ namespace LcdMod.Client.Apps
+                 foreground);
+         }
+ 
++        void DrawNoTarget(string message)
++        {
++            if (IsMinimal)
++            {
++                DrawMinimal(Vector3D.Zero, 0d, false);
++                return;
++            }
++
++            Host.DrawMessage(_sprites, message, "Warning", GetWarningColor(), GeneralComponent.GetScale());
++        }
++
++        void DrawMinimal(Vector3D positionOffset, double dockingAxisDistance, bool hasTarget)
++        {
++            var view = ViewBox;
++            Color fg = Host.ForegroundColor;
++            float margin = Bare.Margin;
++            float heroHeight = Bare.LineHeight(BARE_HERO_FONT_MUL);
++            RectangleF square;
++            RectangleF heroArea;
++
++            if (BareLayout.IsWide(view))
++            {
++                float side = Math.Min(view.Width * 0.5f, view.Height);
++                square = new RectangleF(view.X, view.Center.Y - side * 0.5f, side, side);
++                heroArea = new RectangleF(square.Right + margin, view.Y, view.Right - square.Right - margin, view.Height);
++            }
++            else
++            {
++                float side = Math.Min(view.Width, view.Height - heroHeight - margin);
++                square = new RectangleF(view.Center.X - side * 0.5f, view.Y, side, side);
++                heroArea = new RectangleF(view.X, square.Bottom + margin, view.Width, view.Bottom - square.Bottom - margin);
++            }
++
++            DrawMinimalReticle(square, fg);
++            if (!hasTarget || square.Width <= 0f)
++                return;
++
++            bool centered = Math.Abs(positionOffset.X) <= ALIGN_TOLERANCE_METERS &&
++                            Math.Abs(positionOffset.Y) <= ALIGN_TOLERANCE_METERS;
++            Color targetColor = centered ? GetHeaderColor() : fg;
++            Vector2 marker = PositionToSquare(square, positionOffset);
++            float markerSize = square.Width * 0.1f;
++            AddTexture(_sprites, "AH_VelocityVector", marker,
++                new Vector2(markerSize * GetVectorTextureScale(positionOffset.Z)), targetColor, 0f);
++            AddTexture(_sprites, "CircleHollow", marker, new Vector2(markerSize * BARE_TARGET_RING_SCALE), targetColor, 0f);
++
++            Bare.Hero(_sprites, DistanceText(dockingAxisDistance), heroArea, BARE_HERO_FONT_MUL, fg);
++        }
++
++        void DrawMinimalReticle(RectangleF square, Color fg)
++        {
++            if (square.Width <= 0f)
++                return;
++
++            Color line = ThemeChrome.WithAlpha(fg, BARE_RETICLE_ALPHA);
++            float thickness = Math.Max(1f, BARE_RETICLE_THICKNESS * Scale);
++            LineRenderer.DrawLine(_sprites, new Vector2(square.X, square.Center.Y), new Vector2(square.Right, square.Center.Y), thickness, line);
++            LineRenderer.DrawLine(_sprites, new Vector2(square.Center.X, square.Y), new Vector2(square.Center.X, square.Bottom), thickness, line);
++            DrawAlignmentTicks(_sprites, square, line);
++            AddTexture(_sprites, "CircleHollow", square.Center,
++                new Vector2(square.Width * 0.1f * REFERENCE_MARKER_SCALE), line, 0f);
++        }
++
++        void DrawCompact(Vector3D positionOffset, Vector3D rotationOffset, double dockingAxisDistance)
++        {
++            var view = ViewBox;
++            Color fg = Host.ForegroundColor;
++            Color accent = GetHeaderColor();
++            float margin = Bare.Margin;
++            var heroArea = new RectangleF(view.X, view.Y, view.Width, Bare.LineHeight(BARE_HERO_FONT_MUL));
++            Bare.Hero(_sprites, DistanceText(dockingAxisDistance), heroArea, BARE_HERO_FONT_MUL, fg);
++
++            _kvRows.Clear();
++            _kvRows.Add(AngleRow(0, _pitchLabel, rotationOffset.X, "^", "v", accent));
++            _kvRows.Add(AngleRow(1, _yawLabel, rotationOffset.Y, ">", "<", accent));
++            _kvRows.Add(AngleRow(2, _rollLabel, rotationOffset.Z, "CW", "CCW", accent));
++            _kvRows.Add(new BareLayout.KvRow
++            {
++                Label = StateWord(positionOffset, rotationOffset),
++                Value = _targetBlock.CustomName,
++                ValueColor = fg,
++                Bar = -1f
++            });
++
++            var kvArea = new RectangleF(view.X, heroArea.Bottom + margin, view.Width, view.Bottom - heroArea.Bottom - margin);
++            Bare.Kv(_sprites, kvArea, _kvRows, fg, Theme);
++        }
++
++        BareLayout.KvRow AngleRow(int index, string label, double degrees, string positive, string negative, Color accent)
++        {
++            return new BareLayout.KvRow
++            {
++                Label = label,
++                Value = AngleText(index, degrees, positive, negative),
++                ValueColor = ToleranceColor(degrees, ALIGN_TOLERANCE_DEGREES, accent),
++                Bar = -1f
++            };
++        }
++
++        string AngleText(int index, double degrees, string positive, string negative)
++        {
++            var quantized = (int)Math.Round(degrees * 10d);
++            if (_angleTexts[index] != null && _angleQuantized[index] == quantized)
++                return _angleTexts[index];
++
++            _angleQuantized[index] = quantized;
++            _angleTexts[index] = string.Format("{0} {1:0.0}°", degrees < 0d ? negative : positive, Math.Abs(degrees));
++            return _angleTexts[index];
++        }
++
++        string DistanceText(double dockingAxisDistance)
++        {
++            var quantized = (int)Math.Round(dockingAxisDistance * 100d);
++            if (_distanceText != null && _distanceQuantized == quantized)
++                return _distanceText;
++
++            _distanceQuantized = quantized;
++            _distanceText = FormatingHelper.DistanceToString((float)dockingAxisDistance);
++            return _distanceText;
++        }
++
++        Color ToleranceColor(double value, double tolerance, Color accent)
++        {
++            var abs = Math.Abs(value);
++            if (abs <= tolerance)
++                return accent;
++
++            return abs <= tolerance * TOLERANCE_WARNING_FACTOR ? GetWarningColor() : GetErrorColor();
++        }
++
++        string StateWord(Vector3D positionOffset, Vector3D rotationOffset)
++        {
++            var connector = _referenceBlock as IMyShipConnector;
++            if (connector != null && connector.Status == MyShipConnectorStatus.Connected)
++                return _stateConnected;
++
++            if (connector != null && connector.Status == MyShipConnectorStatus.Connectable)
++                return _stateReady;
++
++            bool aligned = Math.Abs(positionOffset.X) <= ALIGN_TOLERANCE_METERS &&
++                           Math.Abs(positionOffset.Y) <= ALIGN_TOLERANCE_METERS &&
++                           Math.Abs(rotationOffset.X) <= ALIGN_TOLERANCE_DEGREES &&
++                           Math.Abs(rotationOffset.Y) <= ALIGN_TOLERANCE_DEGREES &&
++                           Math.Abs(rotationOffset.Z) <= ALIGN_TOLERANCE_DEGREES;
++            return aligned ? _stateAligned : _stateAdjust;
++        }
++
++        static Vector2 PositionToSquare(RectangleF square, Vector3D positionOffset)
++        {
++            return NormalizedToSquare(square,
++                MathHelper.Clamp(-(float)positionOffset.X * 0.025f, -0.36f, 0.36f),
++                MathHelper.Clamp((float)positionOffset.Y * 0.025f, -0.36f, 0.36f));
++        }
++
+         void DrawReferenceNames(float footerHeight, float referenceTextMargin, Color foreground, float font,
+             string yawValue, float yawFont)
+         {

@@ -36,3 +36,6 @@ Task 3: reviewer af1a299167927db50; CLEAN (minor: cabeçalho do Compacto via Tex
 Task 6: reviewer a13af478bc31f815e; CLEAN (minors: GetLoc por anel por frame; O₂ branco no Café a validar). Task 6: complete (commit ef71796).
 Task 4: reviewer aa4169c80961fad1f; CLEAN. Task 4: complete (commit 7b86b88).
 resx da onda 1: 5 chaves (DefenseDashboard_Weapons; DockingAlignment_State_Connected/Ready/Aligned/Adjust) em en e pt-BR — commit 6fe29ef.
+Task 7: reviewer a9c456064214d3846; CLEAN (minors: linha 2 mostra Firing em vez do motivo mais comum enquanto há tiro; rótulo 'armas' minúsculo no kv). Task 7: complete (commit b9c253a).
+Task 8: reviewer a3bd373bc58789a8a; CLEAN (minors: herói some em LCD muito baixo antes de tentar; caches não zerados em ResetTextCaches). Task 8: complete (commit 60e896c).
+Plano 2: COMPLETO em 60e896c (8 tasks + 2 fixes transversais em EnergyAppBase + resx). check.ps1 e jogo pendentes para o usuário.
