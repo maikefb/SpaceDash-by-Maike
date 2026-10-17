@@ -32,3 +32,7 @@ Task 4: implementer ac4587b2bdfeca520; DONE_WITH_CONCERNS (árvore; sem resx; Dr
 Task 7: implementer ac37a16cdf95ca01d; DONE_WITH_CONCERNS (árvore; resx nova: LcdMod_DefenseDashboard_Weapons = weapons/armas; munição omitida — app não expõe).
 Task 8: implementer a881f1becfaefeba2; DONE_WITH_CONCERNS (árvore; resx novas: LcdMod_DockingAlignment_State_Connected/Ready/Aligned/Adjust; tolerâncias 2°/0,25 m escolhidas pelo implementador).
 Task 5: reviewer ad4afcdb4882a6ae1; CLEAN (minors: ramos 'sem itens' inalcançáveis porque o surface script intercepta antes). Task 5: complete (commit 4626e30).
+Task 3: reviewer af1a299167927db50; CLEAN (minor: cabeçalho do Compacto via Text em vez de Label). Task 3: complete (commit 61ba310).
+Task 6: reviewer a13af478bc31f815e; CLEAN (minors: GetLoc por anel por frame; O₂ branco no Café a validar). Task 6: complete (commit ef71796).
+Task 4: reviewer aa4169c80961fad1f; CLEAN. Task 4: complete (commit 7b86b88).
+resx da onda 1: 5 chaves (DefenseDashboard_Weapons; DockingAlignment_State_Connected/Ready/Aligned/Adjust) em en e pt-BR — commit 6fe29ef.
