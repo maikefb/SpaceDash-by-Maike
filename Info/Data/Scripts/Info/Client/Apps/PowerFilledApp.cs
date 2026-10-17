@@ -8,6 +8,7 @@ using LcdMod.Client.Gui;
 using LcdMod.Client.Gui.ControlsTemplates;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
 using LcdMod.Client.Gui.ControlsTemplates.Panels.Virtualized;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Gui.UserControls.Power;
 using LcdMod.Client.Helpers;
 using VRage;
@@ -25,9 +26,12 @@ namespace LcdMod.Client.Apps
     {
         const float BATTERY_SLOT_W = 100f;
         const float BATTERY_SLOT_H = 100f;
+        const float MINIMAL_HERO_FONT_MUL = 3f;
+        const float MINIMAL_LINE_FONT_MUL = 1f;
 
         readonly IAppHost _surfaceHost;
         readonly List<PowerCollector> _collectors = new List<PowerCollector>();
+        readonly List<BareLayout.KvRow> _kvRows = new List<BareLayout.KvRow>();
         readonly List<PowerEntry> _entries = new List<PowerEntry>();
         readonly List<Control> _children = new List<Control>();
         readonly Dictionary<long, PowerEntry> _entryById = new Dictionary<long, PowerEntry>();
@@ -106,6 +110,16 @@ namespace LcdMod.Client.Apps
             BeginPowerEntryHitboxFrame();
             var sprites = _sprites;
             sprites.Clear();
+            if (IsMinimal)
+            {
+                DrawMinimal(sprites);
+                return sprites;
+            }
+            if (IsCompact)
+            {
+                DrawCompact(sprites);
+                return sprites;
+            }
             DrawFooter(_surfaceHost, sprites);
             DrawBatteries(_surfaceHost, sprites);
             return sprites;
@@ -358,6 +372,130 @@ namespace LcdMod.Client.Apps
                 Alignment = TextAlignment.CENTER,
                 FontId = TextFont
             });
+        }
+
+        PowerCollector MinimalCollector()
+        {
+            for (int i = 0; i < _collectors.Count; i++)
+            {
+                var collector = _collectors[i];
+                if (collector != null && collector.HasVisibleItems)
+                    return collector;
+            }
+            return _collectors.Count > 0 ? _collectors[0] : null;
+        }
+
+        int CountEntries(PowerCollector collector)
+        {
+            int count = 0;
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                var entry = _entries[i];
+                if (entry != null && entry.FillableTexture == collector.FillableTexture)
+                    count++;
+            }
+            return count;
+        }
+
+        static float DisplayedRatio(PowerCollector collector)
+        {
+            return (float)Math.Round(collector.AverageCharge * 100f, MidpointRounding.AwayFromZero) / 100f;
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            var collector = MinimalCollector();
+            if (collector == null)
+                return;
+
+            var view = Host.ViewBox;
+            Color fg = Host.ForegroundColor;
+            float margin = Bare.Margin;
+            float lineHeight = Bare.LineHeight(MINIMAL_LINE_FONT_MUL);
+            bool hasItems = collector.HasVisibleItems;
+            float ratio = hasItems ? DisplayedRatio(collector) : 0f;
+            string percent = hasItems ? FormatingHelper.PercentageToString(ratio) : null;
+            string line = null;
+            if (hasItems)
+            {
+                string count = CountEntries(collector).ToString(FormatingHelper.Culture);
+                line = string.IsNullOrEmpty(collector.StatusText) ? count : count + " · " + collector.StatusText;
+            }
+
+            RectangleF iconArea;
+            Vector2 linePos;
+            TextAlignment lineAlign;
+            float lineMaxWidth;
+            if (BareLayout.IsWide(view))
+            {
+                iconArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
+                float left = iconArea.Right + margin;
+                linePos = new Vector2(left, view.Center.Y - lineHeight * 0.5f);
+                lineAlign = TextAlignment.LEFT;
+                lineMaxWidth = view.Right - left;
+            }
+            else
+            {
+                iconArea = new RectangleF(view.X, view.Y, view.Width, view.Height - lineHeight - margin);
+                linePos = new Vector2(view.Center.X, iconArea.Bottom + margin);
+                lineAlign = TextAlignment.CENTER;
+                lineMaxWidth = view.Width;
+            }
+
+            float iconSize = Math.Min(iconArea.Width, iconArea.Height) - margin * 2f;
+            if (iconSize <= 0f)
+                return;
+
+            Vector2 center = iconArea.Center;
+            DrawFillableTexture(sprites, collector.FillableTexture, center, iconSize, ratio, hasItems ? collector.StatusColor : fg, fg,
+                collector.DrawCenterIcon, 0f, collector.CenterIconScale);
+
+            var inner = collector.FillableTexture.GetInnerRect(center, iconSize);
+            float heroHeight = Bare.LineHeight(MINIMAL_HERO_FONT_MUL);
+            Bare.Text(sprites, percent, new Vector2(inner.Center.X, inner.Center.Y - heroHeight * 0.5f), TextAlignment.CENTER, MINIMAL_HERO_FONT_MUL, fg, inner.Width, inner.Height);
+            Bare.Text(sprites, line, linePos, lineAlign, MINIMAL_LINE_FONT_MUL, fg, lineMaxWidth, lineHeight);
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            Color fg = Host.ForegroundColor;
+            _kvRows.Clear();
+            for (int i = 0; i < _collectors.Count; i++)
+            {
+                var collector = _collectors[i];
+                if (collector == null || !collector.HasVisibleItems)
+                    continue;
+                float ratio = DisplayedRatio(collector);
+                _kvRows.Add(new BareLayout.KvRow
+                {
+                    Label = collector.FooterPrefix,
+                    Icon = collector.FillableTexture.Name,
+                    Value = FormatingHelper.PercentageToString(ratio),
+                    ValueColor = collector.StatusColor,
+                    Bar = collector.AverageCharge,
+                    BarColor = collector.StatusColor
+                });
+                if (collector is BatteryPowerCollector && collector.HasRightSideText)
+                {
+                    _kvRows.Add(new BareLayout.KvRow
+                    {
+                        Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "Frame_Autonomy"),
+                        Icon = "IconEnergy",
+                        Value = collector.RightSideText,
+                        ValueColor = collector.RightSideColor,
+                        Bar = -1f,
+                        BarColor = fg
+                    });
+                }
+            }
+
+            if (_kvRows.Count == 0)
+            {
+                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
+                return;
+            }
+
+            Bare.Kv(sprites, Host.ViewBox, _kvRows, fg, Theme);
         }
 
         static void DrawFillableTexture(List<MySprite> sprites, FillableTexture texture, Vector2 center, float iconSize, float ratio, Color fillColor, Color iconColor,
