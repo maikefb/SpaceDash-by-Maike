@@ -31,3 +31,5 @@ Task 3: reviewer a7e187e5a70897377; CLEAN (minor 1 aplicado pelo orquestrador: e
 Task 8: reviewer ac7cc4eeb9b5e5b62; CLEAN (minor 1 aplicado: Icon do KvRow removido para não duplicar o círculo da medalha; cinza por índice e última vida = recorde mantidos). Task 8: complete (commit 839edd4).
 Onda B: Task 4 (Esteiras layouts) lançada sobre 974ba95.
 Task 9: reviewer acdb6b86db93a8041; CLEAN (minors: anel some antes das linhas em LCD muito baixo; OutputName como rótulo da linha de próxima colheita). Task 9: complete (commit e5e2f5d).
+Task 6: implementer a6941b81accb12110; DONE_WITH_CONCERNS (árvore; resx nova: Inventory_Volume = Volume/Volume; Inventory.cs intercepta 0 itens antes do app — mantido: equivale à decisão 11, como nos demais surface scripts).
+Task 5: reviewer a7641ed54a289da04; CLEAN (minors: Label=hora some antes da data; delta 0 no evento solar). Task 5: complete (commit 5d273ac).
