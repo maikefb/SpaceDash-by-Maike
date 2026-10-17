@@ -1,0 +1,630 @@
+diff --git a/Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs b/Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs
+new file mode 100644
+index 0000000..d55ea1e
+--- /dev/null
++++ b/Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs
+@@ -0,0 +1,78 @@
++namespace LcdMod.Client.Gui.Styling
++{
++    /// <summary>Ícones de conceito dos temas Mínimo e Compacto: hoje o fallback existente, amanhã o sprite SD_Icon_* do atlas.</summary>
++    public static class BareIcons
++    {
++        /// <summary>Já definitivo (atlas do mod).</summary>
++        public const string Warning = "Warning";
++        /// <summary>SD_Icon_Balance</summary>
++        public const string Balance = "IconEnergy";
++        /// <summary>SD_Icon_Gauge</summary>
++        public const string Gauge = "IconTemperature";
++        /// <summary>SD_Icon_Hourglass</summary>
++        public const string Hourglass = "IconEnergy";
++
++        /// <summary>SD_Icon_Mass</summary>
++        public const string Mass = "IconEnergy";
++        /// <summary>SD_Icon_SafeMass</summary>
++        public const string SafeMass = "ShieldIcon";
++
++        /// <summary>SD_Icon_Production</summary>
++        public const string Production = "IconEnergy";
++        /// <summary>SD_Icon_Consumption</summary>
++        public const string Consumption = "IconEnergy";
++        /// <summary>SD_Icon_Peak</summary>
++        public const string Peak = "IconEnergy";
++        /// <summary>SD_Icon_Storage</summary>
++        public const string Storage = "Battery";
++        /// <summary>Já definitivo (atlas do mod).</summary>
++        public const string Battery = "Battery";
++        /// <summary>SD_Icon_TankH2</summary>
++        public const string TankH2 = "IconHydrogen";
++        /// <summary>SD_Icon_TankO2</summary>
++        public const string TankO2 = "IconOxygen";
++        /// <summary>SD_Icon_HydrogenEngine</summary>
++        public const string HydrogenEngine = "IconHydrogen";
++        /// <summary>SD_Icon_Charging</summary>
++        public const string Charging = "Battery";
++        /// <summary>SD_Icon_Discharging</summary>
++        public const string Discharging = "Battery";
++
++        /// <summary>Já definitivo (ícone do jogo).</summary>
++        public const string Hydrogen = "IconHydrogen";
++        /// <summary>Já definitivo (ícone do jogo).</summary>
++        public const string Oxygen = "IconOxygen";
++        /// <summary>SD_Icon_Generator</summary>
++        public const string Generator = "IconEnergy";
++        /// <summary>SD_Icon_Ice</summary>
++        public const string Ice = "MyObjectBuilder_Ore/Ice";
++
++        /// <summary>SD_Icon_Sprout</summary>
++        public const string Sprout = "IconEnergy";
++        /// <summary>SD_Icon_WaterDrop</summary>
++        public const string WaterDrop = "MyObjectBuilder_Ore/Ice";
++        /// <summary>SD_Icon_NoWater</summary>
++        public const string NoWater = "MyObjectBuilder_Ore/Ice";
++
++        /// <summary>Já definitivo (atlas do mod).</summary>
++        public const string Sunrise = "WeatherSunRise";
++        /// <summary>Já definitivo (atlas do mod).</summary>
++        public const string Sunset = "WeatherSunSet";
++        /// <summary>SD_Icon_Server</summary>
++        public const string Server = "BeaconBroadcast";
++
++        /// <summary>SD_Icon_Ore</summary>
++        public const string Ore = "MyObjectBuilder_Ore/Iron";
++        /// <summary>SD_Icon_Ingot</summary>
++        public const string Ingot = "MyObjectBuilder_Ingot/Iron";
++        /// <summary>SD_Icon_Component</summary>
++        public const string Component = "MyObjectBuilder_Component/SteelPlate";
++        /// <summary>SD_Icon_Ammo</summary>
++        public const string Ammo = "MyObjectBuilder_AmmoMagazine/NATO_25x184mm";
++        /// <summary>SD_Icon_Volume</summary>
++        public const string Volume = "MyObjectBuilder_CargoContainer/LargeBlockLargeContainer";
++
++        /// <summary>SD_Icon_AntennaRadio</summary>
++        public const string AntennaRadio = "RadioAntenna";
++    }
++}
+diff --git a/Info/Data/Scripts/Info/Client/Apps/AntennaApp.cs b/Info/Data/Scripts/Info/Client/Apps/AntennaApp.cs
+index e189ead..86f7416 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/AntennaApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/AntennaApp.cs
+@@ -39,7 +39,6 @@ namespace LcdMod.Client.Apps
+         const float LASER_ICON_TOP_PADDING = 64f;
+         const float LASER_ICON_BOTTOM_PADDING = 22f;
+         const float MINIMAL_ICON_RATIO = 0.5f;
+-        const string MINIMAL_ICON = "RadioAntenna";
+         readonly List<AntennaEntry> _entries = new List<AntennaEntry>();
+         readonly List<BareLayout.KvRow> _rows = new List<BareLayout.KvRow>();
+         readonly Dictionary<long, AntennaEntry> _entryModels = new Dictionary<long, AntennaEntry>();
+@@ -207,7 +206,7 @@ namespace LcdMod.Client.Apps
+             if (BareLayout.IsWide(view))
+             {
+                 var iconCenter = new Vector2(view.X + view.Width * 0.25f, view.Center.Y);
+-                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, iconCenter, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
++                sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, iconCenter, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                 float left = view.X + view.Width * 0.5f + margin;
+                 float width = view.Right - left;
+                 float textTop = view.Center.Y - lineHeight;
+@@ -220,12 +219,12 @@ namespace LcdMod.Client.Apps
+             float textBlock = lineHeight * 2f + margin;
+             if (view.Height - iconSide < textBlock)
+             {
+-                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, view.Center, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
++                sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, view.Center, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                 return;
+             }
+ 
+             float top = view.Y + (view.Height - iconSide - textBlock) * 0.5f;
+-            sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, new Vector2(view.Center.X, top + iconSide * 0.5f), new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
++            sprites.Add(new MySprite(SpriteType.TEXTURE, BareIcons.AntennaRadio, new Vector2(view.Center.X, top + iconSide * 0.5f), new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+             float linesTop = top + iconSide + margin;
+             Bare.Text(sprites, line1, new Vector2(view.Center.X, linesTop), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
+             if (!Bare.Text(sprites, line2, new Vector2(view.Center.X, linesTop + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight))
+@@ -236,7 +235,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (_entries.Count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs b/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
+index 5cef711..11e4511 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/ConveyorMapApp.cs
+@@ -728,7 +728,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (_blocks.Count == 0)
+             {
+-                Host.DrawMessage(sprites, Label("NoConveyors"), "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, Label("NoConveyors"), BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/DefenseDashboardApp.cs b/Info/Data/Scripts/Info/Client/Apps/DefenseDashboardApp.cs
+index d8a900f..9ba3f5a 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/DefenseDashboardApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/DefenseDashboardApp.cs
+@@ -282,7 +282,7 @@ namespace LcdMod.Client.Apps
+ 
+             if (_rows.Count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
+index 422aa1f..d0b30e0 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
+@@ -25,9 +25,6 @@ namespace LcdMod.Client.Apps
+         const float MINIMAL_PERCENT_FONT_MUL = 3f;
+         const float MINIMAL_POWER_FONT_MUL = 2.5f;
+         const float MINIMAL_BAR_HEIGHT_RATIO = 0.5f;
+-        const string ICON_BATTERY = "Battery";
+-        const string ICON_HYDROGEN = "IconHydrogen";
+-        const string ICON_POWER = "IconEnergy";
+ 
+         public EnergyCardApp(IAppHost host, EnergyKind kind) : base(host)
+         {
+@@ -126,11 +123,11 @@ namespace LcdMod.Client.Apps
+             switch (_kind)
+             {
+                 case EnergyKind.Battery:
+-                    return ICON_BATTERY;
++                    return BareIcons.Battery;
+                 case EnergyKind.Hydrogen:
+-                    return ICON_HYDROGEN;
++                    return BareIcons.HydrogenEngine;
+                 default:
+-                    return TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, ICON_POWER);
++                    return TextureHelper.GetOrAddTextureForBlock(stats.RepresentativeDefinition, BareIcons.Production);
+             }
+         }
+ 
+@@ -189,7 +186,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (!HasData)
+             {
+-                Host.DrawMessage(sprites, NotAvailable, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, NotAvailable, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+@@ -211,8 +208,8 @@ namespace LcdMod.Client.Apps
+                 Color charge = stats.Total == 0 ? fg : EnergyTheme.ChargeColor(ref Palette, s.StoredRatio);
+                 _tiles.Add(new BareLayout.Tile { Icon = icon, Label = Loc("Charge"), Value = FormatingHelper.PercentageToString(s.StoredRatio), ValueColor = charge });
+                 _tiles.Add(new BareLayout.Tile { Label = Loc("Mode"), Value = BatteryModeText(s.BatteryMode), ValueColor = neutral });
+-                _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Input"), Value = FormatingHelper.MegaWattsToString(s.BatteryInputMw), ValueColor = neutral });
+-                _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral });
++                _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Consumption, Label = Loc("Input"), Value = FormatingHelper.MegaWattsToString(s.BatteryInputMw), ValueColor = neutral });
++                _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral });
+                 Bare.Tiles(sprites, grid, _tiles, 2, 2, fg, accent, Theme);
+                 return;
+             }
+@@ -223,8 +220,8 @@ namespace LcdMod.Client.Apps
+                 : FormatingHelper.PercentageToString(environmental ? stats.AvailabilityRatio : stats.LoadRatio);
+             Color ratioColor = stats.Working == 0 ? Palette.LabelMuted
+                 : environmental ? neutral : EnergyTheme.LoadColor(ref Palette, stats.LoadRatio);
+-            var output = new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral };
+-            var max = new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("MaxOutput"), Value = FormatingHelper.MegaWattsToString(stats.MaxOutputMw), ValueColor = neutral };
++            var output = new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Output"), Value = FormatingHelper.MegaWattsToString(stats.CurrentOutputMw), ValueColor = neutral };
++            var max = new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("MaxOutput"), Value = FormatingHelper.MegaWattsToString(stats.MaxOutputMw), ValueColor = neutral };
+             var ratio = new BareLayout.Tile { Icon = icon, Label = ratioLabel, Value = ratioValue, ValueColor = ratioColor };
+             var state = new BareLayout.Tile { Label = MyTexts.GetString("TerminalStatus"), Value = StateText(stats.State), ValueColor = stateColor };
+             if (_kind == EnergyKind.Hydrogen)
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
+index e147c12..a38ba8d 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
+@@ -272,7 +272,7 @@ namespace LcdMod.Client.Apps
+             var s = Snapshot;
+             if (!s.HasData)
+             {
+-                Host.DrawMessage(sprites, EmptyMessage, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, EmptyMessage, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+@@ -284,14 +284,15 @@ namespace LcdMod.Client.Apps
+             var right = new RectangleF(left.Right + gap, view.Y, view.Width - leftWidth - gap, view.Height);
+ 
+             _kv.Clear();
+-            _kv.Add(KvRow(Loc("Produced"), ICON_POWER, PowerText(s.ProducedMw, false, float.MaxValue), fg));
+-            _kv.Add(KvRow(Loc("Used"), ICON_POWER, PowerText(s.ConsumedMw, false, float.MaxValue), fg));
+-            _kv.Add(KvRow(Loc("Balance"), ICON_POWER, PowerText(s.NetMw, true, float.MaxValue), BalanceColor(s)));
+-            _kv.Add(KvRow(LocHelper.GetLoc(PEAK_KEY), ICON_POWER, PowerText(PeakMw(s), false, float.MaxValue), fg));
++            _kv.Add(KvRow(Loc("Produced"), BareIcons.Production, PowerText(s.ProducedMw, false, float.MaxValue), fg));
++            _kv.Add(KvRow(Loc("Used"), BareIcons.Consumption, PowerText(s.ConsumedMw, false, float.MaxValue), fg));
++            _kv.Add(KvRow(Loc("Balance"), BareIcons.Balance, PowerText(s.NetMw, true, float.MaxValue), BalanceColor(s)));
++            _kv.Add(KvRow(LocHelper.GetLoc(PEAK_KEY), BareIcons.Peak, PowerText(PeakMw(s), false, float.MaxValue), fg));
+             if (s.HasBatteries)
+             {
+-                _kv.Add(KvRow(Loc("Stored"), ICON_BATTERY, FormatingHelper.MegaWattHoursToString(s.StoredMwh), fg));
+-                _kv.Add(KvRow(Loc(s.BatteryStatus == EnergyBatteryStatus.Charging ? "FullIn" : "EmptyIn"), ICON_BATTERY,
++                bool charging = s.BatteryStatus == EnergyBatteryStatus.Charging;
++                _kv.Add(KvRow(Loc("Stored"), BareIcons.Storage, FormatingHelper.MegaWattHoursToString(s.StoredMwh), fg));
++                _kv.Add(KvRow(Loc(charging ? "FullIn" : "EmptyIn"), charging ? BareIcons.Charging : BareIcons.Discharging,
+                     s.EtaSeconds == EnergySnapshot.NO_ETA ? NotAvailable : EtaText(s.EtaSeconds), fg));
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
+index 5cde524..03bcba7 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
+@@ -14,8 +14,6 @@ namespace LcdMod.Client.Apps
+     internal sealed class EnergyGeneralApp : EnergyAppBase
+     {
+         const float KIND_VALUE = EnergyTheme.VALUE * 1.2f;
+-        const string ICON_POWER = "IconEnergy";
+-        const string ICON_BATTERY = "Battery";
+         const float MINIMAL_HERO_FONT_MUL = 3f;
+         const float RING_TRACK_MIX = 0.15f;
+         const float USED_WARN_RATIO = 0.75f;
+@@ -104,7 +102,7 @@ namespace LcdMod.Client.Apps
+             var s = Snapshot;
+             if (!s.HasData)
+             {
+-                Host.DrawMessage(sprites, NotAvailable, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, NotAvailable, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+@@ -113,18 +111,18 @@ namespace LcdMod.Client.Apps
+             bool hasBatteries = s.HasBatteries;
+ 
+             _tiles.Clear();
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Production"), Value = FormatingHelper.MegaWattsToString(s.ProducedMw), ValueColor = fg });
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_POWER, Label = Loc("Consumption"), Value = FormatingHelper.MegaWattsToString(s.ConsumedMw), ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Production, Label = Loc("Production"), Value = FormatingHelper.MegaWattsToString(s.ProducedMw), ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Consumption, Label = Loc("Consumption"), Value = FormatingHelper.MegaWattsToString(s.ConsumedMw), ValueColor = fg });
+             _tiles.Add(new BareLayout.Tile
+             {
+-                Icon = ICON_BATTERY,
++                Icon = BareIcons.Battery,
+                 Label = Loc("Charge"),
+                 Value = hasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
+                 ValueColor = hasBatteries ? BatteryStatusColor(s.BatteryStatus) : fg
+             });
+             _tiles.Add(new BareLayout.Tile
+             {
+-                Icon = ICON_POWER,
++                Icon = BareIcons.Balance,
+                 Label = Loc("Balance"),
+                 Value = PowerText(s.NetMw, true, float.MaxValue),
+                 ValueColor = s.NetMw >= 0f ? accent : GetErrorColor()
+diff --git a/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs b/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
+index 589859e..b25c45b 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/FarmApp.cs
+@@ -34,8 +34,6 @@ namespace LcdMod.Client.Apps
+         const float MINIMAL_HERO_FONT_MUL = 3f;
+         const float TRACK_MIX = 0.15f;
+         const string SEPARATOR = " · ";
+-        const string ICON_WATER = "MyObjectBuilder_Ore/Ice";
+-        const string ICON_PLANT = "IconEnergy";
+         static readonly Color WATER_COLOR = new Color(64, 156, 255);
+         internal sealed class FarmEntry
+         {
+@@ -345,11 +343,11 @@ namespace LcdMod.Client.Apps
+             int count = _entries.Count;
+             if (count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", warn);
++                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, warn);
+                 return;
+             }
+ 
+-            string plantIcon = _plantIcon ?? ICON_PLANT;
++            string plantIcon = _plantIcon ?? BareIcons.Sprout;
+             _kv.Clear();
+             _kv.Add(new BareLayout.KvRow
+             {
+@@ -384,7 +382,7 @@ namespace LcdMod.Client.Apps
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = Loc("AvgWater"),
+-                    Icon = ICON_WATER,
++                    Icon = BareIcons.WaterDrop,
+                     Value = FormatingHelper.PercentageToString(_avgWater),
+                     ValueColor = _noWater > 0 ? warn : fg,
+                     Bar = _avgWater,
+@@ -396,7 +394,7 @@ namespace LcdMod.Client.Apps
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = Loc("NoWater"),
+-                    Icon = ICON_WATER,
++                    Icon = BareIcons.NoWater,
+                     Value = string.IsNullOrEmpty(_noWaterName) ? _noWater.ToString() : _noWater + SEPARATOR + _noWaterName,
+                     ValueColor = GetErrorColor(),
+                     Bar = -1f
+diff --git a/Info/Data/Scripts/Info/Client/Apps/GasApp.cs b/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
+index e94985b..77162b0 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
+@@ -418,16 +418,16 @@ namespace LcdMod.Client.Apps
+             _kv.Clear();
+ 
+             if (_h2.Tanks > 0)
+-                _kv.Add(StoredRow(_h2, ICON_H2, "H2Stored", H2_COLOR, fg, warn, error, na));
++                _kv.Add(StoredRow(_h2, BareIcons.TankH2, "H2Stored", H2_COLOR, fg, warn, error, na));
+             if (_o2.Tanks > 0)
+-                _kv.Add(StoredRow(_o2, ICON_O2, "O2Stored", O2_COLOR, fg, warn, error, na));
++                _kv.Add(StoredRow(_o2, BareIcons.TankO2, "O2Stored", O2_COLOR, fg, warn, error, na));
+ 
+             if (_gens > 0)
+             {
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = Loc("Generators"),
+-                    Icon = _genIcon ?? ICON_FALLBACK,
++                    Icon = _genIcon ?? BareIcons.Generator,
+                     Value = _gensActive + "/" + _gens + SEPARATOR + FormatingHelper.VolumeToString(_h2.ProdLps + _o2.ProdLps) + "/s",
+                     ValueColor = _gensActive == 0 ? warn : fg,
+                     Bar = -1f
+@@ -442,7 +442,7 @@ namespace LcdMod.Client.Apps
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = Loc("Flow"),
+-                    Icon = _h2.Tanks > 0 ? ICON_H2 : ICON_O2,
++                    Icon = _h2.Tanks > 0 ? BareIcons.Hydrogen : BareIcons.Oxygen,
+                     Value = flow,
+                     ValueColor = draining ? warn : fg,
+                     Bar = -1f
+@@ -455,7 +455,7 @@ namespace LcdMod.Client.Apps
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = Loc("IceReserve"),
+-                    Icon = ICON_ICE,
++                    Icon = BareIcons.Ice,
+                     Value = FormatingHelper.MassToString(ice),
+                     ValueColor = _gens > 0 && _iceInGens <= 0d ? warn : fg,
+                     Bar = -1f
+@@ -464,7 +464,7 @@ namespace LcdMod.Client.Apps
+ 
+             if (_kv.Count == 0)
+             {
+-                Host.DrawMessage(sprites, na, "Warning", warn);
++                Host.DrawMessage(sprites, na, BareIcons.Warning, warn);
+                 return;
+             }
+             Bare.Kv(sprites, ViewBox, _kv, fg, Theme);
+diff --git a/Info/Data/Scripts/Info/Client/Apps/InGameClockDashboardApp.cs b/Info/Data/Scripts/Info/Client/Apps/InGameClockDashboardApp.cs
+index 56249a7..68027f1 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/InGameClockDashboardApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/InGameClockDashboardApp.cs
+@@ -33,9 +33,6 @@ namespace LcdMod.Client.Apps
+         const float MINIMAL_HERO_RATIO = 0.7f;
+         const float ICON_BASE = 16f;
+         const string SEPARATOR = " · ";
+-        const string ICON_SUNRISE = "WeatherSunRise";
+-        const string ICON_SUNSET = "WeatherSunSet";
+-        const string ICON_OXYGEN = "IconOxygen";
+         const string ICON_UPTIME = "BeaconBroadcast";
+ 
+         enum ClockDashboardLayoutMode
+@@ -270,7 +267,7 @@ namespace LcdMod.Client.Apps
+                 ? ClockDashboardSolarTime.PositiveModulo(_snapshot.TerrainSunsetHour - now, 24d)
+                 : double.MaxValue;
+             bool sunrise = toSunrise <= toSunset;
+-            icon = sunrise ? ICON_SUNRISE : ICON_SUNSET;
++            icon = sunrise ? BareIcons.Sunrise : BareIcons.Sunset;
+             return ClockDashboardFormatter.FormatSolarEventTime(
+                 sunrise ? _snapshot.TerrainSunriseHour : _snapshot.TerrainSunsetHour,
+                 ClockDashboardComponent);
+@@ -343,7 +340,7 @@ namespace LcdMod.Client.Apps
+             Color fg = GetForegroundColor();
+             if (_snapshot == null)
+             {
+-                Host.DrawMessage(sprites, ClockDashboardLocalization.Unavailable, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, ClockDashboardLocalization.Unavailable, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+@@ -388,7 +385,7 @@ namespace LcdMod.Client.Apps
+                 _kv.Add(new BareLayout.KvRow
+                 {
+                     Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_SunEvents"),
+-                    Icon = ICON_SUNRISE,
++                    Icon = BareIcons.Sunrise,
+                     Value = sunrise != null && sunset != null ? sunrise + SEPARATOR + sunset : sunrise ?? sunset,
+                     ValueColor = fg,
+                     Bar = -1f
+@@ -399,7 +396,7 @@ namespace LcdMod.Client.Apps
+             _kv.Add(new BareLayout.KvRow
+             {
+                 Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "ClockDashboard_Oxygen"),
+-                Icon = ICON_OXYGEN,
++                Icon = BareIcons.Oxygen,
+                 Value = ClockDashboardFormatter.FormatOxygen(_snapshot.OxygenRatio),
+                 ValueColor = oxygenColor,
+                 Bar = MathHelper.Clamp(_snapshot.OxygenRatio, 0f, 1f),
+@@ -418,7 +415,7 @@ namespace LcdMod.Client.Apps
+             _kv.Add(new BareLayout.KvRow
+             {
+                 Label = ClockDashboardLocalization.ServerUptime,
+-                Icon = ICON_UPTIME,
++                Icon = BareIcons.Server,
+                 Value = ClockDashboardFormatter.FormatDuration(session != null ? ClockDashboardFormatter.WorldElapsedSeconds(session.GameDateTime) : 0d),
+                 ValueColor = fg,
+                 Bar = -1f
+diff --git a/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs b/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
+index 0b34993..b24e68a 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
+@@ -33,11 +33,6 @@ namespace LcdMod.Client.Apps
+         const string TYPE_COMPONENT = "MyObjectBuilder_Component";
+         const string TYPE_AMMO = "MyObjectBuilder_AmmoMagazine";
+         const string TYPE_TOOL = "MyObjectBuilder_PhysicalGunObject";
+-        const string ICON_ORE = "MyObjectBuilder_Ore/Iron";
+-        const string ICON_INGOT = "MyObjectBuilder_Ingot/Iron";
+-        const string ICON_COMPONENT = "MyObjectBuilder_Component/SteelPlate";
+-        const string ICON_AMMO = "MyObjectBuilder_AmmoMagazine/NATO_25x184mm";
+-        const string ICON_VOLUME = "MyObjectBuilder_CargoContainer/LargeBlockLargeContainer";
+ 
+         readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
+         const long GROUP_REFRESH_FRAMES = 300;
+@@ -183,7 +178,7 @@ namespace LcdMod.Client.Apps
+             _kv.Add(new BareLayout.KvRow
+             {
+                 Label = LocHelper.GetLoc(MOD_PREFIX + "Inventory_Volume"),
+-                Icon = _volumeIcon ?? ICON_VOLUME,
++                Icon = _volumeIcon ?? BareIcons.Volume,
+                 Value = FormatingHelper.VolumeToString(_volumeUsed) + " / " + FormatingHelper.VolumeToString(_volumeMax) + SEPARATOR + FormatingHelper.PercentageToString(fraction),
+                 ValueColor = fraction >= VOLUME_ATTENTION ? fill : fg,
+                 Bar = -1f
+@@ -209,10 +204,10 @@ namespace LcdMod.Client.Apps
+                     }
+                 }
+ 
+-                _kv.Add(CategoryRow("Ore", ICON_ORE, FormatingHelper.FormatItemQty(ores), fg));
+-                _kv.Add(CategoryRow("Ingot", ICON_INGOT, FormatingHelper.FormatItemQty(ingots), fg));
+-                _kv.Add(CategoryRow("Component", ICON_COMPONENT, FormatingHelper.FormatItemQty(components), fg));
+-                _kv.Add(CategoryRow("AmmoMagazine", ICON_AMMO,
++                _kv.Add(CategoryRow("Ore", BareIcons.Ore, FormatingHelper.FormatItemQty(ores), fg));
++                _kv.Add(CategoryRow("Ingot", BareIcons.Ingot, FormatingHelper.FormatItemQty(ingots), fg));
++                _kv.Add(CategoryRow("Component", BareIcons.Component, FormatingHelper.FormatItemQty(components), fg));
++                _kv.Add(CategoryRow("AmmoMagazine", BareIcons.Ammo,
+                     FormatingHelper.FormatItemQty(ammo) + SEPARATOR + FormatingHelper.FormatItemQty(tools), fg,
+                     ItemCategoryHelper.GetGroupDisplayName("AmmoMagazine") + SEPARATOR + ItemCategoryHelper.GetGroupDisplayName("PhysicalGun")));
+             }
+diff --git a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+index 414091f..9e74aef 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+@@ -28,7 +28,6 @@ namespace LcdMod.Client.Apps
+         const double STANDARD_GRAVITY = 9.81d;
+         const string ICON_GRAVITY = "IconTemperature";
+         const string ICON_MASS = "IconEnergy";
+-        const string ICON_SAFE = "ShieldIcon";
+         const float MINIMAL_STATE_FONT_MUL = 1.2f;
+         const float MINIMAL_HERO_FONT_MUL = 3f;
+         public const int STATE_SAFE = 0;
+@@ -162,7 +161,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (!HasData)
+             {
+-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+@@ -173,10 +172,10 @@ namespace LcdMod.Client.Apps
+             bool valid = HasGravity && MaxMassKg > 0d;
+ 
+             _tiles.Clear();
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_GRAVITY, Label = Loc("LiftUsage"), Value = valid ? FormatingHelper.PercentageToString((float)Usage) : na, ValueColor = stateColor });
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("CanCarry"), Value = HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, ValueColor = fg });
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("ShipMass"), Value = ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, ValueColor = fg });
+-            _tiles.Add(new BareLayout.Tile { Icon = ICON_SAFE, Label = Loc("SafeMax"), Value = HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Gauge, Label = Loc("LiftUsage"), Value = valid ? FormatingHelper.PercentageToString((float)Usage) : na, ValueColor = stateColor });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Mass, Label = Loc("CanCarry"), Value = HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.Mass, Label = Loc("ShipMass"), Value = ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = BareIcons.SafeMass, Label = Loc("SafeMax"), Value = HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, ValueColor = fg });
+             Bare.Tiles(sprites, ViewBox, _tiles, 2, 2, fg, accent, Theme);
+         }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/PowerFilledApp.cs b/Info/Data/Scripts/Info/Client/Apps/PowerFilledApp.cs
+index dfd0592..96ef87a 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/PowerFilledApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/PowerFilledApp.cs
+@@ -480,7 +480,7 @@ namespace LcdMod.Client.Apps
+                     _kvRows.Add(new BareLayout.KvRow
+                     {
+                         Label = LocHelper.GetLoc(Constants.MOD_PREFIX + "Frame_Autonomy"),
+-                        Icon = "IconEnergy",
++                        Icon = BareIcons.Hourglass,
+                         Value = collector.RightSideText,
+                         ValueColor = collector.RightSideColor,
+                         Bar = -1f,
+@@ -491,7 +491,7 @@ namespace LcdMod.Client.Apps
+ 
+             if (_kvRows.Count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs b/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
+index e8be260..8afd306 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
+@@ -317,7 +317,7 @@ namespace LcdMod.Client.Apps
+             _compactPages = 1;
+             if (!HasBlueprint || items.Count == 0)
+             {
+-                Host.DrawMessage(s, LocHelper.Empty, "Warning", GetWarningColor());
++                Host.DrawMessage(s, LocHelper.Empty, BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/RadarApp.cs b/Info/Data/Scripts/Info/Client/Apps/RadarApp.cs
+index 750573d..572ebf9 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/RadarApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/RadarApp.cs
+@@ -1874,7 +1874,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (_sortedContacts.Count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs b/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
+index 2c48a8d..f1a6e4c 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/SurvivorsApp.cs
+@@ -187,7 +187,7 @@ namespace LcdMod.Client.Apps
+         {
+             if (_sorted.Count == 0)
+             {
+-                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), BareIcons.Warning, GetWarningColor());
+                 return;
+             }
+ 
+diff --git a/docs/superpowers/specs/2026-10-16-icones-atlas.md b/docs/superpowers/specs/2026-10-16-icones-atlas.md
+index 8b04ead..2d3bbed 100644
+--- a/docs/superpowers/specs/2026-10-16-icones-atlas.md
++++ b/docs/superpowers/specs/2026-10-16-icones-atlas.md
+@@ -164,3 +164,38 @@ Formato: cada ícone branco puro sobre fundo transparente, um só tom (o mod tin
+ | Lock | cadeado com retícula |
+ 
+ Total: 100 ícones.
++
++## Pendentes
++
++Constantes de `Core/Data/Scripts/Core/Client/Gui/Styling/BareIcons.cs` (temas Mínimo e Compacto) que ainda apontam para um fallback em vez do sprite final do atlas. Gerado por `bare_icons_pending.py` sobre o arquivo; as demais constantes (`Warning`, `Battery`, `Hydrogen`, `Oxygen`, `Sunrise`, `Sunset`) já usam o ícone definitivo do mod ou do jogo.
++
++| Constante | Fallback atual | Nome final |
++|---|---|---|
++| `BareIcons.Balance` | `IconEnergy` | `SD_Icon_Balance` |
++| `BareIcons.Gauge` | `IconTemperature` | `SD_Icon_Gauge` |
++| `BareIcons.Hourglass` | `IconEnergy` | `SD_Icon_Hourglass` |
++| `BareIcons.Mass` | `IconEnergy` | `SD_Icon_Mass` |
++| `BareIcons.SafeMass` | `ShieldIcon` | `SD_Icon_SafeMass` |
++| `BareIcons.Production` | `IconEnergy` | `SD_Icon_Production` |
++| `BareIcons.Consumption` | `IconEnergy` | `SD_Icon_Consumption` |
++| `BareIcons.Peak` | `IconEnergy` | `SD_Icon_Peak` |
++| `BareIcons.Storage` | `Battery` | `SD_Icon_Storage` |
++| `BareIcons.TankH2` | `IconHydrogen` | `SD_Icon_TankH2` |
++| `BareIcons.TankO2` | `IconOxygen` | `SD_Icon_TankO2` |
++| `BareIcons.HydrogenEngine` | `IconHydrogen` | `SD_Icon_HydrogenEngine` |
++| `BareIcons.Charging` | `Battery` | `SD_Icon_Charging` |
++| `BareIcons.Discharging` | `Battery` | `SD_Icon_Discharging` |
++| `BareIcons.Generator` | `IconEnergy` | `SD_Icon_Generator` |
++| `BareIcons.Ice` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_Ice` |
++| `BareIcons.Sprout` | `IconEnergy` | `SD_Icon_Sprout` |
++| `BareIcons.WaterDrop` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_WaterDrop` |
++| `BareIcons.NoWater` | `MyObjectBuilder_Ore/Ice` | `SD_Icon_NoWater` |
++| `BareIcons.Server` | `BeaconBroadcast` | `SD_Icon_Server` |
++| `BareIcons.Ore` | `MyObjectBuilder_Ore/Iron` | `SD_Icon_Ore` |
++| `BareIcons.Ingot` | `MyObjectBuilder_Ingot/Iron` | `SD_Icon_Ingot` |
++| `BareIcons.Component` | `MyObjectBuilder_Component/SteelPlate` | `SD_Icon_Component` |
++| `BareIcons.Ammo` | `MyObjectBuilder_AmmoMagazine/NATO_25x184mm` | `SD_Icon_Ammo` |
++| `BareIcons.Volume` | `MyObjectBuilder_CargoContainer/LargeBlockLargeContainer` | `SD_Icon_Volume` |
++| `BareIcons.AntennaRadio` | `RadioAntenna` | `SD_Icon_AntennaRadio` |
++
++Total: 26 pendentes de 32 constantes.

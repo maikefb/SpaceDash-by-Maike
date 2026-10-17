@@ -41,3 +41,6 @@ Task 7: implementer aee9b66b507647d19; DONE_WITH_CONCERNS (árvore; resx novas: 
 resx do Plano 3: 23 chaves em en e pt-BR — commit 5c41fe8.
 Task 7: reviewer a704b0f19d6c0442e; CLEAN (minor não aplicado: unificar paginação via IconGridPageCount protected set). Task 7: complete (commit 4242b05).
 Task 10: BASE 4242b05 (implementador único; passo 3 — build e jogo — é do usuário).
+Task 10: implementer a84658914a4105a7a; DONE_WITH_CONCERNS (árvore; 32 constantes, 26 pendentes de SD_Icon_*; seção Pendentes na spec de ícones).
+Task 10: reviewer a371cbd40fcdb7fd0; CLEAN (minor 1 aplicado: script versionado em tools/BareIcons/pending.py e menção na spec ajustada). Task 10: complete (commit 0dacd14).
+Plano 3: todas as 10 tasks completas em 0dacd14. Revisão final de integração dos Planos 2 e 3 (50490af..HEAD) em andamento.
