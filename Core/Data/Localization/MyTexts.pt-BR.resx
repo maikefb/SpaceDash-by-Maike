@@ -670,7 +670,7 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
     <value>Café</value>
   </data>
   <data name="LcdMod_Theme_Small" xml:space="preserve">
-    <value>Compacto</value>
+    <value>Pequeno</value>
   </data>
   <data name="LcdMod_Theme_Minimal" xml:space="preserve">
     <value>Mínimo</value>
