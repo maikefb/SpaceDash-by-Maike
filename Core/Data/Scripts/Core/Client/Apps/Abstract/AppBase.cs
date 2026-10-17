@@ -53,6 +53,7 @@ namespace LcdMod.Client.Apps.Abstract
 
             _animationController = Host.Animations;
             _styles = BuildDefaultStyles();
+            Bare = new BareLayout(host, this);
         }
 
         protected IAppHost Host { get; private set; }
@@ -235,6 +236,10 @@ namespace LcdMod.Client.Apps.Abstract
         }
 
         protected LcdTheme Theme => Host.ThemeKind;
+        protected bool IsMinimal => Theme == LcdTheme.Minimal;
+        protected bool IsCompact => Theme == LcdTheme.Compact;
+        protected bool IsBare => ThemeChrome.IsBare(Theme);
+        protected BareLayout Bare { get; }
 
         protected Color GetForegroundColor()
         {
