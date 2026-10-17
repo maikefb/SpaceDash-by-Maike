@@ -54,3 +54,5 @@ Ruling: Task 7 executada pelo orquestrador fora de ordem (arquivos disjuntos da 
 Task 7: complete (commit 5bdc970, 1 linha; revisão pelo orquestrador). Vão de título em Small/bare fica para os Planos 2/3 como os demais apps.
 Task 6: implementer a1bf6a83068da97e0; DONE_WITH_CONCERNS 1b2c889 (divergências: DrawTitleAccent antes do texto; ícone do título em TitleColor; Café mantém FrameFill).
 Task 8: BASE 44c0b55 (arquivos disjuntos da Task 6; roda em paralelo à revisão da Task 6)
+Task 6: reviewer a22c669c75b922e39; CLEAN. Pendência para a revisão final: usos residuais de `Surface.ScriptForegroundColor` fora do brief ficam ilegíveis no Café (DonutPanel:303/306, DonutDualPanel:24/27/60, AntennaApp:458/466, ProjectorApp:180/203/230, PowerFilledApp:254/349/357, DockingAlignmentApp:643/944) → trocar por `Host.ForegroundColor`/`host.ForegroundColor`. Minors não aplicados: LayoutChanged extra ao trocar para/do Café; halo do título sobre a faixa Futuristic (conferir no jogo).
+Task 6: complete (commits 7bcefa8..1b2c889, review clean)
