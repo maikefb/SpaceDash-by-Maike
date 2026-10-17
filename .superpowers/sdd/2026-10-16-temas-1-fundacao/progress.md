@@ -58,3 +58,6 @@ Task 6: reviewer a22c669c75b922e39; CLEAN. Pendência para a revisão final: uso
 Task 6: complete (commits 7bcefa8..1b2c889, review clean)
 Task 8: implementer a14398787ca7f8fc3; DONE_WITH_CONCERNS 0536643 (GRID/Telemetria vem de FrameLayouts.g.cs, não do EnergyCardRenderer — follow-up do orquestrador).
 Task 8: follow-up do orquestrador 5a4b8f6: 76 rótulos (=GRID, GridTelemetry, Telemetry, OfGrid, RealTime) removidos de FrameLayouts.g.cs, 4 chaves dos resx en/pt-BR, SKIP_LABELS em gen.py.
+Task 8: reviewer a9af122e912d89534; CLEAN (minors: valor das linhas da Elevação a 1×FontScale pode sumir em linhas baixas — alternativa 0.5f*Scale se feio no jogo; LINQ pré-existente em EnergyChartApp:103/176; negrito perdido nos títulos via Bare.Label).
+Task 8: complete (commits 1a0f388..0536643 + follow-up 5a4b8f6, review clean)
+Plano 1: todas as 8 tasks completas. Revisão final da branch em andamento: (a) trocar usos residuais de Surface.ScriptForegroundColor por Host.ForegroundColor (pendência da Task 6); (b) revisor de branch sobre 8c849e3..HEAD.
