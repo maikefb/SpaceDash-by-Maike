@@ -46,3 +46,7 @@ Task 4: BASE 48df5bd
 Task 4: implementer ac6c572a04f5d8179; DONE db59acf (2 linhas; `MyAPIGateway` qualificado como o resto do arquivo). Revisão feita pelo orquestrador (diff de 2 linhas): CLEAN.
 Task 4: complete (commits 48df5bd..db59acf)
 Task 5: BASE db59acf
+Task 5: implementer aa87dc3b439a8d015; DONE_WITH_CONCERNS fa5687c (BarPanel.CreateSprites em pílula; bipolar fica à mão; showPercent só na tabela do EnergyCardRenderer).
+Task 5: reviewer aaf6fbd767251d3de; CLEAN (minors: trilho de DrawBar sobre o trilho da moldura DDS em FrameRenderer.Bar(ratio) — conferir no jogo, reverter só ali se feio; `theme` ignorado em DrawBar; percentual automático sumiu em barras altas — decisão 9).
+Task 5: complete (commits 8cea855..fa5687c, review clean)
+Task 6: BASE fa5687c

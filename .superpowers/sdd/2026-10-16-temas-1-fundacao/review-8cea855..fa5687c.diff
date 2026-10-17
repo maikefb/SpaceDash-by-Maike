@@ -1,0 +1,114 @@
+diff --git a/Core/Data/Scripts/Core/Client/Gui/Frames/FrameRenderer.cs b/Core/Data/Scripts/Core/Client/Gui/Frames/FrameRenderer.cs
+index 70f0670..93101e8 100644
+--- a/Core/Data/Scripts/Core/Client/Gui/Frames/FrameRenderer.cs
++++ b/Core/Data/Scripts/Core/Client/Gui/Frames/FrameRenderer.cs
+@@ -1,7 +1,9 @@
+ using System;
+ using System.Collections.Generic;
+ using LcdMod.Client.Gui.ControlsTemplates.Panels;
++using LcdMod.Client.Gui.Styling;
+ using LcdMod.Client.Helpers;
++using LcdMod.Common.Config.Components;
+ using VRage;
+ using VRage.Game.GUI.TextPanel;
+ using VRage.Game.ModAPI;
+@@ -160,7 +162,10 @@ namespace LcdMod.Client.Gui.Frames
+ 
+         public void Bar(List<MySprite> sprites, string field, float ratio, Color color)
+         {
+-            Bar(sprites, field, 0f, ratio, color);
++            FrameSlot slot;
++            if (!Layout.Slots.TryGetValue(field, out slot) || slot.Kind != 'b')
++                return;
++            ThemeChrome.DrawBar(sprites, LcdTheme.Default, ToSurface(slot.Box), ratio, color, color, _scale.Y);
+         }
+ 
+         /// <summary>Saldo: metade esquerda para negativo, metade direita para positivo.</summary>
+diff --git a/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs b/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
+index dfd14c0..29fb3f6 100644
+--- a/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
++++ b/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
+@@ -183,43 +183,30 @@ namespace LcdMod.Client.Gui.Styling
+             return true;
+         }
+ 
+-        /// <summary>Barra na altura de <paramref name="rect"/> com o percentual em Monospace no fim. Vale para todos os temas.</summary>
+-        public static bool DrawBar(List<MySprite> sprites, LcdTheme theme, RectangleF rect, float fraction, Color fill, Color foreground, float scale)
++        /// <summary>
++        ///     Barra padrão de todos os temas: trilho em pílula a 15 % do primeiro plano, preenchimento em <paramref name="fill"/>,
++        ///     sem borda; abaixo de 2 px só retângulos. <paramref name="showPercent"/> escreve o percentual em Monospace à direita.
++        /// </summary>
++        public static bool DrawBar(List<MySprite> sprites, LcdTheme theme, RectangleF rect, float fraction, Color fill, Color foreground, float scale, bool showPercent = false)
+         {
+             if (rect.Width <= 0f || rect.Height <= 0f)
+                 return true;
+ 
+             fraction = MathHelper.Clamp(fraction, 0f, 1f);
+-            float thickness = Math.Max(1f, scale);
+-            bool showPercent = rect.Height >= PERCENT_MIN_HEIGHT * scale;
++            showPercent = showPercent && rect.Height >= PERCENT_MIN_HEIGHT * scale;
+             float textScale = showPercent ? rect.Height / PERCENT_TEXT_HEIGHT : 0f;
+-            float textWidth = showPercent ? PERCENT_TEXT_WIDTH * textScale + thickness * 2f : 0f;
++            float textWidth = showPercent ? PERCENT_TEXT_WIDTH * textScale + Math.Max(1f, scale) * 2f : 0f;
+             var bar = new RectangleF(rect.X, rect.Y, Math.Max(1f, rect.Width - textWidth), rect.Height);
+             Color track = WithAlpha(foreground, CLEAN_LINE_ALPHA);
+-            switch (theme)
++            if (bar.Height < 2f)
+             {
+-                case LcdTheme.Futuristic:
+-                {
+-                    LineRenderer.DrawRectOutline(sprites, bar, thickness, WithAlpha(foreground, OUTLINE_ALPHA));
+-                    float width = (bar.Width - thickness * 2f) * fraction;
+-                    if (width > 0f)
+-                        sprites.Add(LineRenderer.Rect(new Vector2(bar.X + thickness + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height - thickness * 2f), fill));
+-                    break;
+-                }
+-                case LcdTheme.Clean:
+-                case LcdTheme.Cafe:
+-                case LcdTheme.Small:
+-                {
+-                    sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, track));
+-                    float width = bar.Width * fraction;
+-                    if (width > 0f)
+-                        sprites.Add(LineRenderer.Rect(new Vector2(bar.X + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height), fill));
+-                    break;
+-                }
+-                default:
+-                    BarPanel.CreateSprites(sprites, bar.Position, bar.Size, fill, track, fraction, cornerRadius: bar.Height * 0.5f);
+-                    break;
++                sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, track));
++                float width = bar.Width * fraction;
++                if (width > 0f)
++                    sprites.Add(LineRenderer.Rect(new Vector2(bar.X + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height), fill));
+             }
++            else
++                BarPanel.CreateSprites(sprites, bar.Position, bar.Size, fill, track, fraction, cornerRadius: bar.Height * 0.5f);
+ 
+             if (showPercent)
+                 sprites.Add(new MySprite(SpriteType.TEXT, (int)Math.Round(fraction * 100f) + "%",
+diff --git a/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs b/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
+index 84e2c0a..2113706 100644
+--- a/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
++++ b/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
+@@ -208,8 +208,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
+                     DrawText(sprites, surface, font, row.Label, labelLeft, top + labelLine * 0.5f, area.Width - pad, labelLine, labelScale,
+                         palette.Label, TextAlignment.LEFT);
+                     if (hasBar)
+-                        DrawBar(sprites, new RectangleF(labelLeft, top + labelLine + pad * 0.5f, area.Width - pad, rowHeight - labelLine - pad), row.BarFraction, false,
+-                            row.ValueColor, ref palette, ref metrics);
++                        ThemeChrome.DrawBar(sprites, metrics.Theme, new RectangleF(labelLeft, top + labelLine + pad * 0.5f, area.Width - pad, rowHeight - labelLine - pad),
++                            row.BarFraction, row.ValueColor, palette.Label, metrics.S, showPercent: true);
+                     else
+                         DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad * 0.5f, top + labelLine + valueLine * 0.5f,
+                             area.Width - pad, valueLine, valueScale, row.ValueColor, TextAlignment.RIGHT);
+@@ -220,8 +220,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
+                     DrawText(sprites, surface, font, row.Label, labelLeft, textCenterY, dividerX - pad - labelLeft, textArea, labelScale,
+                         palette.Label, TextAlignment.LEFT);
+                     if (hasBar)
+-                        DrawBar(sprites, new RectangleF(dividerX + pad, top + pad, area.Right - dividerX - pad * 2f, rowHeight - pad * 2f), row.BarFraction, false,
+-                            row.ValueColor, ref palette, ref metrics);
++                        ThemeChrome.DrawBar(sprites, metrics.Theme, new RectangleF(dividerX + pad, top + pad, area.Right - dividerX - pad * 2f, rowHeight - pad * 2f),
++                            row.BarFraction, row.ValueColor, palette.Label, metrics.S, showPercent: true);
+                     else
+                         DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad, textCenterY, area.Right - dividerX - pad * 2f, textArea,
+                             valueScale, row.ValueColor, TextAlignment.RIGHT);
