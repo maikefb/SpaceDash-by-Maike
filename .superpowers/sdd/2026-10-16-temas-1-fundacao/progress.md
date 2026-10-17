@@ -43,3 +43,6 @@ Task 3: reviewer a2caf2dc69ad9e005; CLEAN (minors não aplicados: divisor do Kv 
 Task 3: complete (commits 481f104..48df5bd, review clean; check.ps1 pendente para o usuário)
 Ruling: não existe flag de animações habilitadas em `AnimationController` nem na config (grep em Core/Info); `BlinkOn` da Task 4 fica só `(GameplayFrameCounter / 10) % 2 == 0`, sem `AnimationsEnabled` — custo se errado: uma condição a acrescentar quando a flag existir.
 Task 4: BASE 48df5bd
+Task 4: implementer ac6c572a04f5d8179; DONE db59acf (2 linhas; `MyAPIGateway` qualificado como o resto do arquivo). Revisão feita pelo orquestrador (diff de 2 linhas): CLEAN.
+Task 4: complete (commits 48df5bd..db59acf)
+Task 5: BASE db59acf
