@@ -35,3 +35,7 @@ Task 2: minor (deferred): apps reservam FooterHeight (ProjectorApp:139, DockingA
 Task 2: complete (commits 2a041f1..4fa9e9b, review clean)
 Ruling: sessão movida para a nuvem a pedido do usuário; docs/superpowers e .superpowers/sdd commitados para a nuvem ter plano e ledger; IMAGENS/ e .superpowers/brainstorm/ entram no .gitignore — custo se errado: um commit de docs a reverter.
 Ruling: .superpowers/ está no .gitignore, então o add anterior não levou o ledger; workspace deste plano entra com git add -f para a nuvem retomar da Task 3 — custo se errado: um commit de docs a reverter.
+Ruling: a nuvem não tem `dotnet` nem as DLLs do Space Engineers (CompileCheck referencia `SEBin`); `check.ps1` não roda aqui. Tasks 3..8 seguem com revisão manual de compilação (C# 6, whitelist do ModAPI) pelo revisor; `check.ps1` + jogo ficam para o usuário no fim — custo se errado: erros de compilação a corrigir localmente num passe só.
+Task 3: BASE 481f104
+Task 3: implementer a962786bd00b857fe; DONE_WITH_CONCERNS 48df5bd (sem compilador; LF é o eol do checkout, .gitattributes eol=lf).
+Ruling: nesta sessão na nuvem o hook de parada do usuário exige commit+push e a instrução da sessão fixa a branch `main-gv0qq9`; a partir daqui cada task e cada atualização do ledger são enviadas para `origin/main-gv0qq9` (nunca para `main`) — custo se errado: uma branch remota a apagar.
