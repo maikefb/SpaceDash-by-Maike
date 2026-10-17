@@ -1,0 +1,261 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/Abstract/EnergyAppBase.cs b/Info/Data/Scripts/Info/Client/Apps/Abstract/EnergyAppBase.cs
+index e93e973..8b916d1 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/Abstract/EnergyAppBase.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/Abstract/EnergyAppBase.cs
+@@ -44,9 +44,6 @@ namespace LcdMod.Client.Apps.Abstract
+         public virtual bool OwnsTitle => false;
+         public string EmptyMessage => Loc("NoUnits");
+ 
+-        /// <summary>Título alternativo, mais curto, usado quando o localizado não cabe inteiro na barra.</summary>
+-        protected virtual string ShortTitle => null;
+-
+         /// <summary>Cor de aviso legível sobre o painel, para a mensagem de tela vazia.</summary>
+         public Color MessageColor => Palette.ValueAttention;
+ 
+@@ -89,7 +86,7 @@ namespace LcdMod.Client.Apps.Abstract
+             {
+                 var bar = new RectangleF(_content.X + Metrics.FrameLine, _content.Y + Metrics.FrameLine,
+                     _content.Width - Metrics.FrameLine * 2f, Metrics.TitleBarHeight);
+-                EnergyCardRenderer.DrawTitleBar(sprites, Host.Surface, TextFont, bar, Host.Title, ShortTitle, ref Palette, ref Metrics);
++                EnergyCardRenderer.DrawTitleBar(sprites, Host.Surface, TextFont, bar, Host.Title, ref Palette, ref Metrics);
+             }
+ 
+             return Body.Y;
+diff --git a/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs b/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
+index 9bf15a8..21e6e1f 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/DockingAlignmentApp.cs
+@@ -787,10 +787,10 @@ namespace LcdMod.Client.Apps
+             double closingVelocity, float footerHeight, Color valueColor)
+         {
+             var footerTop = ViewBox.Bottom - FOOTER_HEIGHT - footerHeight;
+-            var row1Y = footerTop + footerHeight * 0.36f;
+-            var row2Y = footerTop + footerHeight * 0.78f;
+-            var footerTextScale = Math.Max(0.36f, 0.52f * Scale) * FontScale;
+-            var footerTextOffsetY = FormatingHelper.GetSizeInPixel("A", TextFont, footerTextScale, Surface).Y * 0.5f;
++            var rowHeight = footerHeight * 0.5f;
++            var footerTextMul = Math.Max(0.36f, 0.52f * Scale);
++            var footerTextScale = footerTextMul * FontScale;
++            var footerTextOffsetY = Bare.LineHeight(footerTextMul) * 0.5f;
+             var closingDistance = GetClosingDistanceRate(dockingAxisDistance);
+ 
+             UpdateFooterLabel(0, -positionOffset.X, 100d, "L/R {0:0.00}m");
+@@ -806,10 +806,11 @@ namespace LcdMod.Client.Apps
+             var columnWidth = ViewBox.Width / 4f;
+             for (int i = 0; i < 4; i++)
+             {
+-                var x = ViewBox.X + columnWidth * (i + 0.5f);
+-                AddText(_sprites, labels[i], new Vector2(x, row1Y - footerTextOffsetY), footerTextScale, valueColor,
++                var row1 = new RectangleF(ViewBox.X + columnWidth * i, footerTop, columnWidth, rowHeight);
++                var row2 = new RectangleF(row1.X, footerTop + rowHeight, columnWidth, rowHeight);
++                AddText(_sprites, labels[i], new Vector2(row1.Center.X, row1.Center.Y - footerTextOffsetY), footerTextScale, valueColor,
+                     TextAlignment.CENTER);
+-                AddText(_sprites, labels[i + 4], new Vector2(x, row2Y - footerTextOffsetY), footerTextScale, valueColor,
++                AddText(_sprites, labels[i + 4], new Vector2(row2.Center.X, row2.Center.Y - footerTextOffsetY), footerTextScale, valueColor,
+                     TextAlignment.CENTER);
+             }
+         }
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
+index ca53a96..48df82a 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyCardApp.cs
+@@ -25,7 +25,6 @@ namespace LcdMod.Client.Apps
+         }
+ 
+         public override bool OwnsTitle => true;
+-        protected override string ShortTitle => KindName(_kind);
+ 
+         public override bool HasVisibleItems()
+         {
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
+index 1494853..25fcbfe 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyChartApp.cs
+@@ -27,6 +27,8 @@ namespace LcdMod.Client.Apps
+         const float MIN_PLOT_UNITS = 6f;
+         const string USED_CHANNEL = "EnergyUsed";
+         const string STORED_CHANNEL = "EnergyStored";
++        const string ICON_POWER = "IconEnergy";
++        const string ICON_BATTERY = "Battery";
+ 
+         /// <summary>Rótulos do eixo numa só unidade, escolhida pelo teto do eixo.</summary>
+         static readonly Func<float, string> TickMegaWatts = mw => mw.ToString("0.##", FormatingHelper.Culture) + " MW";
+@@ -119,9 +121,9 @@ namespace LcdMod.Client.Apps
+                 s.UsedHistory, s.HistoryHead, axisMax, Palette.ChartUsed);
+ 
+             float donutHeight = right.Height * EnergyTheme.CHART_DONUT_CELL;
+-            DrawDonutCell(new RectangleF(right.X, right.Y, right.Width, donutHeight), Loc("Used"), _displayUsed,
++            DrawDonutCell(new RectangleF(right.X, right.Y, right.Width, donutHeight), Loc("Used"), ICON_POWER, _displayUsed,
+                 FormatingHelper.PercentageToString(s.UsedRatio), EnergyTheme.UsedColor(ref Palette, s.UsedRatio));
+-            DrawDonutCell(new RectangleF(right.X, right.Y + donutHeight, right.Width, donutHeight), Loc("Stored"), _displayStored,
++            DrawDonutCell(new RectangleF(right.X, right.Y + donutHeight, right.Width, donutHeight), Loc("Stored"), ICON_BATTERY, _displayStored,
+                 s.HasBatteries ? FormatingHelper.PercentageToString(s.StoredRatio) : NotAvailable,
+                 s.HasBatteries ? EnergyTheme.ChargeColor(ref Palette, s.StoredRatio) : Palette.LabelMuted);
+             DrawBatteryPanel(new RectangleF(right.X, right.Y + donutHeight * 2f, right.Width, right.Height - donutHeight * 2f), s);
+@@ -199,8 +201,8 @@ namespace LcdMod.Client.Apps
+             float labelScale;
+             StripLayout(rect.Width, ref valueScale, out valueWidth, out gap, out labelScale);
+             string valueText = PowerText(current, false, valueWidth);
+-            EnergyCardRenderer.DrawText(_sprites, surface, font, label.ToUpperInvariant(), rect.X, stripCenter, rect.Width - valueWidth - gap, stripHeight,
+-                labelScale, Palette.LabelMuted, TextAlignment.LEFT);
++            Bare.Label(_sprites, label.ToUpperInvariant(), ICON_POWER, new RectangleF(rect.X, rect.Y, rect.Width - valueWidth - gap, stripHeight),
++                Palette.LabelMuted, labelScale / Host.FontScale);
+             EnergyCardRenderer.DrawText(_sprites, surface, FormatingHelper.BoldFont(font, valueText), valueText, rect.Right, stripCenter, valueWidth, stripHeight,
+                 valueScale, seriesColor, TextAlignment.RIGHT);
+ 
+@@ -258,7 +260,7 @@ namespace LcdMod.Client.Apps
+         ///     Anel com o percentual no centro; sem largura para o percentual dentro do anel, só o rótulo e o percentual. O
+         ///     tamanho do percentual vem do modelo "100%", para não mudar a cada amostra, e o rótulo nunca fica maior que ele.
+         /// </summary>
+-        void DrawDonutCell(RectangleF cell, string label, float displayFraction, string percent, Color color)
++        void DrawDonutCell(RectangleF cell, string label, string icon, float displayFraction, string percent, Color color)
+         {
+             var surface = Host.Surface;
+             string font = TextFont;
+@@ -285,8 +287,8 @@ namespace LcdMod.Client.Apps
+                     EnergyTheme.DONUT_STEPS, 0f, 2f * Metrics.S);
+             valueScale = EnergyCardRenderer.DrawText(_sprites, surface, valueFont, percent, center.X, center.Y, boxWidth, boxHeight, valueScale, color,
+                 TextAlignment.CENTER);
+-            _sprites.Add(EnergyCardRenderer.Text(upper, new Vector2(cell.Center.X, cell.Y), Math.Min(labelScale, valueScale), Palette.LabelMuted,
+-                TextAlignment.CENTER, font));
++            Bare.Label(_sprites, label.ToUpperInvariant(), icon, new RectangleF(cell.X, cell.Y, cell.Width, labelHeight), Palette.LabelMuted,
++                Math.Min(labelScale, valueScale) / Host.FontScale);
+         }
+ 
+         /// <summary>Tabela secundária: não cresce além do tamanho natural para não competir com as leituras do gráfico.</summary>
+diff --git a/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs b/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
+index 8d554dc..0d2d286 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/EnergyGeneralApp.cs
+@@ -4,7 +4,6 @@ using LcdMod.Client.Apps.Abstract;
+ using LcdMod.Client.Gui.ControlsTemplates.Custom.Energy;
+ using LcdMod.Client.Helpers;
+ using LcdMod.Client.Modules.Energy;
+-using VRage;
+ using VRage.Game.GUI.TextPanel;
+ using VRageMath;
+ 
+@@ -22,7 +21,6 @@ namespace LcdMod.Client.Apps
+         }
+ 
+         public override bool OwnsTitle => true;
+-        protected override string ShortTitle => MyTexts.GetString("RadialMenuGroupTitle_Power");
+ 
+         public override List<MySprite> GetSprites()
+         {
+diff --git a/Info/Data/Scripts/Info/Client/Apps/GasApp.cs b/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
+index 79a9e13..49cb337 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/GasApp.cs
+@@ -39,6 +39,7 @@ namespace LcdMod.Client.Apps
+         const string ICON_ICE = "MyObjectBuilder_Ore/Ice";
+         const string ICON_BOTTLE = "MyObjectBuilder_GasContainerObject/HydrogenBottle";
+         const string ICON_FALLBACK = "IconEnergy";
++        static readonly string[] LABEL_ICONS = { ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_H2, ICON_O2, ICON_O2, ICON_BOTTLE };
+         public const int STATUS_NOMINAL = 0;
+         public const int STATUS_ATTENTION = 1;
+         public const int STATUS_CRITICAL = 2;
+@@ -358,7 +359,7 @@ namespace LcdMod.Client.Apps
+                     cardWidth, cardHeight);
+                 string icon, title;
+                 FillCard(i, out icon, out title, fg, accent, warn, error, na);
+-                DrawCard(sprites, rect, icon, title, oneLine, fg, accent, ls);
++                DrawCard(sprites, rect, icon, title, LABEL_ICONS[i], oneLine, fg, accent, ls);
+             }
+ 
+             if (statusHeight > 0f)
+@@ -458,7 +459,7 @@ namespace LcdMod.Client.Apps
+             return text;
+         }
+ 
+-        void DrawCard(List<MySprite> sprites, RectangleF rect, string icon, string title, bool oneLine, Color fg, Color accent, float ls)
++        void DrawCard(List<MySprite> sprites, RectangleF rect, string icon, string title, string labelIcon, bool oneLine, Color fg, Color accent, float ls)
+         {
+             if (!ThemeChrome.DrawCard(sprites, Theme, rect, BackgroundColor, accent, fg, ls))
+                 sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, Color.Lerp(BackgroundColor, fg, 0.08f)));
+@@ -473,11 +474,9 @@ namespace LcdMod.Client.Apps
+             float left = cell.Right + pad * 2f;
+             float right = rect.Right - pad * 2f;
+             float textWidth = Math.Max(1f, right - left);
+-            float titleScale = 0.6f * ls;
+-            string titleFont = ThemeChrome.TitleFont(Theme, TextFont, title);
+-            string titleText = FormatingHelper.FitText(TextSurface, ThemeChrome.LabelText(Theme, title), titleFont, titleScale, textWidth, 0f, 0.3f, out titleScale);
+-            float titleHeight = MeasureLineHeight(titleScale);
+-            sprites.Add(new MySprite(SpriteType.TEXT, titleText, new Vector2(left, rect.Y + pad), null, fg, titleFont, TextAlignment.LEFT, titleScale));
++            float titleMul = 0.6f * ls / Math.Max(0.25f, Host.FontScale);
++            float titleHeight = Bare.LineHeight(titleMul);
++            Bare.Label(sprites, ThemeChrome.LabelText(Theme, title), labelIcon, new RectangleF(left, rect.Y + pad, textWidth, titleHeight), fg, titleMul);
+ 
+             int rowCount = oneLine ? 1 : 2;
+             float rowsTop = rect.Y + pad + titleHeight;
+diff --git a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+index af6b2c7..b456eec 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+@@ -225,11 +225,8 @@ namespace LcdMod.Client.Apps
+             float labelHeight = MeasureLineHeight(labelScale);
+             sprites.Add(new MySprite(SpriteType.TEXT, label, new Vector2(left, rect.Y + pad), null, new Color(fg, 0.7f), TextFont, TextAlignment.LEFT, labelScale));
+ 
+-            float valueScale = 0.9f * ls;
+-            string valueFont = ThemeChrome.TitleFont(Theme, TextFont, value);
+-            string valueText = FormatingHelper.FitText(TextSurface, value, valueFont, valueScale, width, Math.Max(1f, rect.Height - labelHeight - pad * 3f), 0.3f, out valueScale);
+-            float valueHeight = MeasureLineHeight(valueScale);
+-            sprites.Add(new MySprite(SpriteType.TEXT, valueText, new Vector2(left, rect.Bottom - pad - valueHeight), null, fg, valueFont, TextAlignment.LEFT, valueScale));
++            float valueHeight = Bare.LineHeight(1f);
++            Bare.Text(sprites, value, new Vector2(left, rect.Bottom - pad - valueHeight), TextAlignment.LEFT, 1f, fg, width, Math.Max(1f, rect.Height - labelHeight - pad * 3f));
+         }
+ 
+         void DrawRow(List<MySprite> sprites, RectangleF rect, string label, string value, float fraction, Color fg, Color fill, float ls)
+@@ -240,15 +237,16 @@ namespace LcdMod.Client.Apps
+             float right = rect.Right - pad * 3f;
+             float width = Math.Max(1f, right - left);
+             float scale = 0.5f * ls;
+-            float textHeight = MeasureLineHeight(scale);
++            bool valueFits = Bare.Fits(value, 1f, width, rect.Height);
++            float textHeight = Math.Max(MeasureLineHeight(scale), valueFits ? Bare.LineHeight(1f) : 0f);
+             bool hasBar = fraction >= 0f;
+             float barHeight = Math.Max(BAR_HEIGHT_BASE * ls, rect.Height - textHeight - pad * 2.5f);
+             float textTop = hasBar ? rect.Y + pad : rect.Center.Y - textHeight * 0.5f;
+ 
+-            float valueWidth = MeasureText(value, scale).X;
++            float valueWidth = valueFits ? MeasureText(value, Host.FontScale).X : 0f;
+             string labelText = FormatingHelper.FitText(TextSurface, ThemeChrome.LabelText(Theme, label), TextFont, scale, Math.Max(1f, width - valueWidth - pad), 0f, 0.3f, out scale);
+             sprites.Add(new MySprite(SpriteType.TEXT, labelText, new Vector2(left, textTop), null, new Color(fg, 0.7f), TextFont, TextAlignment.LEFT, scale));
+-            sprites.Add(new MySprite(SpriteType.TEXT, value, new Vector2(right, textTop), null, fg, TextFont, TextAlignment.RIGHT, 0.5f * ls));
++            Bare.Text(sprites, value, new Vector2(right, textTop), TextAlignment.RIGHT, 1f, fg, width, rect.Height);
+ 
+             if (!hasBar) return;
+             float barTop = textTop + textHeight + pad * 0.5f;
+diff --git a/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs b/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
+index 2113706..86b5700 100644
+--- a/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
++++ b/Info/Data/Scripts/Info/Client/Gui/ControlsTemplates/Custom/Energy/EnergyCardRenderer.cs
+@@ -60,12 +60,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
+             LineRenderer.DrawCornerBrackets(sprites, rect, metrics.BracketArm, metrics.BracketThickness, palette.Bracket);
+         }
+ 
+-        /// <summary>
+-        ///     Título em caixa-alta e negrito entre dois blocos. Se o título localizado não cabe inteiro no tamanho dos rótulos,
+-        ///     usa o curto (<paramref name="shortTitle"/>, ou o próprio título sem ele), que pode descer até a escala mínima
+-        ///     antes de ser cortado.
+-        /// </summary>
+-        public static void DrawTitleBar(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF bar, string title, string shortTitle,
++        /// <summary>Título em caixa-alta e negrito entre dois blocos, ajustado ao tamanho dos rótulos.</summary>
++        public static void DrawTitleBar(List<MySprite> sprites, IMyTextSurface surface, string font, RectangleF bar, string title,
+             ref EnergyPalette palette, ref EnergyMetrics metrics)
+         {
+             bool clean = metrics.Theme == LcdTheme.Clean;
+@@ -89,13 +85,6 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
+             string titleFont = clean ? font : FormatingHelper.BoldFont(font, upper);
+             string text = FormatingHelper.FitText(surface, upper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
+                 metrics.Text(EnergyTheme.LABEL), out scale);
+-            if (text.Length != upper.Length)
+-            {
+-                string shortUpper = clean ? shortTitle ?? upper : (shortTitle ?? upper).ToUpperInvariant();
+-                titleFont = clean ? font : FormatingHelper.BoldFont(font, shortUpper);
+-                text = FormatingHelper.FitText(surface, shortUpper, titleFont, metrics.Text(EnergyTheme.TITLE), maxWidth, bar.Height * 0.9f,
+-                    EnergyMetrics.MIN_TEXT, out scale);
+-            }
+ 
+             if (maxWidth > 0f)
+             {
