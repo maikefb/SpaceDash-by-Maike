@@ -25,7 +25,6 @@ namespace LcdMod.Client.SurfaceScripts
         public const string TITLE = MOD_PREFIX + "PowerFilled";
 
         protected override string DefaultTitle => TITLE;
-        public override LcdTheme ThemeKind => LcdTheme.Default;
 
         public override IApp App => _app;
         IApp _app;
