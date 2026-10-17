@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using LcdMod.Client.Gui.ControlsTemplates.Panels;
+using LcdMod.Client.Gui.Styling;
 using LcdMod.Client.Helpers;
+using LcdMod.Common.Config.Components;
 using VRage;
 using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI;
@@ -160,7 +162,10 @@ namespace LcdMod.Client.Gui.Frames
 
         public void Bar(List<MySprite> sprites, string field, float ratio, Color color)
         {
-            Bar(sprites, field, 0f, ratio, color);
+            FrameSlot slot;
+            if (!Layout.Slots.TryGetValue(field, out slot) || slot.Kind != 'b')
+                return;
+            ThemeChrome.DrawBar(sprites, LcdTheme.Default, ToSurface(slot.Box), ratio, color, color, _scale.Y);
         }
 
         /// <summary>Saldo: metade esquerda para negativo, metade direita para positivo.</summary>

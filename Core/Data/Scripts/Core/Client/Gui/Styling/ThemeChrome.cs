@@ -183,43 +183,30 @@ namespace LcdMod.Client.Gui.Styling
             return true;
         }
 
-        /// <summary>Barra na altura de <paramref name="rect"/> com o percentual em Monospace no fim. Vale para todos os temas.</summary>
-        public static bool DrawBar(List<MySprite> sprites, LcdTheme theme, RectangleF rect, float fraction, Color fill, Color foreground, float scale)
+        /// <summary>
+        ///     Barra padrão de todos os temas: trilho em pílula a 15 % do primeiro plano, preenchimento em <paramref name="fill"/>,
+        ///     sem borda; abaixo de 2 px só retângulos. <paramref name="showPercent"/> escreve o percentual em Monospace à direita.
+        /// </summary>
+        public static bool DrawBar(List<MySprite> sprites, LcdTheme theme, RectangleF rect, float fraction, Color fill, Color foreground, float scale, bool showPercent = false)
         {
             if (rect.Width <= 0f || rect.Height <= 0f)
                 return true;
 
             fraction = MathHelper.Clamp(fraction, 0f, 1f);
-            float thickness = Math.Max(1f, scale);
-            bool showPercent = rect.Height >= PERCENT_MIN_HEIGHT * scale;
+            showPercent = showPercent && rect.Height >= PERCENT_MIN_HEIGHT * scale;
             float textScale = showPercent ? rect.Height / PERCENT_TEXT_HEIGHT : 0f;
-            float textWidth = showPercent ? PERCENT_TEXT_WIDTH * textScale + thickness * 2f : 0f;
+            float textWidth = showPercent ? PERCENT_TEXT_WIDTH * textScale + Math.Max(1f, scale) * 2f : 0f;
             var bar = new RectangleF(rect.X, rect.Y, Math.Max(1f, rect.Width - textWidth), rect.Height);
             Color track = WithAlpha(foreground, CLEAN_LINE_ALPHA);
-            switch (theme)
+            if (bar.Height < 2f)
             {
-                case LcdTheme.Futuristic:
-                {
-                    LineRenderer.DrawRectOutline(sprites, bar, thickness, WithAlpha(foreground, OUTLINE_ALPHA));
-                    float width = (bar.Width - thickness * 2f) * fraction;
-                    if (width > 0f)
-                        sprites.Add(LineRenderer.Rect(new Vector2(bar.X + thickness + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height - thickness * 2f), fill));
-                    break;
-                }
-                case LcdTheme.Clean:
-                case LcdTheme.Cafe:
-                case LcdTheme.Small:
-                {
-                    sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, track));
-                    float width = bar.Width * fraction;
-                    if (width > 0f)
-                        sprites.Add(LineRenderer.Rect(new Vector2(bar.X + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height), fill));
-                    break;
-                }
-                default:
-                    BarPanel.CreateSprites(sprites, bar.Position, bar.Size, fill, track, fraction, cornerRadius: bar.Height * 0.5f);
-                    break;
+                sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, track));
+                float width = bar.Width * fraction;
+                if (width > 0f)
+                    sprites.Add(LineRenderer.Rect(new Vector2(bar.X + width * 0.5f, bar.Center.Y), new Vector2(width, bar.Height), fill));
             }
+            else
+                BarPanel.CreateSprites(sprites, bar.Position, bar.Size, fill, track, fraction, cornerRadius: bar.Height * 0.5f);
 
             if (showPercent)
                 sprites.Add(new MySprite(SpriteType.TEXT, (int)Math.Round(fraction * 100f) + "%",

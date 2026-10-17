@@ -208,8 +208,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
                     DrawText(sprites, surface, font, row.Label, labelLeft, top + labelLine * 0.5f, area.Width - pad, labelLine, labelScale,
                         palette.Label, TextAlignment.LEFT);
                     if (hasBar)
-                        DrawBar(sprites, new RectangleF(labelLeft, top + labelLine + pad * 0.5f, area.Width - pad, rowHeight - labelLine - pad), row.BarFraction, false,
-                            row.ValueColor, ref palette, ref metrics);
+                        ThemeChrome.DrawBar(sprites, metrics.Theme, new RectangleF(labelLeft, top + labelLine + pad * 0.5f, area.Width - pad, rowHeight - labelLine - pad),
+                            row.BarFraction, row.ValueColor, palette.Label, metrics.S, showPercent: true);
                     else
                         DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad * 0.5f, top + labelLine + valueLine * 0.5f,
                             area.Width - pad, valueLine, valueScale, row.ValueColor, TextAlignment.RIGHT);
@@ -220,8 +220,8 @@ namespace LcdMod.Client.Gui.ControlsTemplates.Custom.Energy
                     DrawText(sprites, surface, font, row.Label, labelLeft, textCenterY, dividerX - pad - labelLeft, textArea, labelScale,
                         palette.Label, TextAlignment.LEFT);
                     if (hasBar)
-                        DrawBar(sprites, new RectangleF(dividerX + pad, top + pad, area.Right - dividerX - pad * 2f, rowHeight - pad * 2f), row.BarFraction, false,
-                            row.ValueColor, ref palette, ref metrics);
+                        ThemeChrome.DrawBar(sprites, metrics.Theme, new RectangleF(dividerX + pad, top + pad, area.Right - dividerX - pad * 2f, rowHeight - pad * 2f),
+                            row.BarFraction, row.ValueColor, palette.Label, metrics.S, showPercent: true);
                     else
                         DrawText(sprites, surface, FormatingHelper.BoldFont(font, row.Value), row.Value, area.Right - pad, textCenterY, area.Right - dividerX - pad * 2f, textArea,
                             valueScale, row.ValueColor, TextAlignment.RIGHT);
