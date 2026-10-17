@@ -15,7 +15,8 @@ namespace LcdMod.Client.Gui.Frames
 {
     /// <summary>
     ///     Desenha uma moldura: a textura esticada por eixo à superfície, os rótulos traduzidos e os valores nos campos. As
-    ///     coordenadas da tabela estão em pixels da textura de origem e são escaladas por eixo para a SurfaceSize.
+    ///     coordenadas da tabela estão em pixels da textura de origem e são escaladas por eixo para a SurfaceSize; o texto,
+    ///     que não estica, segue o eixo mais apertado, para caber nas caixas também num LCD quadrado com moldura 2:1.
     /// </summary>
     public sealed class FrameRenderer
     {
@@ -44,8 +45,8 @@ namespace LcdMod.Client.Gui.Frames
         Color _staticColor;
 
         /// <param name="fontScale">
-        ///     Tamanho de fonte do usuário, aplicado a valores e rótulos; limitado a <see cref="MAX_FONT_SCALE"/> porque a
-        ///     geometria da moldura é fixa.
+        ///     Tamanho de fonte do usuário, aplicado a valores e rótulos sobre a escala do eixo mais apertado; limitado a
+        ///     <see cref="MAX_FONT_SCALE"/> porque a geometria da moldura é fixa.
         /// </param>
         public FrameRenderer(FrameLayout layout, IMyTextSurface surface, string font, float fontScale = 1f)
         {
@@ -55,7 +56,7 @@ namespace LcdMod.Client.Gui.Frames
             _scale = surface.SurfaceSize / layout.Size;
             _origin = (surface.TextureSize - surface.SurfaceSize) * 0.5f;
             _unitLine = FormatingHelper.LineHeight(1f, surface, font);
-            _textScale = fontScale > 0f ? Math.Min(MAX_FONT_SCALE, fontScale) : 1f;
+            _textScale = Math.Min(_scale.X, _scale.Y) * (fontScale > 0f ? Math.Min(MAX_FONT_SCALE, fontScale) : 1f);
         }
 
         public bool Has(string field)
@@ -192,10 +193,10 @@ namespace LcdMod.Client.Gui.Frames
             return new RectangleF(_origin.X + box.X * _scale.X, _origin.Y + box.Y * _scale.Y, box.Width * _scale.X, box.Height * _scale.Y);
         }
 
-        /// <summary>Escala de sprite para um tamanho em px da tabela, já com a redução pedida pelo usuário.</summary>
+        /// <summary>Escala de sprite para um tamanho em px da tabela: eixo mais apertado da superfície e fonte do usuário.</summary>
         float Scale(float fontPx)
         {
-            return fontPx * _scale.Y * LINE_PER_PX / _unitLine * _textScale;
+            return fontPx * LINE_PER_PX / _unitLine * _textScale;
         }
 
         static string Localize(string key)
