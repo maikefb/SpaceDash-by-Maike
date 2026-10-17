@@ -1,0 +1,341 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/Abstract/ItemsAppBase.cs b/Info/Data/Scripts/Info/Client/Apps/Abstract/ItemsAppBase.cs
+index f732d6e..2bb8654 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/Abstract/ItemsAppBase.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/Abstract/ItemsAppBase.cs
+@@ -148,6 +148,21 @@ namespace LcdMod.Client.Apps.Abstract
+ 
+         protected const int LINE_HEIGHT = 30;
+         protected const int MINIMUM_COL_WIDTH = 220;
++        const int ICON_GRID_PAGE_FRAMES = 300;
++        const float ICON_GRID_ICON_BASE = 32f;
++        const float ICON_GRID_GAP_BASE = 4f;
++        int _lastIconGridPage;
++
++        protected ObservableList<ItemEntry> DisplayItems => _displayItems;
++        protected int IconGridPageCount { get; private set; } = 1;
++        protected int IconGridPage
++        {
++            get
++            {
++                long frame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
++                return (int)((frame / ICON_GRID_PAGE_FRAMES) % Math.Max(1, IconGridPageCount));
++            }
++        }
+ 
+         protected ItemsApp(IAppHost host)
+             : this(host, null)
+@@ -249,6 +264,16 @@ namespace LcdMod.Client.Apps.Abstract
+                 if (_activeScrollPanel != null && _activeScrollPanel.UpdateAutoScroll())
+                     InvalidateContentSprites();
+ 
++                if (IsBare && IconGridPageCount > 1)
++                {
++                    int page = IconGridPage;
++                    if (page != _lastIconGridPage)
++                    {
++                        _lastIconGridPage = page;
++                        InvalidateContentSprites();
++                    }
++                }
++
+                 var hasFilters = HasConfiguredFilters();
+                 var filterStateChanged = HasFilters != hasFilters;
+                 if (HasRenderConfigChanged() || filterStateChanged)
+@@ -293,6 +318,19 @@ namespace LcdMod.Client.Apps.Abstract
+         {
+             var sprites = _sprites;
+             sprites.Clear();
++            if (IsBare)
++            {
++                ClearInteractiveTree();
++                _contentSpritesDirty = true;
++                _footerSpritesDirty = true;
++                if (IsMinimal)
++                    DrawMinimal(sprites);
++                else
++                    DrawCompact(sprites);
++                ClearDirtyAfterRender();
++                return sprites;
++            }
++
+             CaptureDirtyControlSections();
+ 
+             if (_contentSpritesDirty)
+@@ -759,6 +797,58 @@ namespace LcdMod.Client.Apps.Abstract
+         {
+         }
+ 
++        protected virtual void DrawMinimal(List<MySprite> s)
++        {
++            DrawIconGrid(s, ViewBox, _displayItems, IconGridPage);
++        }
++
++        protected virtual void DrawCompact(List<MySprite> s)
++        {
++            DrawIconGrid(s, ViewBox, _displayItems, IconGridPage);
++        }
++
++        protected void DrawIconGrid(List<MySprite> s, RectangleF area, ObservableList<ItemEntry> items, int page)
++        {
++            IconGridPageCount = 1;
++            if (s == null || items == null || area.Width <= 0f || area.Height <= 0f)
++                return;
++
++            int count = items.Count;
++            if (count <= 0)
++                return;
++
++            float scale = Bare.Scale;
++            float icon = ICON_GRID_ICON_BASE * scale;
++            float gap = ICON_GRID_GAP_BASE * scale;
++            float lineHeight = Bare.LineHeight(1f);
++            float cellWidth = icon + gap;
++            float cellHeight = icon + lineHeight + gap;
++            int cols = Math.Max(1, (int)Math.Floor(area.Width / cellWidth));
++            int rows = Math.Max(1, (int)Math.Floor((area.Height + gap) / cellHeight));
++            int cells = cols * rows;
++            int pages = (count + cells - 1) / cells;
++            IconGridPageCount = pages;
++            page = ((page % pages) + pages) % pages;
++
++            int start = page * cells;
++            int end = Math.Min(count, start + cells);
++            float originX = area.X + Math.Max(0f, (area.Width - cols * cellWidth + gap) * 0.5f);
++            Color fg = ForegroundColor;
++            Color bg = BackgroundColor;
++            for (int i = start; i < end; i++)
++            {
++                var item = items[i];
++                if (item == null)
++                    continue;
++
++                int slot = i - start;
++                float x = originX + (slot % cols) * cellWidth;
++                float y = area.Y + (slot / cols) * cellHeight;
++                DrawItemIcon(s, ResolveSprite(item.ItemType), new Vector2(x + icon * 0.5f, y + icon * 0.5f), new Vector2(icon, icon), TextAlignment.CENTER, bg);
++                Bare.Text(s, FormatingHelper.FormatItemQty((double)item.Amount), new Vector2(x + icon * 0.5f, y + icon), TextAlignment.CENTER, 1f, fg, cellWidth, lineHeight);
++            }
++        }
++
+         void ClearInteractiveTree()
+         {
+             _activeScrollPanel = null;
+diff --git a/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs b/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
+index 654af9e..5c44247 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/InventoryApp.cs
+@@ -1,19 +1,55 @@
++using System;
++using System.Collections.Generic;
+ using LcdMod.Client.Apps.Abstract;
++using LcdMod.Client.Apps.ViewModel;
+ using LcdMod.Client.Config;
+ using LcdMod.Client.GridData;
++using LcdMod.Client.Gui.Styling;
++using LcdMod.Client.Helpers;
+ using LcdMod.Common.Config.Components;
+ using LcdMod.Common.Helpers;
+ using Sandbox.ModAPI;
++using VRage.Game.GUI.TextPanel;
++using VRage.Game.ModAPI;
++using VRageMath;
+ 
+ using LcdMod.Common.Config.Generation;
++using static LcdMod.Common.Helpers.Constants;
+ namespace LcdMod.Client.Apps
+ {
+-    
+-    
++
++
+     // ReSharper disable once PartialTypeWithSinglePart
+     internal sealed partial class InventoryApp : ItemsApp
+     {
+         public const string NAME = "Inventory";
++        const string SEPARATOR = " · ";
++        const float BAR_HEIGHT_BASE = 6f;
++        const float VOLUME_ATTENTION = 0.8f;
++        const float VOLUME_CRITICAL = 0.95f;
++        const double CUBIC_METERS_TO_LITERS = 1000d;
++        const string TYPE_ORE = "MyObjectBuilder_Ore";
++        const string TYPE_INGOT = "MyObjectBuilder_Ingot";
++        const string TYPE_COMPONENT = "MyObjectBuilder_Component";
++        const string TYPE_AMMO = "MyObjectBuilder_AmmoMagazine";
++        const string TYPE_TOOL = "MyObjectBuilder_PhysicalGunObject";
++        const string ICON_ORE = "MyObjectBuilder_Ore/Iron";
++        const string ICON_INGOT = "MyObjectBuilder_Ingot/Iron";
++        const string ICON_COMPONENT = "MyObjectBuilder_Component/SteelPlate";
++        const string ICON_AMMO = "MyObjectBuilder_AmmoMagazine/NATO_25x184mm";
++        const string ICON_VOLUME = "MyObjectBuilder_CargoContainer/LargeBlockLargeContainer";
++
++        readonly List<BareLayout.KvRow> _kv = new List<BareLayout.KvRow>();
++        readonly List<IMyTerminalBlock> _groupBlocks = new List<IMyTerminalBlock>();
++        readonly HashSet<long> _seenBlocks = new HashSet<long>();
++        readonly LinkedTypedBlockSourceSet<IMyTerminalBlock> _blocks =
++            new LinkedTypedBlockSourceSet<IMyTerminalBlock>(delegate(TypedBlockCollection blocks)
++            {
++                return blocks.TerminalBlocks;
++            });
++
++        double _volumeUsed, _volumeMax;
++        string _volumeIcon;
+ 
+         protected override string DefaultTitle => NAME;
+         protected override ItemDisplayMode PresentationMode =>
+@@ -34,5 +70,156 @@ namespace LcdMod.Client.Apps
+                 ConfigManager.Sync(block, provider);
+             });
+         }
++
++        public override void Update()
++        {
++            base.Update();
++            if (!IsCompact)
++                return;
++
++            try
++            {
++                ReadVolume();
++            }
++            catch (Exception e)
++            {
++                ErrorHandlerHelper.LogError(e, this);
++            }
++        }
++
++        public override void Close()
++        {
++            _blocks.Dispose();
++            base.Close();
++        }
++
++        void ReadVolume()
++        {
++            double used = 0d, max = 0d;
++            var selectedBlocks = BlockSelectionComponent.SelectedBlocks;
++            var selectedGroups = BlockSelectionComponent.SelectedGroups;
++            bool hasBlocks = selectedBlocks != null && selectedBlocks.Length > 0;
++            bool hasGroups = selectedGroups != null && selectedGroups.Length > 0;
++            _seenBlocks.Clear();
++
++            if (hasBlocks || hasGroups)
++            {
++                _blocks.Unbind();
++                if (hasBlocks)
++                {
++                    for (int i = 0; i < selectedBlocks.Length; i++)
++                        AddVolume(MyAPIGateway.Entities.GetEntityById(selectedBlocks[i]) as IMyTerminalBlock, ref used, ref max);
++                }
++                if (hasGroups && GridLogic != null)
++                {
++                    GridLogic.GetTerminalGroupBlocks(selectedGroups, _groupBlocks);
++                    for (int i = 0; i < _groupBlocks.Count; i++)
++                        AddVolume(_groupBlocks[i], ref used, ref max);
++                    _groupBlocks.Clear();
++                }
++            }
++            else
++            {
++                _blocks.Bind(GridLogic, (GridLinkTypeEnum)BlockSelectionComponent.GridLinkTypeInternal);
++                var sources = _blocks.Sources;
++                for (int s = 0; s < sources.Count; s++)
++                {
++                    var list = sources[s];
++                    for (int i = 0; i < list.Count; i++)
++                        AddVolume(list[i], ref used, ref max);
++                }
++            }
++
++            _seenBlocks.Clear();
++            if (used == _volumeUsed && max == _volumeMax)
++                return;
++
++            _volumeUsed = used;
++            _volumeMax = max;
++            InvalidateContentSprites();
++        }
++
++        void AddVolume(IMyTerminalBlock block, ref double used, ref double max)
++        {
++            if (block == null || block.Closed || block.MarkedForClose || !block.HasInventory || !_seenBlocks.Add(block.EntityId))
++                return;
++
++            if (_volumeIcon == null)
++                _volumeIcon = block.BlockDefinition.ToString();
++
++            for (int i = 0; i < block.InventoryCount; i++)
++            {
++                var inventory = block.GetInventory(i);
++                if (inventory == null)
++                    continue;
++                used += (double)inventory.CurrentVolume * CUBIC_METERS_TO_LITERS;
++                max += (double)inventory.MaxVolume * CUBIC_METERS_TO_LITERS;
++            }
++        }
++
++        protected override void DrawCompact(List<MySprite> s)
++        {
++            var view = ViewBox;
++            Color fg = ForegroundColor;
++            float scale = Bare.Scale;
++            float margin = Bare.Margin;
++            float barHeight = BAR_HEIGHT_BASE * scale;
++            float fraction = _volumeMax > 0d ? MathHelper.Clamp((float)(_volumeUsed / _volumeMax), 0f, 1f) : 0f;
++            Color fill = fraction >= VOLUME_CRITICAL ? GetErrorColor() : fraction >= VOLUME_ATTENTION ? GetWarningColor() : GetHeaderColor();
++            ThemeChrome.DrawBar(s, Theme, new RectangleF(view.X, view.Y, view.Width, barHeight), fraction, fill, fg, scale);
++
++            _kv.Clear();
++            _kv.Add(new BareLayout.KvRow
++            {
++                Label = LocHelper.GetLoc(MOD_PREFIX + "Inventory_Volume"),
++                Icon = _volumeIcon ?? ICON_VOLUME,
++                Value = FormatingHelper.VolumeToString(_volumeUsed) + " / " + FormatingHelper.VolumeToString(_volumeMax) + SEPARATOR + FormatingHelper.PercentageToString(fraction),
++                ValueColor = fraction >= VOLUME_ATTENTION ? fill : fg,
++                Bar = -1f
++            });
++
++            var items = DisplayItems;
++            if (items.Count > 0)
++            {
++                double ores = 0d, ingots = 0d, components = 0d, ammo = 0d, tools = 0d;
++                for (int i = 0; i < items.Count; i++)
++                {
++                    var item = items[i];
++                    if (item == null)
++                        continue;
++                    double amount = (double)item.Amount;
++                    switch (item.TypeId)
++                    {
++                        case TYPE_ORE: ores += amount; break;
++                        case TYPE_INGOT: ingots += amount; break;
++                        case TYPE_COMPONENT: components += amount; break;
++                        case TYPE_AMMO: ammo += amount; break;
++                        case TYPE_TOOL: tools += amount; break;
++                    }
++                }
++
++                _kv.Add(CategoryRow("Ore", ICON_ORE, FormatingHelper.FormatItemQty(ores), fg));
++                _kv.Add(CategoryRow("Ingot", ICON_INGOT, FormatingHelper.FormatItemQty(ingots), fg));
++                _kv.Add(CategoryRow("Component", ICON_COMPONENT, FormatingHelper.FormatItemQty(components), fg));
++                _kv.Add(CategoryRow("AmmoMagazine", ICON_AMMO,
++                    FormatingHelper.FormatItemQty(ammo) + SEPARATOR + FormatingHelper.FormatItemQty(tools), fg,
++                    ItemCategoryHelper.GetGroupDisplayName("AmmoMagazine") + SEPARATOR + ItemCategoryHelper.GetGroupDisplayName("PhysicalGun")));
++            }
++
++            float top = view.Y + barHeight + margin;
++            Bare.Kv(s, new RectangleF(view.X, top, view.Width, view.Bottom - top), _kv, fg, Theme);
++        }
++
++        static BareLayout.KvRow CategoryRow(string group, string icon, string value, Color fg, string label = null)
++        {
++            return new BareLayout.KvRow
++            {
++                Label = label ?? ItemCategoryHelper.GetGroupDisplayName(group),
++                Icon = icon,
++                Value = value,
++                ValueColor = fg,
++                Bar = -1f
++            };
++        }
+     }
+ }

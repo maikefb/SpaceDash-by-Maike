@@ -33,3 +33,6 @@ Onda B: Task 4 (Esteiras layouts) lançada sobre 974ba95.
 Task 9: reviewer acdb6b86db93a8041; CLEAN (minors: anel some antes das linhas em LCD muito baixo; OutputName como rótulo da linha de próxima colheita). Task 9: complete (commit e5e2f5d).
 Task 6: implementer a6941b81accb12110; DONE_WITH_CONCERNS (árvore; resx nova: Inventory_Volume = Volume/Volume; Inventory.cs intercepta 0 itens antes do app — mantido: equivale à decisão 11, como nos demais surface scripts).
 Task 5: reviewer a7641ed54a289da04; CLEAN (minors: Label=hora some antes da data; delta 0 no evento solar). Task 5: complete (commit 5d273ac).
+Task 4: implementer adf3a808585538434; DONE_WITH_CONCERNS (árvore; resx novas: ConveyorMap_BlocksNetworks = '{0} blocks · {1} networks'/'{0} blocos · {1} redes', ConveyorMap_OffBottlenecks = 'Off · Bottlenecks'/'Desligados · Gargalos'; NetworkCount por _rootSize inclui nós isolados).
+Task 6: reviewer a6240afdc42955a74; FIX → (1) resx Inventory_Volume: coberto pelo passe de resx; (2) GetTerminalGroupBlocks alocava por Update: orquestrador cacheia _groupBlocks e só refaz quando SelectedGroups muda de referência ou a cada 300 frames. Task 6: complete (commit 27c1347).
+Onda B: Task 7 (Projetor) lançada sobre 27c1347.
