@@ -18,3 +18,4 @@ Ruling: `SD_Icon_Battery` não existe nas texturas (achado da T8 do Plano 1); o 
 | T5 | PowerFilledApp desenha rodapé próprio | ramos bare retornam antes; sem conflito |
 
 ## Progresso
+Onda 1: BASE 50490af; Tasks 1..8 em paralelo (implementadores sem git/resx). Commits por task pelo orquestrador após revisão.
