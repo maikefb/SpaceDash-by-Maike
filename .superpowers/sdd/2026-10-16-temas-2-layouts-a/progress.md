@@ -22,3 +22,8 @@ Onda 1: BASE 50490af; Tasks 1..8 em paralelo (implementadores sem git/resx). Com
 Task 1: implementer aa959abe391bdd1a3; DONE_WITH_CONCERNS (árvore; sem chaves resx novas).
 Task 2: implementer a60ba2f94194f48f9; DONE_WITH_CONCERNS (árvore; sem chaves resx; achado: EnergyAppBase.DrawChrome desenha chrome no bare — orquestrador trata).
 Ruling: EnergyAppBase.DrawChrome devolve após PrepareFrame() quando IsBare (Palette/Metrics continuam preparados para os ramos bare dos apps de energia) — commit 9d96773; vale para T2, T3 e T4.
+Task 3: implementer a56ef37aa66df7c05; DONE_WITH_CONCERNS (árvore; sem resx; H₂ herói = LoadRatio; +/- em vez de ▲▼; BLOCKED opcional: BuildPalette.paintPanel no bare).
+Task 5: implementer ab0e94537658f2936; DONE_WITH_CONCERNS (árvore; sem resx; sem linhas H₂/O₂/saldo — app não tem esses dados).
+Task 6: implementer a5fc698d5b3a93abc; DONE_WITH_CONCERNS (árvore; sem resx; O₂ branco fixo no Café).
+Task 1: reviewer a1aa34dfe11143487; CLEAN (minors: centro do anel vazio em vez de N/A quando MaxMassKg==0 com gravidade; 1.2f do brief mantido). Task 1: complete (commit 403483d).
+Ruling: BuildPalette.paintPanel exclui IsBare (cores contrastam com o fundo, não com um painel que não é desenhado) — commit 0d17cc1.

@@ -1,0 +1,100 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+index b456eec..414091f 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/LiftCapacityApp.cs
+@@ -28,6 +28,9 @@ namespace LcdMod.Client.Apps
+         const double STANDARD_GRAVITY = 9.81d;
+         const string ICON_GRAVITY = "IconTemperature";
+         const string ICON_MASS = "IconEnergy";
++        const string ICON_SAFE = "ShieldIcon";
++        const float MINIMAL_STATE_FONT_MUL = 1.2f;
++        const float MINIMAL_HERO_FONT_MUL = 3f;
+         public const int STATE_SAFE = 0;
+         public const int STATE_WARN = 1;
+         public const int STATE_CRIT = 2;
+@@ -115,8 +118,68 @@ namespace LcdMod.Client.Apps
+         }
+ 
+         readonly List<MySprite> _sprites = new List<MySprite>();
++        readonly List<BareLayout.Tile> _tiles = new List<BareLayout.Tile>();
+         readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
+ 
++        Color StateColor(Color fg, Color accent)
++        {
++            return !HasGravity ? fg : State == STATE_CRIT ? GetErrorColor() : State == STATE_WARN ? GetWarningColor() : accent;
++        }
++
++        string StateWord()
++        {
++            return !HasGravity ? Loc("NoGravity") : State == STATE_CRIT ? Loc("Crit") : State == STATE_WARN ? Loc("Warn") : Loc("Safe");
++        }
++
++        void DrawMinimal(List<MySprite> sprites)
++        {
++            var view = ViewBox;
++            Color fg = ForegroundColor;
++            Color stateColor = StateColor(fg, GetHeaderColor());
++            Color track = Color.Lerp(BackgroundColor, fg, 0.15f);
++            bool valid = HasGravity && MaxMassKg > 0d;
++            float fraction = valid ? (float)MathHelper.Clamp(Usage, 0d, 1d) : 0f;
++            string center = valid ? FormatingHelper.PercentageToString((float)Usage) : null;
++            string stateWord = HasData ? ThemeChrome.LabelText(LcdTheme.Futuristic, StateWord()) : null;
++            float margin = Bare.Margin;
++            float lineHeight = Bare.LineHeight(MINIMAL_STATE_FONT_MUL);
++
++            if (BareLayout.IsWide(view))
++            {
++                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
++                Bare.Ring(sprites, ringArea, fraction, valid ? stateColor : fg, track, center, stateColor, MINIMAL_HERO_FONT_MUL);
++                float left = ringArea.Right + margin;
++                Bare.Text(sprites, stateWord, new Vector2(left, view.Center.Y - lineHeight * 0.5f), TextAlignment.LEFT, MINIMAL_STATE_FONT_MUL, stateColor, view.Right - left, view.Height);
++                return;
++            }
++
++            var ring = new RectangleF(view.X, view.Y, view.Width, view.Height - lineHeight - margin);
++            Bare.Ring(sprites, ring, fraction, valid ? stateColor : fg, track, center, stateColor, MINIMAL_HERO_FONT_MUL);
++            Bare.Text(sprites, stateWord, new Vector2(view.Center.X, ring.Bottom + margin), TextAlignment.CENTER, MINIMAL_STATE_FONT_MUL, stateColor, view.Width, lineHeight);
++        }
++
++        void DrawCompact(List<MySprite> sprites)
++        {
++            if (!HasData)
++            {
++                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
++                return;
++            }
++
++            Color fg = ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color stateColor = StateColor(fg, accent);
++            string na = LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
++            bool valid = HasGravity && MaxMassKg > 0d;
++
++            _tiles.Clear();
++            _tiles.Add(new BareLayout.Tile { Icon = ICON_GRAVITY, Label = Loc("LiftUsage"), Value = valid ? FormatingHelper.PercentageToString((float)Usage) : na, ValueColor = stateColor });
++            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("CanCarry"), Value = HasGravity ? FormatingHelper.MassToString(CanCarryKg) : na, ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = ICON_MASS, Label = Loc("ShipMass"), Value = ShipMassKg > 0d ? FormatingHelper.MassToString(ShipMassKg) : na, ValueColor = fg });
++            _tiles.Add(new BareLayout.Tile { Icon = ICON_SAFE, Label = Loc("SafeMax"), Value = HasGravity ? FormatingHelper.MassToString(SafeMaxKg) : na, ValueColor = fg });
++            Bare.Tiles(sprites, ViewBox, _tiles, 2, 2, fg, accent, Theme);
++        }
++
+         public override void LayoutChanged()
+         {
+             base.LayoutChanged();
+@@ -127,6 +190,16 @@ namespace LcdMod.Client.Apps
+         {
+             var sprites = _sprites;
+             sprites.Clear();
++            if (IsMinimal)
++            {
++                DrawMinimal(sprites);
++                return sprites;
++            }
++            if (IsCompact)
++            {
++                DrawCompact(sprites);
++                return sprites;
++            }
+             if (Host.Frame != null)
+             {
+                 DrawFramed(sprites);
