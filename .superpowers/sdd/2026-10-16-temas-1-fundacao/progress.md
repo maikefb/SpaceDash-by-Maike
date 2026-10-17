@@ -52,3 +52,5 @@ Task 5: complete (commits 8cea855..fa5687c, review clean)
 Task 6: BASE fa5687c
 Ruling: Task 7 executada pelo orquestrador fora de ordem (arquivos disjuntos da Task 6): o surface script de Energia Preenchida já chamava AddBackground/DrawTitle e o app já posiciona o conteúdo em TITLE_BAR_HEIGHT_BASE (40 px × escala × fonte); sem layout DDS gerado para "BatteryGraph", então Frame fica null e o título sai por código. Mudança = remover `ThemeKind => Default` — custo se errado: uma linha a restaurar.
 Task 7: complete (commit 5bdc970, 1 linha; revisão pelo orquestrador). Vão de título em Small/bare fica para os Planos 2/3 como os demais apps.
+Task 6: implementer a1bf6a83068da97e0; DONE_WITH_CONCERNS 1b2c889 (divergências: DrawTitleAccent antes do texto; ícone do título em TitleColor; Café mantém FrameFill).
+Task 8: BASE 44c0b55 (arquivos disjuntos da Task 6; roda em paralelo à revisão da Task 6)

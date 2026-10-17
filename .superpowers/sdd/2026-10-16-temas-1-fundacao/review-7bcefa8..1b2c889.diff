@@ -1,0 +1,299 @@
+diff --git a/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs b/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
+index 29fb3f6..823e7cf 100644
+--- a/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
++++ b/Core/Data/Scripts/Core/Client/Gui/Styling/ThemeChrome.cs
+@@ -31,6 +31,17 @@ namespace LcdMod.Client.Gui.Styling
+         const float BARE_CARD_MIX = 0.06f;
+         const float SMALL_FONT_BOOST = 1.25f;
+         const float CAFE_FILL_MIX = 0.08f;
++        const float CAFE_BORDER_GAP = 2f;
++        const float CAFE_CORNER_RADIUS = 4f;
++        const float CAFE_CARD_MIX = 0.4f;
++        const float CAFE_SHADOW_ALPHA = 0.2f;
++        const float CAFE_DASH = 6f;
++        const float CAFE_DASH_GAP = 4f;
++        const float FUTURISTIC_FOOTER_ALPHA = 0.25f;
++
++        static readonly Color CAFE_INK = new Color(62, 42, 28);
++        static readonly Color CAFE_PAPER = new Color(242, 232, 214);
++        static readonly Color CAFE_BROWN = new Color(120, 80, 50);
+ 
+         /// <summary>Mínimo e Compacto: sem título, rodapé, moldura ou faixas; só fundo e margem.</summary>
+         public static bool IsBare(LcdTheme theme)
+@@ -38,6 +49,30 @@ namespace LcdMod.Client.Gui.Styling
+             return theme == LcdTheme.Minimal || theme == LcdTheme.Compact;
+         }
+ 
++        /// <summary>Cor de texto efetiva: Café troca a do usuário pela tinta marrom-escura.</summary>
++        public static Color Foreground(LcdTheme theme, Color user)
++        {
++            return theme == LcdTheme.Cafe ? CAFE_INK : user;
++        }
++
++        /// <summary>Cor de fundo efetiva: Café troca a do usuário pelo papel creme.</summary>
++        public static Color Background(LcdTheme theme, Color user)
++        {
++            return theme == LcdTheme.Cafe ? CAFE_PAPER : user;
++        }
++
++        /// <summary>Cor do texto do título: Futuristic escreve na cor de fundo sobre a faixa de acento.</summary>
++        public static Color TitleColor(LcdTheme theme, Color accent, Color background)
++        {
++            return theme == LcdTheme.Futuristic ? background : accent;
++        }
++
++        /// <summary>Clean e Default à esquerda; Futuristic, Café e Small centrados.</summary>
++        public static TextAlignment TitleAlignment(LcdTheme theme)
++        {
++            return theme == LcdTheme.Clean || theme == LcdTheme.Default ? TextAlignment.LEFT : TextAlignment.CENTER;
++        }
++
+         public static Color FrameFill(LcdTheme theme, Color background, Color foreground)
+         {
+             switch (theme)
+@@ -60,7 +95,15 @@ namespace LcdMod.Client.Gui.Styling
+ 
+         public static string TitleFont(LcdTheme theme, string font, string text)
+         {
+-            return theme == LcdTheme.Futuristic ? FormatingHelper.BoldFont(font, text) : font;
++            switch (theme)
++            {
++                case LcdTheme.Futuristic:
++                case LcdTheme.Clean:
++                case LcdTheme.Cafe:
++                    return FormatingHelper.BoldFont(font, text);
++                default:
++                    return font;
++            }
+         }
+ 
+         /// <summary>Small amplia todo o texto dos apps para telas de cockpit.</summary>
+@@ -94,7 +137,9 @@ namespace LcdMod.Client.Gui.Styling
+                     return true;
+                 case LcdTheme.Cafe:
+                     sprites.Add(LineRenderer.Rect(outer.Center, outer.Size, FrameFill(theme, background, foreground)));
+-                    LineRenderer.DrawRectOutline(sprites, outer, Math.Max(2f, 2f * scale), WithAlpha(accent, OUTLINE_ALPHA));
++                    float gap = CAFE_BORDER_GAP * scale + Math.Max(1f, scale);
++                    LineRenderer.DrawRectOutline(sprites, outer, Math.Max(1f, scale), CAFE_BROWN);
++                    LineRenderer.DrawRectOutline(sprites, new RectangleF(outer.X + gap, outer.Y + gap, outer.Width - gap * 2f, outer.Height - gap * 2f), Math.Max(1f, scale), CAFE_BROWN);
+                     return true;
+                 case LcdTheme.Clean:
+                 case LcdTheme.Small:
+@@ -112,18 +157,51 @@ namespace LcdMod.Client.Gui.Styling
+             switch (theme)
+             {
+                 case LcdTheme.Futuristic:
+-                    float thickness = Math.Max(1f, 1.5f * scale);
+-                    sprites.Add(LineRenderer.Rect(new Vector2(bar.Center.X, bar.Bottom - thickness * 0.5f), new Vector2(bar.Width, thickness), accent));
++                    sprites.Add(LineRenderer.Rect(bar.Center, bar.Size, accent));
+                     return true;
+                 case LcdTheme.Clean:
+-                case LcdTheme.Cafe:
+                     DrawDivider(sprites, theme, new Vector2(bar.X, bar.Bottom - 1f), new Vector2(bar.Right, bar.Bottom - 1f), foreground, scale);
+                     return true;
++                case LcdTheme.Cafe:
++                    DrawDashedLine(sprites, bar.Center.X, bar.Bottom - 1f, bar.Width, CAFE_BROWN, scale);
++                    return true;
+                 default:
+                     return false;
+             }
+         }
+ 
++        static void DrawDashedLine(List<MySprite> sprites, float centerX, float y, float width, Color color, float scale)
++        {
++            float dash = CAFE_DASH * scale;
++            float gap = CAFE_DASH_GAP * scale;
++            int count = (int)Math.Floor((width + gap) / (dash + gap));
++            if (count <= 0)
++                return;
++
++            float thickness = Math.Max(1f, scale);
++            float x = centerX - (count * dash + (count - 1) * gap) * 0.5f + dash * 0.5f;
++            for (int i = 0; i < count; i++)
++                sprites.Add(LineRenderer.Rect(new Vector2(x + i * (dash + gap), y), new Vector2(dash, thickness), color));
++        }
++
++        static void DrawRoundedRect(List<MySprite> sprites, RectangleF rect, float radius, Color color)
++        {
++            float r = Math.Min(radius, Math.Min(rect.Width, rect.Height) * 0.5f);
++            if (r <= 0f)
++            {
++                sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, color));
++                return;
++            }
++
++            sprites.Add(LineRenderer.Rect(rect.Center, new Vector2(rect.Width - r * 2f, rect.Height), color));
++            sprites.Add(LineRenderer.Rect(rect.Center, new Vector2(rect.Width, rect.Height - r * 2f), color));
++            var diameter = new Vector2(r * 2f);
++            sprites.Add(new MySprite(SpriteType.TEXTURE, "Circle", new Vector2(rect.X + r, rect.Y + r), diameter, color));
++            sprites.Add(new MySprite(SpriteType.TEXTURE, "Circle", new Vector2(rect.Right - r, rect.Y + r), diameter, color));
++            sprites.Add(new MySprite(SpriteType.TEXTURE, "Circle", new Vector2(rect.X + r, rect.Bottom - r), diameter, color));
++            sprites.Add(new MySprite(SpriteType.TEXTURE, "Circle", new Vector2(rect.Right - r, rect.Bottom - r), diameter, color));
++        }
++
+         public static bool DrawCard(List<MySprite> sprites, LcdTheme theme, RectangleF rect, Color background, Color accent, Color foreground, float scale)
+         {
+             if (IsBare(theme))
+@@ -137,11 +215,12 @@ namespace LcdMod.Client.Gui.Styling
+                     DrawChamferedBox(sprites, rect, FrameFill(theme, background, foreground), WithAlpha(accent, OUTLINE_ALPHA), accent, scale);
+                     return true;
+                 case LcdTheme.Cafe:
+-                    sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
+-                    goto case LcdTheme.Clean;
+-                case LcdTheme.Clean:
+-                    DrawDivider(sprites, theme, new Vector2(rect.X, rect.Bottom - 1f), new Vector2(rect.Right, rect.Bottom - 1f), foreground, scale);
++                    float radius = CAFE_CORNER_RADIUS * scale;
++                    float offset = Math.Max(1f, scale);
++                    DrawRoundedRect(sprites, new RectangleF(rect.X + offset, rect.Y + offset, rect.Width, rect.Height), radius, WithAlpha(CAFE_INK, CAFE_SHADOW_ALPHA));
++                    DrawRoundedRect(sprites, rect, radius, Color.Lerp(CAFE_PAPER, Color.White, CAFE_CARD_MIX));
+                     return true;
++                case LcdTheme.Clean:
+                 case LcdTheme.Small:
+                     return true;
+                 default:
+@@ -156,8 +235,7 @@ namespace LcdMod.Client.Gui.Styling
+             switch (theme)
+             {
+                 case LcdTheme.Futuristic:
+-                    sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
+-                    sprites.Add(LineRenderer.Rect(new Vector2(rect.Center.X, rect.Y + 0.5f), new Vector2(rect.Width, Math.Max(1f, scale)), accent));
++                    sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, WithAlpha(accent, FUTURISTIC_FOOTER_ALPHA)));
+                     return true;
+                 case LcdTheme.Cafe:
+                     sprites.Add(LineRenderer.Rect(rect.Center, rect.Size, FrameFill(theme, background, foreground)));
+diff --git a/Core/Data/Scripts/Core/Client/SurfaceScripts/Abstract/SurfaceScriptBase.cs b/Core/Data/Scripts/Core/Client/SurfaceScripts/Abstract/SurfaceScriptBase.cs
+index bac8e15..83bd492 100644
+--- a/Core/Data/Scripts/Core/Client/SurfaceScripts/Abstract/SurfaceScriptBase.cs
++++ b/Core/Data/Scripts/Core/Client/SurfaceScripts/Abstract/SurfaceScriptBase.cs
+@@ -146,6 +146,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+         protected virtual string FrameId => null;
+         protected virtual bool FrameTiny => Surface.SurfaceSize.Y / Surface.SurfaceSize.X < 0.375f;
+         LcdTheme _userTheme;
++        /// <summary>Cor de texto do LCD já filtrada pelo tema (Café usa a paleta fixa).</summary>
++        public new Color ForegroundColor => ThemeChrome.Foreground(_userTheme, Surface.ScriptForegroundColor);
++        /// <summary>Cor de fundo do LCD já filtrada pelo tema (Café usa a paleta fixa).</summary>
++        public new Color BackgroundColor => ThemeChrome.Background(_userTheme, Surface.ScriptBackgroundColor);
+         public ColorConfigComponent ColorComponent => Config.GetComponent<ColorConfigComponent>();
+         /// <summary>Fonte escolhida no terminal, com o padrão do jogo como reserva.</summary>
+         public string TextFont => string.IsNullOrEmpty(Surface.Font) ? "White" : Surface.Font;
+@@ -595,7 +599,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+             var position = new Vector2(ViewBox.Center.X, ViewBox.Center.Y - measured.Y * scale / 2f);
+             using (var frame = Surface.DrawFrame())
+             {
+-                frame.Add(new MySprite(SpriteType.TEXT, message, position, null, Surface.ScriptForegroundColor, TextFont,
++                frame.Add(new MySprite(SpriteType.TEXT, message, position, null, ForegroundColor, TextFont,
+                     TextAlignment.CENTER, scale));
+             }
+         }
+@@ -630,7 +634,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 var bSoD = BSoD.ShowBSoD(this, e);
+ 
+                 _renderComp.RenderSpritesToTexture(RotationOrSurfaceIndex, bSoD.Frame, _textureSize, _aspectRatio,
+-                    Surface.ScriptBackgroundColor, Surface.BackgroundAlpha);
++                    BackgroundColor, Surface.BackgroundAlpha);
+                 
+                 NotifyRendered();
+             }
+@@ -671,11 +675,10 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+         public virtual void DrawTitle(List<MySprite> frame)
+         {
+             const float margin = 0f;
++            const float titleFontSize = 1.3f;
+             float headerScale = LayoutScale;
+-            bool small = _userTheme == LcdTheme.Small;
+-            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale * (small ? 0.6f : 1f);
+-            float titleFontSize = small ? 1f : 1.3f;
+-            float iconSize = (small ? 24f : 40f) * headerScale;
++            float titleBarHeight = TITLE_BAR_HEIGHT_BASE * headerScale;
++            float iconSize = 40f * headerScale;
+             Vector2 position = ViewBox.Position;
+             position.X += margin;
+ 
+@@ -684,16 +687,23 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+             if (ThemeChrome.IsBare(_userTheme))
+                 return;
+ 
++            if (_userTheme == LcdTheme.Small)
++                return;
++
+             if (Frame != null || !TitleVisible)
+                 return;
+ 
++            Color accent = GetHeaderColor();
++            Color titleColor = ThemeChrome.TitleColor(_userTheme, accent, BackgroundColor);
++            ThemeChrome.DrawTitleAccent(frame, _userTheme, new RectangleF(ViewBox.X, ViewBox.Y, ViewBox.Width, titleBarHeight), ViewBox, accent, ForegroundColor, headerScale);
++
+             AddHeaderSprite(frame, new MySprite
+             {
+                 Type = SpriteType.TEXTURE,
+                 Data = Icon,
+                 Position = position + new Vector2(iconSize * 0.5f),
+                 Size = new Vector2(iconSize),
+-                Color = GetHeaderColor(),
++                Color = titleColor,
+                 Alignment = TextAlignment.CENTER
+             });
+             position.X += ViewBox.Width / 8f;
+@@ -702,7 +712,8 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 (int)(ViewBox.Width - position.X + ViewBox.X),
+                 (int)titleBarHeight)));
+ 
+-            bool centered = _userTheme != LcdTheme.Default;
++            TextAlignment alignment = ThemeChrome.TitleAlignment(_userTheme);
++            bool centered = alignment == TextAlignment.CENTER;
+             var availableWidth = centered ? ViewBox.Width * 0.75f : ViewBox.Width - position.X + ViewBox.X;
+             var titleText = GetCachedTitleText(availableWidth, titleFontSize, true);
+ 
+@@ -712,13 +723,12 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 Data = titleText,
+                 Position = centered ? new Vector2(ViewBox.Center.X, position.Y) : position,
+                 RotationOrScale = ConfiguredScale * titleFontSize * FontScale,
+-                Color = GetHeaderColor(),
+-                Alignment = centered ? TextAlignment.CENTER : TextAlignment.LEFT,
+-                FontId = ThemeChrome.TitleFont(ThemeKind, TextFont, titleText)
++                Color = titleColor,
++                Alignment = alignment,
++                FontId = ThemeChrome.TitleFont(_userTheme, TextFont, titleText)
+             });
+ 
+             frame.Add(MySprite.CreateClearClipRect());
+-            ThemeChrome.DrawTitleAccent(frame, ThemeKind, new RectangleF(ViewBox.X, ViewBox.Y, ViewBox.Width, titleBarHeight), ViewBox, GetHeaderColor(), ForegroundColor, headerScale);
+ 
+             CaretY += titleBarHeight;
+         }
+@@ -961,7 +971,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 Data = "Screen_LoadingBar",
+                 Position = center,
+                 Size = new Vector2(outerSize),
+-                Color = Surface.ScriptForegroundColor,
++                Color = ForegroundColor,
+                 Alignment = TextAlignment.CENTER,
+                 RotationOrScale = outerRotation
+             });
+@@ -972,7 +982,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 Data = "Screen_LoadingBar",
+                 Position = center,
+                 Size = new Vector2(innerSize),
+-                Color = Surface.ScriptForegroundColor,
++                Color = ForegroundColor,
+                 Alignment = TextAlignment.CENTER,
+                 RotationOrScale = innerRotation
+             });
+@@ -982,7 +992,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 Type = SpriteType.TEXT,
+                 Data = LocHelper.GetLoc("LoadingPleaseWait"),
+                 Position = new Vector2(center.X, center.Y + outerSize * 0.9f),
+-                Color = Surface.ScriptForegroundColor,
++                Color = ForegroundColor,
+                 Alignment = TextAlignment.CENTER,
+                 FontId = TextFont,
+                 RotationOrScale = ConfiguredScale * FontScale
+@@ -1201,7 +1211,7 @@ namespace LcdMod.Client.SurfaceScripts.Abstract
+                 LastRenderFrame = currentFrame;
+                 NotifyRendered();
+ 
+-                var backgroundColor = Surface.ScriptBackgroundColor;
++                var backgroundColor = BackgroundColor;
+                 var renderOpacity = GetRenderOpacity();
+                 var textureChanged = ShouldRenderTexture(renderList, backgroundColor, renderOpacity, currentFrame);
+                 if (!force && !textureChanged)
