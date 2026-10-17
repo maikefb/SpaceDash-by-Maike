@@ -50,3 +50,5 @@ Task 5: implementer aa87dc3b439a8d015; DONE_WITH_CONCERNS fa5687c (BarPanel.Crea
 Task 5: reviewer aaf6fbd767251d3de; CLEAN (minors: trilho de DrawBar sobre o trilho da moldura DDS em FrameRenderer.Bar(ratio) — conferir no jogo, reverter só ali se feio; `theme` ignorado em DrawBar; percentual automático sumiu em barras altas — decisão 9).
 Task 5: complete (commits 8cea855..fa5687c, review clean)
 Task 6: BASE fa5687c
+Ruling: Task 7 executada pelo orquestrador fora de ordem (arquivos disjuntos da Task 6): o surface script de Energia Preenchida já chamava AddBackground/DrawTitle e o app já posiciona o conteúdo em TITLE_BAR_HEIGHT_BASE (40 px × escala × fonte); sem layout DDS gerado para "BatteryGraph", então Frame fica null e o título sai por código. Mudança = remover `ThemeKind => Default` — custo se errado: uma linha a restaurar.
+Task 7: complete (commit 5bdc970, 1 linha; revisão pelo orquestrador). Vão de título em Small/bare fica para os Planos 2/3 como os demais apps.
