@@ -1,0 +1,158 @@
+diff --git a/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs b/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
+index 0097a82..e8be260 100644
+--- a/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
++++ b/Info/Data/Scripts/Info/Client/Apps/ProjectorApp.cs
+@@ -52,9 +52,17 @@ namespace LcdMod.Client.Apps
+         bool _projectorDataInitialized;
+ 
+         const float PIE_RADIUS = 40;
++        const float MINIMAL_PERCENT_FONT_MUL = 3f;
++        const float COMPACT_ICON_BASE = 32f;
++        const float COMPACT_GAP_BASE = 4f;
++        const int COMPACT_PAGE_FRAMES = 300;
+         const string LOC_INGOTS_LABEL = MOD_PREFIX + "Projector_Ingots";
+         const string LOC_COMPONENTS_LABEL = "DisplayName_InventoryConstraint_Components";
+ 
++        readonly Dictionary<string, string> _loc = new Dictionary<string, string>();
++        int _compactPages = 1;
++        int _lastCompactPage;
++
+         public bool IsLoading { get; private set; }
+         public int MissingComponents => _projectorViewModel.MissingComponents;
+         public IReadOnlyDictionary<MyItemType, double> ComponentMissing => _projectorViewModel.ComponentMissing;
+@@ -87,6 +95,17 @@ namespace LcdMod.Client.Apps
+ 
+         IMyProjector Projector => _projectorViewModel.Projector;
+ 
++        bool HasBlueprint => Projector != null && Projector.IsProjecting;
++
++        int CompactPage
++        {
++            get
++            {
++                long frame = MyAPIGateway.Session != null ? MyAPIGateway.Session.GameplayFrameCounter : 0L;
++                return (int)((frame / COMPACT_PAGE_FRAMES) % Math.Max(1, _compactPages));
++            }
++        }
++
+         struct ProjectorFooterLayout
+         {
+             public float Height;
+@@ -100,6 +119,7 @@ namespace LcdMod.Client.Apps
+         public override void LayoutChanged()
+         {
+             base.LayoutChanged();
++            _loc.Clear();
+             _projectorDataInitialized = false;
+             _customTitle = Projector?.CustomName;
+ 
+@@ -250,10 +270,109 @@ namespace LcdMod.Client.Apps
+             return MyTexts.GetString(_showIngots ? LOC_INGOTS_LABEL : LOC_COMPONENTS_LABEL);
+         }
+ 
++        string Loc(string key)
++        {
++            string text;
++            if (!_loc.TryGetValue(key, out text))
++                _loc[key] = text = LocHelper.GetLoc(MOD_PREFIX + "Projector_" + key);
++            return text;
++        }
++
++        protected override void DrawMinimal(List<MySprite> s)
++        {
++            var view = ViewBox;
++            Color fg = ForegroundColor;
++            Color accent = GetHeaderColor();
++            Color track = Color.Lerp(BackgroundColor, fg, 0.15f);
++            bool hasBlueprint = HasBlueprint;
++            int total = hasBlueprint ? _projectorViewModel.TotalBlocks : 0;
++            int remaining = hasBlueprint ? _projectorViewModel.RemainingBlocks : 0;
++            float fraction = total > 0 ? 1f - remaining / (float)total : 0f;
++            string center = total > 0 ? FormatingHelper.PercentageToString(fraction) : LocHelper.GetLoc(MOD_PREFIX + "NotAvailable");
++            string remainingText = hasBlueprint ? string.Format(Loc("Remaining"), remaining, total) : null;
++            string buildableText = hasBlueprint ? string.Format(Loc("Buildable"), Projector.BuildableBlocksCount) : null;
++            float margin = Bare.Margin;
++            float lineHeight = Bare.LineHeight(1f);
++
++            if (BareLayout.IsWide(view))
++            {
++                var ringArea = new RectangleF(view.X, view.Y, view.Width * 0.5f, view.Height);
++                Bare.Ring(s, ringArea, fraction, accent, track, center, fg, MINIMAL_PERCENT_FONT_MUL);
++                float left = ringArea.Right + margin;
++                float top = view.Center.Y - lineHeight;
++                Bare.Text(s, remainingText, new Vector2(left, top), TextAlignment.LEFT, 1f, fg, view.Right - left, lineHeight);
++                Bare.Text(s, buildableText, new Vector2(left, top + lineHeight), TextAlignment.LEFT, 1f, fg, view.Right - left, lineHeight);
++                return;
++            }
++
++            var ring = new RectangleF(view.X, view.Y, view.Width, view.Height - lineHeight * 2f - margin);
++            Bare.Ring(s, ring, fraction, accent, track, center, fg, MINIMAL_PERCENT_FONT_MUL);
++            Bare.Text(s, remainingText, new Vector2(view.Center.X, ring.Bottom + margin), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
++            Bare.Text(s, buildableText, new Vector2(view.Center.X, ring.Bottom + margin + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
++        }
++
++        protected override void DrawCompact(List<MySprite> s)
++        {
++            var items = DisplayItems;
++            _compactPages = 1;
++            if (!HasBlueprint || items.Count == 0)
++            {
++                Host.DrawMessage(s, LocHelper.Empty, "Warning", GetWarningColor());
++                return;
++            }
++
++            var area = ViewBox;
++            if (area.Width <= 0f || area.Height <= 0f)
++                return;
++
++            float scale = Bare.Scale;
++            float icon = COMPACT_ICON_BASE * scale;
++            float gap = COMPACT_GAP_BASE * scale;
++            float lineHeight = Bare.LineHeight(1f);
++            float cellWidth = icon + gap;
++            float cellHeight = icon + lineHeight + gap;
++            int cols = Math.Max(1, (int)Math.Floor(area.Width / cellWidth));
++            int rows = Math.Max(1, (int)Math.Floor((area.Height + gap) / cellHeight));
++            int cells = cols * rows;
++            int count = items.Count;
++            _compactPages = (count + cells - 1) / cells;
++            int start = CompactPage * cells;
++            int end = Math.Min(count, start + cells);
++            float originX = area.X + Math.Max(0f, (area.Width - cols * cellWidth + gap) * 0.5f);
++            Color bg = BackgroundColor;
++            Color accent = GetHeaderColor();
++            Color error = GetErrorColor();
++            string ok = Loc("Ok");
++
++            for (int i = start; i < end; i++)
++            {
++                var item = items[i];
++                if (item == null)
++                    continue;
++
++                int slot = i - start;
++                float x = originX + (slot % cols) * cellWidth;
++                float y = area.Y + (slot / cols) * cellHeight;
++                double missing = (double)item.Amount;
++                DrawItemIcon(s, ResolveSprite(item.ItemType), new Vector2(x + icon * 0.5f, y + icon * 0.5f), new Vector2(icon, icon), TextAlignment.CENTER, bg);
++                Bare.Text(s, missing > 0d ? FormatingHelper.FormatItemQty(missing) : ok, new Vector2(x + icon * 0.5f, y + icon), TextAlignment.CENTER, 1f, missing > 0d ? error : accent, cellWidth, lineHeight);
++            }
++        }
++
+         public override void Update()
+         {
+             IsLoading = false;
+             base.Update();
++            if (IsCompact && _compactPages > 1)
++            {
++                int page = CompactPage;
++                if (page != _lastCompactPage)
++                {
++                    _lastCompactPage = page;
++                    InvalidateContentSprites();
++                }
++            }
++
+             var changed = _projectorViewModel.UpdateProjector(
+                 Block?.CubeGrid,
+                 ProjectorReferenceComponent.EntityId,

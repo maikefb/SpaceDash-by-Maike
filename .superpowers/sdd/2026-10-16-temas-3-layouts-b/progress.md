@@ -37,3 +37,5 @@ Task 4: implementer adf3a808585538434; DONE_WITH_CONCERNS (árvore; resx novas: 
 Task 6: reviewer a6240afdc42955a74; FIX → (1) resx Inventory_Volume: coberto pelo passe de resx; (2) GetTerminalGroupBlocks alocava por Update: orquestrador cacheia _groupBlocks e só refaz quando SelectedGroups muda de referência ou a cada 300 frames. Task 6: complete (commit 27c1347).
 Onda B: Task 7 (Projetor) lançada sobre 27c1347.
 Task 4: reviewer a8510e84134b24c25; CLEAN (minor 1 aplicado: _networkCount do layout cheio em vez de contar raízes; centro null com zero esteiras mantido). Task 4: complete (commit 696180d).
+Task 7: implementer aee9b66b507647d19; DONE_WITH_CONCERNS (árvore; resx novas: Projector_Remaining, _Buildable, _Ok; paginação própria porque IconGridPageCount é private set; Projector.cs intercepta vazio — mantido como nos demais).
+resx do Plano 3: 23 chaves em en e pt-BR — commit 5c41fe8.
