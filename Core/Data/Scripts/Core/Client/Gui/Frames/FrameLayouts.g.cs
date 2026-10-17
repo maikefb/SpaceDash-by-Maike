@@ -26,11 +26,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.detalhe", 't', 766.67f, 440.5f, 221.33f, 11f, 10f, 'L');
             Slot("carga.valor", 't', 766.67f, 406.5f, 221.33f, 33f, 30f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 794f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_RealTime",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_EnergyGeneral",512f, 58f, 'C', 46f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 80f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("LcdMod_Energy_Production",108f, 126f, 'L', 13f, false, 386f);
             Label("LcdMod_Energy_Consumption",602f, 126f, 'L', 13f, false, 386f);
             Label("LcdMod_Energy_Balance",108f, 215f, 'L', 13f, false, 0f);
@@ -50,10 +47,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.barra", 'b', 256f, 443.5f, 164f, 6f, 10f, 'L');
             Slot("carga.valor", 't', 422f, 441f, 54f, 11f, 10f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("DisplayName_BlockGroup_Batteries",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",77f, 284.5f, 'L', 8.5f, false, 216.44f);
             Label("DisplayName_BlockGroup_Batteries",77f, 317.5f, 'L', 8.5f, false, 216.44f);
             Label("LcdMod_Energy_Input",77f, 350.5f, 'L', 8.5f, false, 216.44f);
@@ -68,10 +63,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_atual.valor", 't', 302.8f, 378.29f, 173.2f, 20.33f, 18.48f, 'R');
             Slot("saida_maxima.valor", 't', 302.8f, 428.29f, 173.2f, 20.33f, 18.48f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("DisplayName_BlockGroup_SolarPanels",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",94f, 293f, 'L', 14.28f, false, 199.44f);
             Label("DisplayName_BlockGroup_SolarPanels",94f, 343f, 'L', 14.28f, false, 199.44f);
             Label("LcdMod_Frame_CurrentOutput",94f, 393f, 'L', 14.28f, false, 199.44f);
@@ -84,10 +77,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_atual.valor", 't', 302.8f, 378.29f, 173.2f, 20.33f, 18.48f, 'R');
             Slot("saida_maxima.valor", 't', 302.8f, 428.29f, 173.2f, 20.33f, 18.48f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("DisplayName_BlockGroup_WindTurbines",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",94f, 293f, 'L', 14.28f, false, 199.44f);
             Label("DisplayName_BlockGroup_WindTurbines",94f, 343f, 'L', 14.28f, false, 199.44f);
             Label("LcdMod_Frame_CurrentOutput",94f, 393f, 'L', 14.28f, false, 199.44f);
@@ -102,10 +93,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.barra", 'b', 256f, 439f, 164f, 9f, 12.8f, 'L');
             Slot("utilizacao.valor", 't', 422f, 437.12f, 54f, 14.08f, 12.8f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("DisplayName_BlockGroup_HydrogenEngines",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",84f, 288f, 'L', 10.88f, false, 209.44f);
             Label("DisplayName_BlockGroup_HydrogenEngines",84f, 328f, 'L', 10.88f, false, 209.44f);
             Label("LcdMod_Frame_CurrentOutput",84f, 368f, 'L', 10.88f, false, 209.44f);
@@ -121,10 +110,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.barra", 'b', 256f, 439f, 164f, 9f, 12.8f, 'L');
             Slot("utilizacao.valor", 't', 422f, 437.12f, 54f, 14.08f, 12.8f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("DisplayName_BlockGroup_Reactors",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",84f, 288f, 'L', 10.88f, false, 209.44f);
             Label("DisplayName_BlockGroup_Reactors",84f, 328f, 'L', 10.88f, false, 209.44f);
             Label("LcdMod_Frame_CurrentOutput",84f, 368f, 'L', 10.88f, false, 209.44f);
@@ -148,10 +135,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("linha_6.nome_bloco", 't', 88f, 435.6f, 205.44f, 13.46f, 12.24f, 'L');
             Slot("linha_6.valor", 't', 302.8f, 433.54f, 173.2f, 17.42f, 15.84f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("LcdMod_DefenseDashboard",256f, 66f, 'C', 34f, true, 0f);
             Label("LcdMod_Frame_DefenseSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_DefenseDashboard_ShieldFallback",108f, 128f, 'L', 13f, false, 0f);
             Label("=SpaceDash by Maike",490f, 500f, 'R', 9f, false, 0f);
             Screen(LcdTheme.Futuristic, "EnergyChart", false, "SD_Frame_Futuristic_EnergyChart", 1024f, 512f);
@@ -164,11 +149,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("armazenado.valor", 't', 871.92f, 360f, 116.08f, 22f, 20f, 'R');
             Slot("autonomia.valor", 't', 871.92f, 420f, 116.08f, 22f, 20f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 794f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_RealTime",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_EnergyChart",512f, 58f, 'C', 46f, true, 0f);
             Label("LcdMod_Frame_ChartSubtitle",512f, 80f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("=0 %",42f, 439f, 'R', 9f, false, 0f);
             Label("=25 %",42f, 364f, 'R', 9f, false, 0f);
             Label("=50 %",42f, 289f, 'R', 9f, false, 0f);
@@ -190,10 +172,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("yaw.valor", 't', 302.8f, 415.77f, 173.2f, 10.65f, 9.68f, 'R');
             Slot("roll.valor", 't', 302.8f, 445.77f, 173.2f, 10.65f, 9.68f, 'R');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("LcdMod_DockingAlignment",256f, 66f, 'C', 23.8f, true, 0f);
             Label("LcdMod_Frame_DockingSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Frame_Distance",74f, 363f, 'L', 7.48f, false, 219.44f);
             Label("BlockPropertyTitle_ProjectionRotationX",74f, 393f, 'L', 7.48f, false, 219.44f);
             Label("BlockPropertyTitle_ProjectionRotationY",74f, 423f, 'L', 7.48f, false, 219.44f);
@@ -235,11 +215,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("reabastecimento.nivel_de_disparo.barra", 'b', 833f, 365.5f, 155f, 8f, 11f, 'L');
             Slot("rodape.estado_link", 't', 22f, 492.35f, 794f, 9.9f, 9f, 'L');
             Slot("sistema.estado", 't', 337f, 427.25f, 190f, 16.5f, 15f, 'L');
-            Label("LcdMod_Frame_GridTelemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_RealTime",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_GasDashboard",512f, 58f, 'C', 46f, true, 0f);
             Label("LcdMod_Frame_GasSubtitle",512f, 80f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("LcdMod_Gas_H2Stored",92f, 126f, 'L', 13f, false, 155f);
             Label("LcdMod_Gas_Level",92f, 150f, 'L', 9f, false, 86f);
             Label("LcdMod_Gas_Capacity",92f, 205.5f, 'L', 9f, false, 86f);
@@ -282,10 +259,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("rodape.estado_link", 't', 22f, 492.35f, 282f, 9.9f, 9f, 'L');
             Slot("carga.capacidade", 't', 100f, 421.9f, 180f, 28.6f, 26f, 'L');
             Slot("carga.estado", 't', 296f, 425.3f, 180f, 24.2f, 22f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 9f, false, 0f);
             Label("LcdMod_LiftCapacity",256f, 66f, 'C', 24.8f, true, 0f);
             Label("LcdMod_Frame_LiftSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Lift_Gravity",104f, 126f, 'L', 13f, false, 134f);
             Label("LcdMod_Lift_ShipMass",342f, 126f, 'L', 13f, false, 134f);
             Label("LcdMod_Lift_LiftThrust",98f, 209f, 'L', 15.64f, false, 195.44f);
@@ -305,7 +280,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.barra", 'b', 837.5f, 183.5f, 94.5f, 10f, 15.6f, 'L');
             Slot("carga.valor", 't', 934f, 180.24f, 54f, 17.16f, 15.6f, 'R');
             Slot("rodape.estado_link", 't', 22f, 236.35f, 794f, 9.9f, 9f, 'L');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Batteries",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -322,7 +296,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("rodape.estado_link", 't', 22f, 236.35f, 794f, 9.9f, 9f, 'L');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_SolarPanels",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -337,7 +310,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("rodape.estado_link", 't', 22f, 236.35f, 794f, 9.9f, 9f, 'L');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_WindTurbines",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -354,7 +326,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.barra", 'b', 500.5f, 183.5f, 94.5f, 10f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
             Slot("rodape.estado_link", 't', 22f, 236.35f, 794f, 9.9f, 9f, 'L');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_HydrogenEngines",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -372,7 +343,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.barra", 'b', 500.5f, 183.5f, 94.5f, 10f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
             Slot("rodape.estado_link", 't', 22f, 236.35f, 794f, 9.9f, 9f, 'L');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Reactors",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -401,7 +371,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.valor", 't', 761.33f, 406.5f, 226.67f, 33f, 30f, 'R');
             Label("LcdMod_EnergyGeneral",22f, 74f, 'L', 30f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 92f, 'L', 11f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_Energy_Production",108f, 134f, 'L', 13f, false, 390f);
             Label("LcdMod_Energy_Consumption",598f, 134f, 'L', 13f, false, 390f);
             Label("LcdMod_Energy_Balance",108f, 219f, 'L', 13f, false, 0f);
@@ -422,7 +391,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.valor", 't', 422f, 439.96f, 54f, 13.64f, 12.4f, 'R');
             Label("DisplayName_BlockGroup_Batteries",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",83f, 295.5f, 'L', 10.54f, false, 210.44f);
             Label("DisplayName_BlockGroup_Batteries",83f, 326.5f, 'L', 10.54f, false, 210.44f);
             Label("LcdMod_Energy_Input",83f, 357.5f, 'L', 10.54f, false, 210.44f);
@@ -438,7 +406,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 302.8f, 425f, 173.2f, 22f, 20f, 'R');
             Label("DisplayName_BlockGroup_SolarPanels",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("TerminalStatus",98f, 303f, 'L', 15.64f, false, 195.44f);
             Label("DisplayName_BlockGroup_SolarPanels",98f, 349f, 'L', 15.64f, false, 195.44f);
             Label("LcdMod_Frame_CurrentOutput",98f, 395f, 'L', 15.64f, false, 195.44f);
@@ -452,7 +419,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 302.8f, 425f, 173.2f, 22f, 20f, 'R');
             Label("DisplayName_BlockGroup_WindTurbines",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("TerminalStatus",98f, 303f, 'L', 15.64f, false, 195.44f);
             Label("DisplayName_BlockGroup_WindTurbines",98f, 349f, 'L', 15.64f, false, 195.44f);
             Label("LcdMod_Frame_CurrentOutput",98f, 395f, 'L', 15.64f, false, 195.44f);
@@ -468,7 +434,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.valor", 't', 422f, 433.92f, 54f, 16.28f, 14.8f, 'R');
             Label("DisplayName_BlockGroup_HydrogenEngines",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("TerminalStatus",89f, 298.5f, 'L', 12.58f, false, 204.44f);
             Label("DisplayName_BlockGroup_HydrogenEngines",89f, 335.5f, 'L', 12.58f, false, 204.44f);
             Label("LcdMod_Frame_CurrentOutput",89f, 372.5f, 'L', 12.58f, false, 204.44f);
@@ -485,7 +450,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("utilizacao.valor", 't', 422f, 433.92f, 54f, 16.28f, 14.8f, 'R');
             Label("DisplayName_BlockGroup_Reactors",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("TerminalStatus",89f, 298.5f, 'L', 12.58f, false, 204.44f);
             Label("DisplayName_BlockGroup_Reactors",89f, 335.5f, 'L', 12.58f, false, 204.44f);
             Label("LcdMod_Frame_CurrentOutput",89f, 372.5f, 'L', 12.58f, false, 204.44f);
@@ -510,7 +474,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("linha_6.valor", 't', 302.8f, 427.17f, 173.2f, 19.84f, 18.04f, 'R');
             Label("LcdMod_DefenseDashboard",22f, 70f, 'L', 21f, false, 0f);
             Label("LcdMod_Frame_DefenseSubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_DefenseDashboard_ShieldFallback",108f, 136f, 'L', 13f, false, 0f);
             Label("=SpaceDash",490f, 495f, 'R', 8f, false, 0f);
             Screen(LcdTheme.Clean, "EnergyChart", false, "SD_Frame_Clean_EnergyChart", 1024f, 512f);
@@ -524,7 +487,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("autonomia.valor", 't', 868.72f, 421f, 119.28f, 22f, 20f, 'R');
             Label("LcdMod_EnergyChart",22f, 74f, 'L', 30f, false, 0f);
             Label("LcdMod_Frame_ChartSubtitle",22f, 92f, 'L', 11f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("=0 %",42f, 439f, 'R', 9f, false, 0f);
             Label("=25 %",42f, 366f, 'R', 9f, false, 0f);
             Label("=50 %",42f, 293f, 'R', 9f, false, 0f);
@@ -547,7 +509,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("roll.valor", 't', 302.8f, 442.28f, 173.2f, 12.58f, 11.44f, 'R');
             Label("LcdMod_DockingAlignment",22f, 70f, 'L', 16.5f, false, 0f);
             Label("LcdMod_Frame_DockingSubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_Frame_Distance",78f, 373f, 'L', 8.84f, false, 215.44f);
             Label("BlockPropertyTitle_ProjectionRotationX",78f, 399f, 'L', 8.84f, false, 215.44f);
             Label("BlockPropertyTitle_ProjectionRotationY",78f, 425f, 'L', 8.84f, false, 215.44f);
@@ -590,7 +551,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("sistema.estado", 't', 337f, 427.25f, 190f, 16.5f, 15f, 'L');
             Label("LcdMod_GasDashboard",22f, 74f, 'L', 30f, false, 0f);
             Label("LcdMod_Frame_GasSubtitle",22f, 92f, 'L', 11f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_Gas_H2Stored",92f, 134f, 'L', 13f, false, 161f);
             Label("LcdMod_Gas_Level",92f, 158f, 'L', 9f, false, 92f);
             Label("LcdMod_Gas_Capacity",92f, 215.5f, 'L', 9f, false, 92f);
@@ -634,7 +594,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("carga.estado", 't', 296f, 425.3f, 180f, 24.2f, 22f, 'R');
             Label("LcdMod_LiftCapacity",22f, 70f, 'L', 18.7f, false, 0f);
             Label("LcdMod_Frame_LiftSubtitle",22f, 86f, 'L', 9f, false, 0f);
-            Label("=GRID",22f, 34f, 'L', 9f, false, 0f);
             Label("LcdMod_Lift_Gravity",104f, 134f, 'L', 13f, false, 138f);
             Label("LcdMod_Lift_ShipMass",338f, 134f, 'L', 13f, false, 138f);
             Label("LcdMod_Lift_LiftThrust",102f, 213f, 'L', 16f, false, 191.44f);
@@ -653,7 +612,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("armazenado.valor", 't', 533.4f, 179.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("carga.barra", 'b', 837.5f, 181.5f, 94.5f, 12f, 15.6f, 'L');
             Slot("carga.valor", 't', 934f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Batteries",512f, 38f, 'C', 26f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -669,7 +627,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("paineis.valor", 't', 870.4f, 89.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_SolarPanels",512f, 38f, 'C', 26f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -683,7 +640,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("turbinas.valor", 't', 870.4f, 89.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_WindTurbines",512f, 38f, 'C', 26f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -699,7 +655,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("utilizacao.barra", 'b', 500.5f, 181.5f, 94.5f, 12f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_HydrogenEngines",512f, 38f, 'C', 26f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -716,7 +671,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("utilizacao.barra", 'b', 500.5f, 181.5f, 94.5f, 12f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Reactors",512f, 38f, 'C', 26f, false, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, false, 121.82f);
@@ -743,11 +697,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("armazenado.valor", 't', 437.33f, 406.5f, 221.33f, 33f, 30f, 'R');
             Slot("carga.detalhe", 't', 766.67f, 440.5f, 221.33f, 11f, 10f, 'L');
             Slot("carga.valor", 't', 766.67f, 406.5f, 221.33f, 33f, 30f, 'R');
-            Label("LcdMod_Frame_Telemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_OfGrid",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_EnergyGeneral",512f, 66f, 'C', 52f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 84f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("LcdMod_Energy_Production",108f, 134f, 'L', 13f, true, 386f);
             Label("LcdMod_Energy_Consumption",602f, 134f, 'L', 13f, true, 386f);
             Label("LcdMod_Energy_Balance",108f, 221f, 'L', 13f, true, 0f);
@@ -766,10 +717,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("armazenado.valor", 't', 302.8f, 412.02f, 173.2f, 11.62f, 10.56f, 'R');
             Slot("carga.barra", 'b', 256f, 445f, 164f, 7f, 9.6f, 'L');
             Slot("carga.valor", 't', 422f, 443.84f, 54f, 10.56f, 9.6f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Batteries",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",76f, 292f, 'L', 8.16f, true, 217.44f);
             Label("DisplayName_BlockGroup_Batteries",76f, 324f, 'L', 8.16f, true, 217.44f);
             Label("LcdMod_Energy_Input",76f, 356f, 'L', 8.16f, true, 217.44f);
@@ -783,10 +732,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("paineis.valor", 't', 302.8f, 334.04f, 173.2f, 19.36f, 17.6f, 'R');
             Slot("saida_atual.valor", 't', 302.8f, 382.04f, 173.2f, 19.36f, 17.6f, 'R');
             Slot("saida_maxima.valor", 't', 302.8f, 430.04f, 173.2f, 19.36f, 17.6f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("DisplayName_BlockGroup_SolarPanels",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",92f, 300f, 'L', 13.6f, true, 201.44f);
             Label("DisplayName_BlockGroup_SolarPanels",92f, 348f, 'L', 13.6f, true, 201.44f);
             Label("LcdMod_Frame_CurrentOutput",92f, 396f, 'L', 13.6f, true, 201.44f);
@@ -798,10 +745,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("turbinas.valor", 't', 302.8f, 334.04f, 173.2f, 19.36f, 17.6f, 'R');
             Slot("saida_atual.valor", 't', 302.8f, 382.04f, 173.2f, 19.36f, 17.6f, 'R');
             Slot("saida_maxima.valor", 't', 302.8f, 430.04f, 173.2f, 19.36f, 17.6f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("DisplayName_BlockGroup_WindTurbines",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",92f, 300f, 'L', 13.6f, true, 201.44f);
             Label("DisplayName_BlockGroup_WindTurbines",92f, 348f, 'L', 13.6f, true, 201.44f);
             Label("LcdMod_Frame_CurrentOutput",92f, 396f, 'L', 13.6f, true, 201.44f);
@@ -815,10 +760,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 302.8f, 398.78f, 173.2f, 14.52f, 13.2f, 'R');
             Slot("utilizacao.barra", 'b', 256f, 438f, 164f, 9f, 12f, 'L');
             Slot("utilizacao.valor", 't', 422f, 436.8f, 54f, 13.2f, 12f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("DisplayName_BlockGroup_HydrogenEngines",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",82f, 295f, 'L', 10.2f, true, 211.44f);
             Label("DisplayName_BlockGroup_HydrogenEngines",82f, 333f, 'L', 10.2f, true, 211.44f);
             Label("LcdMod_Frame_CurrentOutput",82f, 371f, 'L', 10.2f, true, 211.44f);
@@ -833,10 +776,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 302.8f, 398.78f, 173.2f, 14.52f, 13.2f, 'R');
             Slot("utilizacao.barra", 'b', 256f, 438f, 164f, 9f, 12f, 'L');
             Slot("utilizacao.valor", 't', 422f, 436.8f, 54f, 13.2f, 12f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Reactors",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("TerminalStatus",82f, 295f, 'L', 10.2f, true, 211.44f);
             Label("DisplayName_BlockGroup_Reactors",82f, 333f, 'L', 10.2f, true, 211.44f);
             Label("LcdMod_Frame_CurrentOutput",82f, 371f, 'L', 10.2f, true, 211.44f);
@@ -859,10 +800,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("linha_5.valor", 't', 302.8f, 393.41f, 173.2f, 16.94f, 15.4f, 'R');
             Slot("linha_6.nome_bloco", 't', 87f, 438.39f, 206.44f, 13.09f, 11.9f, 'L');
             Slot("linha_6.valor", 't', 302.8f, 436.41f, 173.2f, 16.94f, 15.4f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("LcdMod_DefenseDashboard",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_DefenseSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_DefenseDashboard_ShieldFallback",108f, 136f, 'L', 13f, true, 0f);
             Label("=SpaceDash by Maike",66f, 489f, 'L', 10f, false, 0f);
             Screen(LcdTheme.Cafe, "EnergyChart", false, "SD_Frame_Cafe_EnergyChart", 1024f, 512f);
@@ -874,11 +813,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("pico_1_h.valor", 't', 871.92f, 304.5f, 116.08f, 22f, 20f, 'R');
             Slot("armazenado.valor", 't', 871.92f, 363.5f, 116.08f, 22f, 20f, 'R');
             Slot("autonomia.valor", 't', 871.92f, 422.5f, 116.08f, 22f, 20f, 'R');
-            Label("LcdMod_Frame_Telemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_OfGrid",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_EnergyChart",512f, 66f, 'C', 52f, true, 0f);
             Label("LcdMod_Frame_ChartSubtitle",512f, 84f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("=0 %",42f, 439f, 'R', 9f, false, 0f);
             Label("=25 %",42f, 366f, 'R', 9f, false, 0f);
             Label("=50 %",42f, 293f, 'R', 9f, false, 0f);
@@ -899,10 +835,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("pitch.valor", 't', 302.8f, 391.52f, 173.2f, 9.68f, 8.8f, 'R');
             Slot("yaw.valor", 't', 302.8f, 419.52f, 173.2f, 9.68f, 8.8f, 'R');
             Slot("roll.valor", 't', 302.8f, 447.52f, 173.2f, 9.68f, 8.8f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("LcdMod_DockingAlignment",256f, 68f, 'C', 36.4f, true, 0f);
             Label("LcdMod_Frame_DockingSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Frame_Distance",72f, 370f, 'L', 6.8f, true, 221.44f);
             Label("BlockPropertyTitle_ProjectionRotationX",72f, 398f, 'L', 6.8f, true, 221.44f);
             Label("BlockPropertyTitle_ProjectionRotationY",72f, 426f, 'L', 6.8f, true, 221.44f);
@@ -943,11 +877,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("reabastecimento.nivel_de_disparo.valor", 't', 922f, 351.15f, 66f, 12.1f, 11f, 'R');
             Slot("reabastecimento.nivel_de_disparo.barra", 'b', 833f, 367.5f, 155f, 8f, 11f, 'L');
             Slot("sistema.estado", 't', 337f, 427.25f, 190f, 16.5f, 15f, 'L');
-            Label("LcdMod_Frame_Telemetry",1002f, 30f, 'R', 11f, false, 0f);
-            Label("LcdMod_Frame_OfGrid",1002f, 46f, 'R', 11f, false, 0f);
             Label("LcdMod_GasDashboard",512f, 66f, 'C', 52f, true, 0f);
             Label("LcdMod_Frame_GasSubtitle",512f, 84f, 'C', 12f, false, 0f);
-            Label("=GRID",22f, 30f, 'L', 10f, false, 0f);
             Label("LcdMod_Gas_H2Stored",92f, 134f, 'L', 13f, true, 155f);
             Label("LcdMod_Gas_Level",92f, 158f, 'L', 9f, false, 86f);
             Label("LcdMod_Gas_Capacity",92f, 211.5f, 'L', 9f, false, 86f);
@@ -989,10 +920,8 @@ namespace LcdMod.Client.Gui.Frames
             Slot("max_seguro.valor", 't', 302.8f, 356.54f, 173.2f, 21.3f, 19.36f, 'R');
             Slot("carga.capacidade", 't', 100f, 421.9f, 180f, 28.6f, 26f, 'L');
             Slot("carga.estado", 't', 296f, 425.3f, 180f, 24.2f, 22f, 'R');
-            Label("LcdMod_Frame_GridTelemetry",490f, 28f, 'R', 10f, false, 0f);
             Label("LcdMod_LiftCapacity",256f, 68f, 'C', 40f, true, 0f);
             Label("LcdMod_Frame_LiftSubtitle",256f, 84f, 'C', 10f, false, 0f);
-            Label("=GRID",22f, 28f, 'L', 9f, false, 0f);
             Label("LcdMod_Lift_Gravity",104f, 134f, 'L', 13f, true, 134f);
             Label("LcdMod_Lift_ShipMass",342f, 134f, 'L', 13f, true, 134f);
             Label("LcdMod_Lift_LiftThrust",96f, 216f, 'L', 14.96f, true, 197.44f);
@@ -1011,7 +940,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("armazenado.valor", 't', 533.4f, 179.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("carga.barra", 'b', 837.5f, 182.5f, 94.5f, 11f, 15.6f, 'L');
             Slot("carga.valor", 't', 934f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Batteries",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("LcdMod_Energy_Mode",405f, 103.5f, 'L', 13.26f, true, 121.82f);
@@ -1027,7 +955,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("paineis.valor", 't', 870.4f, 89.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_SolarPanels",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, true, 121.82f);
@@ -1041,7 +968,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("turbinas.valor", 't', 870.4f, 89.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_atual.valor", 't', 533.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_WindTurbines",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, true, 121.82f);
@@ -1057,7 +983,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("utilizacao.barra", 'b', 500.5f, 182.5f, 94.5f, 11f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_HydrogenEngines",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, true, 121.82f);
@@ -1074,7 +999,6 @@ namespace LcdMod.Client.Gui.Frames
             Slot("saida_maxima.valor", 't', 870.4f, 134.91f, 117.6f, 18.88f, 17.16f, 'R');
             Slot("utilizacao.barra", 'b', 500.5f, 182.5f, 94.5f, 11f, 15.6f, 'L');
             Slot("utilizacao.valor", 't', 597f, 180.24f, 54f, 17.16f, 15.6f, 'R');
-            Label("=GRID",22f, 28f, 'L', 10f, false, 0f);
             Label("DisplayName_BlockGroup_Reactors",512f, 38f, 'C', 26f, true, 0f);
             Label("LcdMod_Frame_EnergySubtitle",512f, 56f, 'C', 9f, false, 0f);
             Label("TerminalStatus",405f, 103.5f, 'L', 13.26f, true, 121.82f);

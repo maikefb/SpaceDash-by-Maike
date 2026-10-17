@@ -13,17 +13,14 @@ THEMES = ("Futuristic", "Clean", "Cafe")
 ID_PREFIX = "LcdInfo_"
 # Telas que voltaram ao chrome desenhado por código: o .md do designer continua com elas, o mod não.
 SKIP = {"LcdInfo_InGameClockDashboard", "LcdInfo_Radar"}
+# Cabeçalho "GRID / Telemetria da grid em tempo real" saiu das molduras: o .md do designer continua com ele, o mod não.
+SKIP_LABELS = {"GRID", "Telemetria da grid", "Telemetria", "da grid", "em tempo real"}
 
 # Texto de referência (PT) -> chave resx. "=texto" é literal, "@Chave" é chave do jogo (não validada no resx do mod).
 LABEL_KEYS = {
-    "GRID": "=GRID",
     "SpaceDash": "=SpaceDash",
     "SpaceDash by Maike": "=SpaceDash by Maike",
     "0 %": "=0 %", "25 %": "=25 %", "50 %": "=50 %", "75 %": "=75 %", "100 %": "=100 %",
-    "Telemetria da grid": "LcdMod_Frame_GridTelemetry",
-    "Telemetria": "LcdMod_Frame_Telemetry",
-    "da grid": "LcdMod_Frame_OfGrid",
-    "em tempo real": "LcdMod_Frame_RealTime",
     "Painel de energia": "LcdMod_EnergyGeneral",
     "Gestão dinâmica de energia": "LcdMod_Frame_EnergySubtitle",
     "Produção total": "LcdMod_Energy_Production",
@@ -139,6 +136,8 @@ def parse(md_path, theme):
             screen["slots"].append((c[0], kind, num(c[2]), num(c[3]), num(c[4]), num(c[5]), font, ALIGN[c[9]]))
         else:
             ref = c[1]
+            if ref in SKIP_LABELS:
+                continue
             if ref not in LABEL_KEYS:
                 sys.exit(f"rótulo sem chave no mapa: {ref!r} ({theme}/{screen['id']})")
             maxw = 0.0 if c[9] == "—" else num(c[9])

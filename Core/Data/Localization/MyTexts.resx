@@ -897,18 +897,6 @@ We are waiting for a while, and then we will restart it for you.</value>
   <data name="LcdMod_ConveyorMap_NoConveyors" xml:space="preserve">
     <value>No conveyors on this grid</value>
   </data>
-  <data name="LcdMod_Frame_GridTelemetry" xml:space="preserve">
-    <value>Grid telemetry</value>
-  </data>
-  <data name="LcdMod_Frame_Telemetry" xml:space="preserve">
-    <value>Telemetry</value>
-  </data>
-  <data name="LcdMod_Frame_OfGrid" xml:space="preserve">
-    <value>of the grid</value>
-  </data>
-  <data name="LcdMod_Frame_RealTime" xml:space="preserve">
-    <value>in real time</value>
-  </data>
   <data name="LcdMod_Frame_EnergySubtitle" xml:space="preserve">
     <value>Dynamic energy management</value>
   </data>

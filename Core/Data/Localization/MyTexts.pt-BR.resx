@@ -915,18 +915,6 @@ Vamos aguardar um pouco e então reiniciá-la para você.</value>
   <data name="LcdMod_ConveyorMap_NoConveyors" xml:space="preserve">
     <value>Nenhuma esteira nesta grid</value>
   </data>
-  <data name="LcdMod_Frame_GridTelemetry" xml:space="preserve">
-    <value>Telemetria da grid</value>
-  </data>
-  <data name="LcdMod_Frame_Telemetry" xml:space="preserve">
-    <value>Telemetria</value>
-  </data>
-  <data name="LcdMod_Frame_OfGrid" xml:space="preserve">
-    <value>da grid</value>
-  </data>
-  <data name="LcdMod_Frame_RealTime" xml:space="preserve">
-    <value>em tempo real</value>
-  </data>
   <data name="LcdMod_Frame_EnergySubtitle" xml:space="preserve">
     <value>Gestão dinâmica de energia</value>
   </data>
