@@ -16,9 +16,15 @@ using VRage.Game.GUI.TextPanel;
 using VRageMath;
 using VisualStackPanel = LcdMod.Client.Gui.ControlsTemplates.Panels.StackPanel.StackPanel;
 using VisualWrapPanel = LcdMod.Client.Gui.ControlsTemplates.Panels.WrapPanel.WrapPanel;
+using IMyBeacon = Sandbox.ModAPI.IMyBeacon;
+using IMyLaserAntenna = Sandbox.ModAPI.IMyLaserAntenna;
+using IMyRadioAntenna = Sandbox.ModAPI.IMyRadioAntenna;
+using MyAPIGateway = Sandbox.ModAPI.MyAPIGateway;
+using MyLaserAntennaStatus = Sandbox.ModAPI.Ingame.MyLaserAntennaStatus;
 
 using LcdMod.Common.Config.Generation;
 using LcdMod.Common.Helpers;
+using static LcdMod.Common.Helpers.Constants;
 
 namespace LcdMod.Client.Apps
 {
@@ -32,7 +38,10 @@ namespace LcdMod.Client.Apps
         const float LASER_ICON_SOURCE_SIZE = 190f;
         const float LASER_ICON_TOP_PADDING = 64f;
         const float LASER_ICON_BOTTOM_PADDING = 22f;
+        const float MINIMAL_ICON_RATIO = 0.5f;
+        const string MINIMAL_ICON = "RadioAntenna";
         readonly List<AntennaEntry> _entries = new List<AntennaEntry>();
+        readonly List<BareLayout.KvRow> _rows = new List<BareLayout.KvRow>();
         readonly Dictionary<long, AntennaEntry> _entryModels = new Dictionary<long, AntennaEntry>();
         readonly HashSet<long> _activeEntryIds = new HashSet<long>();
         readonly List<long> _entriesToRemove = new List<long>();
@@ -91,6 +100,18 @@ namespace LcdMod.Client.Apps
             ClearInteractiveTree();
             var sprites = _sprites;
             sprites.Clear();
+            if (IsMinimal)
+            {
+                DrawMinimal(sprites);
+                ClearDirtyAfterRender();
+                return sprites;
+            }
+            if (IsCompact)
+            {
+                DrawCompact(sprites);
+                ClearDirtyAfterRender();
+                return sprites;
+            }
 
             switch (GeneralComponent.DisplayMode)
             {
@@ -120,6 +141,136 @@ namespace LcdMod.Client.Apps
             _collectors.Add(new LaserAntennaCollector(Host, () => BlockSelectionComponent, () => ColorComponent));
             _collectors.Add(new RadioAntennaCollector(Host, () => BlockSelectionComponent, () => ColorComponent));
             _collectors.Add(new BeaconCollector(Host, () => BlockSelectionComponent, () => ColorComponent));
+        }
+
+        static string Loc(string suffix)
+        {
+            return LocHelper.GetLoc(MOD_PREFIX + "Antenna_" + suffix);
+        }
+
+        static bool IsTransmitting(AntennaEntry entry, out float range)
+        {
+            range = 0f;
+            if (entry == null)
+                return false;
+            var block = MyAPIGateway.Entities.GetEntityById(entry.EntryId);
+            var radio = block as IMyRadioAntenna;
+            if (radio != null)
+            {
+                if (!radio.Enabled || !radio.IsFunctional)
+                    return false;
+                range = radio.Radius;
+                return radio.IsBroadcasting;
+            }
+            var beacon = block as IMyBeacon;
+            if (beacon != null)
+            {
+                if (!beacon.Enabled || !beacon.IsFunctional)
+                    return false;
+                range = beacon.Radius;
+                return true;
+            }
+            var laser = block as IMyLaserAntenna;
+            return laser != null && laser.Enabled && laser.IsFunctional && laser.Status == MyLaserAntennaStatus.Connected;
+        }
+
+        void CountEntries(out int active, out float maxRange)
+        {
+            active = 0;
+            maxRange = 0f;
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                float range;
+                if (IsTransmitting(_entries[i], out range))
+                    active++;
+                if (range > maxRange)
+                    maxRange = range;
+            }
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            int active;
+            float maxRange;
+            CountEntries(out active, out maxRange);
+            int total = _entries.Count;
+            var view = Host.ViewBox;
+            Color fg = GetForegroundColor();
+            Color iconColor = active > 0 ? GetHeaderColor() : GetErrorColor();
+            float iconSide = Math.Min(view.Width, view.Height) * MINIMAL_ICON_RATIO;
+            float margin = Bare.Margin;
+            float lineHeight = Bare.LineHeight(1f);
+            string line1 = total > 0 ? active + " / " + total : null;
+            string distance = maxRange > 0f ? FormatingHelper.DistanceToString(maxRange) : null;
+            string line2 = distance != null ? Loc("MaxRange") + " " + distance : null;
+
+            if (BareLayout.IsWide(view))
+            {
+                var iconCenter = new Vector2(view.X + view.Width * 0.25f, view.Center.Y);
+                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, iconCenter, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                float left = view.X + view.Width * 0.5f + margin;
+                float width = view.Right - left;
+                float textTop = view.Center.Y - lineHeight;
+                Bare.Text(sprites, line1, new Vector2(left, textTop), TextAlignment.LEFT, 1f, fg, width, lineHeight);
+                if (!Bare.Text(sprites, line2, new Vector2(left, textTop + lineHeight), TextAlignment.LEFT, 1f, fg, width, lineHeight))
+                    Bare.Text(sprites, distance, new Vector2(left, textTop + lineHeight), TextAlignment.LEFT, 1f, fg, width, lineHeight);
+                return;
+            }
+
+            float textBlock = lineHeight * 2f + margin;
+            if (view.Height - iconSide < textBlock)
+            {
+                sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, view.Center, new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+                return;
+            }
+
+            float top = view.Y + (view.Height - iconSide - textBlock) * 0.5f;
+            sprites.Add(new MySprite(SpriteType.TEXTURE, MINIMAL_ICON, new Vector2(view.Center.X, top + iconSide * 0.5f), new Vector2(iconSide, iconSide), iconColor, null, TextAlignment.CENTER));
+            float linesTop = top + iconSide + margin;
+            Bare.Text(sprites, line1, new Vector2(view.Center.X, linesTop), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
+            if (!Bare.Text(sprites, line2, new Vector2(view.Center.X, linesTop + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight))
+                Bare.Text(sprites, distance, new Vector2(view.Center.X, linesTop + lineHeight), TextAlignment.CENTER, 1f, fg, view.Width, lineHeight);
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            if (_entries.Count == 0)
+            {
+                Host.DrawMessage(sprites, LocHelper.Empty, "Warning", GetWarningColor());
+                return;
+            }
+
+            int active;
+            float maxRange;
+            CountEntries(out active, out maxRange);
+            var view = Host.ViewBox;
+            Color fg = GetForegroundColor();
+            float lineHeight = Bare.LineHeight(1f);
+            float headerHeight = lineHeight + Bare.Margin;
+            Bare.Text(sprites, active + " / " + _entries.Count + " " + Loc("Active"), new Vector2(view.X, view.Y), TextAlignment.LEFT, 1f, fg, view.Width, lineHeight);
+
+            _rows.Clear();
+            for (int i = 0; i < _entries.Count; i++)
+            {
+                var entry = _entries[i];
+                if (entry == null)
+                    continue;
+                float range;
+                IsTransmitting(entry, out range);
+                string value = range > 0f ? FormatingHelper.DistanceToString(range) : FirstLine(entry.StatusText);
+                _rows.Add(new BareLayout.KvRow { Label = entry.Name, Icon = entry.StatusIcon, Value = value, ValueColor = entry.StatusColor, Bar = -1f });
+            }
+
+            var area = new RectangleF(view.X, view.Y + headerHeight, view.Width, Math.Max(0f, view.Height - headerHeight));
+            Bare.Kv(sprites, area, _rows, fg, Theme);
+        }
+
+        static string FirstLine(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            int end = text.IndexOf('\n');
+            return end < 0 ? text.TrimEnd() : text.Substring(0, end).TrimEnd();
         }
 
         void DrawDefaultView(List<MySprite> sprites)
