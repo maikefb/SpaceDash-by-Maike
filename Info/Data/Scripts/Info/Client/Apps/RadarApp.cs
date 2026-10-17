@@ -89,6 +89,28 @@ namespace LcdMod.Client.Apps
         const float FOOTER_WARNING_ICON_GAP_PX = 5f;
         const int FOOTER_SCROLL_STEP_SECONDS = 2;
         const long LONG_RANGE_SIGNAL_CACHE_FRAMES = 120L;
+        const int COMPACT_MAX_ROWS = 4;
+        const float COMPACT_ROW_RATIO = 1.5f;
+        const float COMPACT_SWATCH_PX = 6f;
+        const float MINIMAL_DOT_RADIUS_PX = 3f;
+        const float MINIMAL_RING_WIDTH_PX = 2f;
+        const float SCOPE_RING_ALPHA = 0.3f;
+        const float HOSTILE_DIM_ALPHA = 0.3f;
+        static readonly string[] _sectorNames = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+
+        sealed class CompactContactOrder : IComparer<ContactRecord>
+        {
+            public static readonly CompactContactOrder Instance = new CompactContactOrder();
+
+            public int Compare(ContactRecord a, ContactRecord b)
+            {
+                bool hostileA = a.Relationship == MyRelationsBetweenPlayerAndBlock.Enemies;
+                bool hostileB = b.Relationship == MyRelationsBetweenPlayerAndBlock.Enemies;
+                if (hostileA != hostileB)
+                    return hostileA ? -1 : 1;
+                return a.Distance.CompareTo(b.Distance);
+            }
+        }
 
 
         readonly Dictionary<long, ContactRecord> _contacts = new Dictionary<long, ContactRecord>();
@@ -96,6 +118,8 @@ namespace LcdMod.Client.Apps
         readonly HashSet<long> _processedGroupGridIds = new HashSet<long>();
         readonly List<long> _toRemove = new List<long>();
         readonly List<ContactRecord> _sortedContacts = new List<ContactRecord>();
+        readonly List<ContactRecord> _compactList = new List<ContactRecord>();
+        readonly List<BareLayout.KvRow> _compactRows = new List<BareLayout.KvRow>();
         readonly List<IMyCubeGrid> _tempGroupGrids = new List<IMyCubeGrid>();
         readonly List<IMySlimBlock> _tempSlimBlocks = new List<IMySlimBlock>();
         readonly Dictionary<long, SignalCacheEntry> _longRangeSignalCache = new Dictionary<long, SignalCacheEntry>();
@@ -510,6 +534,16 @@ namespace LcdMod.Client.Apps
         public override List<MySprite> GetSprites()
         {
             _backgroundSprites.Clear();
+            if (IsMinimal)
+            {
+                DrawMinimal(_backgroundSprites);
+                return _backgroundSprites;
+            }
+            if (IsCompact)
+            {
+                DrawCompact(_backgroundSprites);
+                return _backgroundSprites;
+            }
             UpdateCameraControlBounds();
             UpdateFooterControlBounds();
             _cameraControl.Render(_backgroundSprites);
@@ -1752,7 +1786,12 @@ namespace LcdMod.Client.Apps
 
         static Color ContactColor(ContactRecord c, Color errColor, Color warnColor, Color frdColor)
         {
-            switch (c.Relationship)
+            return RelationColor(c.Relationship, errColor, warnColor, frdColor);
+        }
+
+        static Color RelationColor(MyRelationsBetweenPlayerAndBlock relationship, Color errColor, Color warnColor, Color frdColor)
+        {
+            switch (relationship)
             {
                 case MyRelationsBetweenPlayerAndBlock.Enemies:
                     return errColor;
@@ -1761,6 +1800,122 @@ namespace LcdMod.Client.Apps
                     return frdColor;
                 default:
                     return warnColor;
+            }
+        }
+
+        MatrixD GetReferenceMatrix()
+        {
+            MatrixD gridMatrix;
+            if (!TryGetReferenceWorldMatrix(out gridMatrix))
+                gridMatrix = Block.WorldMatrix;
+            return gridMatrix;
+        }
+
+        static Vector2 PlanarOffset(ContactRecord contact, ref MatrixD gridMatrix, ref MatrixD inverse)
+        {
+            var local = Vector3D.TransformNormal(contact.WorldPosition - gridMatrix.Translation, inverse);
+            return new Vector2((float)local.X, (float)local.Z);
+        }
+
+        static string SectorName(Vector2 planar)
+        {
+            if (planar.LengthSquared() < 1e-6f)
+                return _sectorNames[0];
+            double degrees = Math.Atan2(planar.X, -planar.Y) * 180d / Math.PI;
+            if (degrees < 0d)
+                degrees += 360d;
+            return _sectorNames[(int)Math.Round(degrees / 45d) % _sectorNames.Length];
+        }
+
+        void DrawMinimal(List<MySprite> sprites)
+        {
+            RectangleF view = Host.ViewBox;
+            float radius = Math.Min(view.Width, view.Height) * 0.5f - Bare.Margin;
+            if (radius <= 0f)
+                return;
+
+            Vector2 center = view.Center;
+            Color fg = GetForegroundColor();
+            Color ringColor = ThemeChrome.WithAlpha(fg, SCOPE_RING_ALPHA);
+            float ringWidth = Math.Max(1f, MINIMAL_RING_WIDTH_PX * Scale);
+            float crossWidth = Math.Max(1f, Scale);
+            AddTexture(sprites, "Circle", center, new Vector2(radius * 2f), ringColor);
+            AddTexture(sprites, "Circle", center, new Vector2(Math.Max(0f, radius - ringWidth) * 2f), BackgroundColor);
+            sprites.Add(LineRenderer.Rect(center, new Vector2(radius * 2f, crossWidth), ringColor));
+            sprites.Add(LineRenderer.Rect(center, new Vector2(crossWidth, radius * 2f), ringColor));
+
+            float worldRange = GetWorldRange();
+            if (worldRange <= 0f || _sortedContacts.Count == 0)
+                return;
+
+            Color errColor = GetErrorColor();
+            Color warnColor = GetWarningColor();
+            Color allyColor = GetHeaderColor();
+            Color hostileColor = BlinkOn ? errColor : ThemeChrome.WithAlpha(errColor, HOSTILE_DIM_ALPHA);
+            MatrixD gridMatrix = GetReferenceMatrix();
+            MatrixD inverse = MatrixD.Transpose(gridMatrix);
+            float pixelsPerMeter = radius / worldRange;
+            var dotSize = new Vector2(MINIMAL_DOT_RADIUS_PX * 2f * Scale);
+            int shown = Math.Min(_sortedContacts.Count, MAX_CONTACTS);
+            for (int i = 0; i < shown; i++)
+            {
+                ContactRecord contact = _sortedContacts[i];
+                Vector2 planar = PlanarOffset(contact, ref gridMatrix, ref inverse);
+                if (planar.LengthSquared() > worldRange * worldRange)
+                    continue;
+                Color color = contact.Relationship == MyRelationsBetweenPlayerAndBlock.Enemies
+                    ? hostileColor
+                    : RelationColor(contact.Relationship, errColor, warnColor, allyColor);
+                AddTexture(sprites, "Circle", center + planar * pixelsPerMeter, dotSize, color);
+            }
+        }
+
+        void DrawCompact(List<MySprite> sprites)
+        {
+            if (_sortedContacts.Count == 0)
+            {
+                Host.DrawMessage(sprites, LocHelper.GetLoc(MOD_PREFIX + "NotAvailable"), "Warning", GetWarningColor());
+                return;
+            }
+
+            _compactList.Clear();
+            _compactList.AddRange(_sortedContacts);
+            _compactList.Sort(CompactContactOrder.Instance);
+
+            RectangleF view = Host.ViewBox;
+            Color fg = GetForegroundColor();
+            Color errColor = GetErrorColor();
+            Color warnColor = GetWarningColor();
+            Color allyColor = GetHeaderColor();
+            MatrixD gridMatrix = GetReferenceMatrix();
+            MatrixD inverse = MatrixD.Transpose(gridMatrix);
+            float swatch = COMPACT_SWATCH_PX * Scale;
+            float indent = swatch + Bare.Margin;
+            var area = new RectangleF(view.X + indent, view.Y, view.Width - indent, view.Height);
+
+            _compactRows.Clear();
+            int count = Math.Min(_compactList.Count, COMPACT_MAX_ROWS);
+            for (int i = 0; i < count; i++)
+            {
+                ContactRecord contact = _compactList[i];
+                string name = string.IsNullOrWhiteSpace(contact.Name) ? "Unknown" : contact.Name;
+                Vector2 planar = PlanarOffset(contact, ref gridMatrix, ref inverse);
+                _compactRows.Add(new BareLayout.KvRow
+                {
+                    Label = name,
+                    Value = FormatingHelper.DistanceToString(contact.Distance) + " " + SectorName(planar),
+                    ValueColor = fg,
+                    Bar = -1f
+                });
+            }
+
+            int drawn = Bare.Kv(sprites, area, _compactRows, fg, Theme);
+            float rowHeight = Bare.LineHeight(1f) * COMPACT_ROW_RATIO;
+            for (int i = 0; i < drawn; i++)
+            {
+                Color color = RelationColor(_compactList[i].Relationship, errColor, warnColor, allyColor);
+                var pos = new Vector2(view.X + swatch * 0.5f, area.Y + (i + 0.5f) * rowHeight);
+                sprites.Add(LineRenderer.Rect(pos, new Vector2(swatch), color));
             }
         }
 
