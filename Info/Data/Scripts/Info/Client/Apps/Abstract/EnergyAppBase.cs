@@ -81,6 +81,8 @@ namespace LcdMod.Client.Apps.Abstract
         public float DrawChrome(List<MySprite> sprites)
         {
             PrepareFrame();
+            if (IsBare)
+                return Body.Y;
             EnergyCardRenderer.DrawPanel(sprites, _content, ref Palette, ref Metrics);
             if (Host.TitleVisible)
             {
